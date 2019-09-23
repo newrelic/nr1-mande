@@ -11,6 +11,10 @@
         "uuid": "2ff25cfb-4c21-4214-941b-5ff93ea97544"
     },
     "dependencies": {
+        "graphql": "^14.5.7",
+        "graphql-tag": "^2.10.1",
+        "lodash": "^4.17.15",
+        "moment": "^2.24.0",
         "prop-types": "^15.6.2",
         "react": "^16.6.3",
         "react-dom": "^16.6.3"

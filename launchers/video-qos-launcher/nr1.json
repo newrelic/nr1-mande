@@ -1,0 +1,7 @@
+{
+  "schemaType": "LAUNCHER",
+  "id": "videos-qos-launcher",
+  "description": "Video Quality of Service",
+  "displayName": "Video QoS",
+  "rootNerdletId": "video-qos-nerdlet"
+}

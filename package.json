@@ -5,15 +5,22 @@
   "version": "0.1.0",
   "scripts": {
     "start": "nr1 nerdpack:serve",
-    "test": "exit 0"
+    "test": "exit 0",
+    "eslint-check": "eslint nerdlets/",
+    "eslint-fix": "eslint nerdlets/ --fix"
   },
   "nr1": {
-    "uuid": "4b023c7e-d34d-40f2-9938-344afe8abf7e"
+    "uuid": "7d6b11d8-a08c-4d4a-ade6-32101d017304"
   },
   "dependencies": {
+    "graphql": "^14.5.7",
+    "graphql-tag": "^2.10.1",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
-    "react-dom": "^16.6.3"
+    "react-dom": "^16.6.3",
+    "uuid": "^3.3.3"
   },
   "browserslist": [
     "last 2 versions",

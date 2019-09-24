@@ -3,5 +3,5 @@
     "id": "meande-launcher",
     "description": "Describe me",
     "displayName": "Meande",
-    "rootNerdletId": "meande-nerdlet"
+    "rootNerdletId": "video-session-list"
 }

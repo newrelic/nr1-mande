@@ -1,7 +1,7 @@
 {
-    "schemaType": "LAUNCHER",
-    "id": "meande-launcher",
-    "description": "Describe me",
-    "displayName": "Meande",
-    "rootNerdletId": "meande-nerdlet"
+  "schemaType": "LAUNCHER",
+  "id": "meande-launcher",
+  "description": "Describe me",
+  "displayName": "Meande",
+  "rootNerdletId": "meande-nerdlet"
 }

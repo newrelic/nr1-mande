@@ -116,6 +116,9 @@
 
 .timeline-item-contents-container {
     display: none;
+    box-shadow: inset 0 10px 3px -5px rgba(0,0,0, .005), inset 0 2px 0 rgba(0,0,0, .03);
+    background-color: #fafbfb;
+    border-radius: 0 0 3px 3px;
 }
 
 .timeline-item-contents-item {
@@ -125,8 +128,6 @@
     align-items: center;
     border-bottom: 1px solid #edeeee;
     padding: 0 8px;
-    background-color: #fafbfb;
-    border-radius: 0 0 3px 3px;
     
     .key {
       font-weight: 600;

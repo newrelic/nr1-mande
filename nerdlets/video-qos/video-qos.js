@@ -128,7 +128,7 @@ export default class VideoQoSNerdlet extends React.Component {
 
     console.dir(metadata);
     navigation.openStackedNerdlet({
-      id: 'video-qos-session-nerdlet',
+      id: 'video-session-list',
       urlState: {
         facet: metadata.facet,
         accountId: this.state.accountId,

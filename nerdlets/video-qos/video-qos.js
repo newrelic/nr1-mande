@@ -15,100 +15,22 @@ export default class VideoQoSNerdlet extends React.Component {
 
   constructor(props) {
     super(props);
-
+    console.debug(props);
     this.state = {
-      isMounted: false,
-      durationInMinutes: 0,
-      //   entityGuid: null,
       eventType: 'PageAction',
       facets: null,
       whereClause: '',
-      accountId: props.accountId || null,
-      queries: {},
+      accountId: props.accountId || null
     };
 
-    this.setFacets = facets => {
+    this.setFacets = (facets) => {
       this.setState({ facets });
     };
 
     this.facetClick = this.facetClick.bind(this);
   }
 
-  componentDidUpdate(nextProps) {
-    const { launcherUrlState, accountId } = nextProps;
-    const { begin_time, duration, end_time } = launcherUrlState.timeRange;
-
-    const currentDurationInMinutes = this.state.durationInMinutes;
-    const nextDurationInMinutes = duration / 1000 / 60;
-    const durationHasChanged =
-      currentDurationInMinutes !== nextDurationInMinutes;
-    const accountIdHasChanged = accountId && this.props.accountId !== accountId;
-
-    if (durationHasChanged) {
-      this.setState({ durationInMinutes: nextDurationInMinutes });
-    }
-
-    if (accountIdHasChanged) {
-      this.setState({ accountId });
-    }
-
-    if (durationHasChanged || accountIdHasChanged) {
-      // Update and store queries based on the changes above
-      const queries = this.updateQueries({ ...this.state });
-      this.setState({ queries });
-    }
-  }
-
-  async componentDidMount() {
-    this.setState({ isMounted: true });
-    // this.initializeStateFromProps();
-  }
-
-  //   async initializeStateFromProps() {
-  //     const state = {};
-
-  //     // Filter by time
-  //     const duration = _.get(
-  //       this.props,
-  //       'launcherUrlState.timeRange.duration',
-  //       false
-  //     );
-
-  //     if (duration) {
-  //       console.debug('componentDidMount:duration: ' + duration);
-  //       const durationInMinutes = duration / 1000 / 60;
-  //       state.durationInMinutes = durationInMinutes;
-  //     }
-
-  //     // Filter by a specific Account
-  //     const accountId = this.props.accountId;
-  //     if (accountId) {
-  //       console.debug('componentDidMount:accountiId: ' + accountId);
-  //       state.accountId = accountId;
-  //     }
-
-  //     // Filter by a specific Entity
-  //     // const { entityGuid } = this.props.nerdletUrlState;
-  //     // if (entityGuid) {
-  //     //   const { data } = await EntityByGuidQuery.query({ entityGuid });
-  //     //   if (data) {
-  //     //     // const accountId = _.get(data, 'entities[0].accountId', false);
-  //     //     state.entityGuid = data.guid;
-  //     //     state.whereClause = `WHERE entityGuid='${entityGuid}'`;
-  //     //   }
-  //     // }
-
-  //     // Update and store queries based on the changes above
-  //     const queries = this.updateQueries({ ...this.state, ...state });
-  //     state.queries = queries;
-
-  //     console.debug(state);
-  //     this.setState(state);
-  //   }
-
-  updateQueries(nextState) {
-    const { durationInMinutes, eventType, whereClause } = nextState;
-
+  _generateQueries(durationInMinutes, eventType, whereClause) {
     return {
       kpiQuery: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100  as '% Videos with Buffer Events', (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(viewId))*100 as 'Error Rate', ((filter(count(viewId), WHERE actionName = 'CONTENT_REQUEST')-filter(count(viewId), WHERE actionName = 'CONTENT_START'))/ filter(count(viewId), WHERE actionName = 'CONTENT_START'))*100 as '% Exits before Video Start', average(timeSinceRequested)/1000 as 'Seconds to First Frame' FROM ${eventType} ${whereClause} `,
       viewsQuery: `SELECT count(viewId)`,
@@ -141,14 +63,15 @@ export default class VideoQoSNerdlet extends React.Component {
   }
 
   render() {
+    const { launcherUrlState: { timeRange: { duration }}} = this.props;
+    const { launcherUrlState } = this.props;
+    //debugger;
+    const durationInMinutes = duration / 1000 / 60;
     const {
       accountId,
-      durationInMinutes,
-      //   entityGuid,
       eventType,
       facets,
-      whereClause,
-      queries,
+      whereClause
     } = this.state;
 
     // console.debug(facets);
@@ -162,6 +85,8 @@ export default class VideoQoSNerdlet extends React.Component {
         </BlockText>
       );
     }
+
+    const queries = this._generateQueries(durationInMinutes, eventType, whereClause);
 
     return (
       <div className="qosContainer">
@@ -182,6 +107,8 @@ export default class VideoQoSNerdlet extends React.Component {
                 'asnLatitude',
                 'asnLongitude',
                 'actionName',
+                'viewSessionId',
+                'viewSession'
               ],
               includes: ['deviceType'],
             }}
@@ -210,7 +137,7 @@ export default class VideoQoSNerdlet extends React.Component {
                   facetClick={this.facetClick}
                   entity={this.props.entity}
                   facets={facets}
-                  launcherUrlState={this.launcherUrlState}
+                  launcherUrlState={launcherUrlState}
                   queryProps={{
                     accountId: this.state.accountId,
                     compare: false,
@@ -229,7 +156,7 @@ export default class VideoQoSNerdlet extends React.Component {
                 <MultiFacetChart
                   facetClick={this.facetClick}
                   facets={facets}
-                  launcherUrlState={this.launcherUrlState}
+                  launcherUrlState={launcherUrlState}
                   queryProps={{
                     accountId: this.state.accountId,
                     compare: false,
@@ -248,7 +175,7 @@ export default class VideoQoSNerdlet extends React.Component {
                 <MultiFacetChart
                   facetClick={this.facetClick}
                   facets={facets}
-                  launcherUrlState={this.launcherUrlState}
+                  launcherUrlState={launcherUrlState}
                   queryProps={{
                     accountId: this.state.accountId,
                     compare: false,
@@ -267,7 +194,7 @@ export default class VideoQoSNerdlet extends React.Component {
                 <MultiFacetChart
                   facetClick={this.facetClick}
                   facets={facets}
-                  launcherUrlState={this.launcherUrlState}
+                  launcherUrlState={launcherUrlState}
                   queryProps={{
                     accountId: this.state.accountId,
                     compare: false,
@@ -283,7 +210,7 @@ export default class VideoQoSNerdlet extends React.Component {
             </div>
           </div>
         ) : (
-          <Spinner />
+          <Spinner fillContainer />
         )}
       </div>
     );

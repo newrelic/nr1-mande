@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import EventStream from '../../components/EventStream';
 
-import { Button } from 'nr1';
+import { Button, Icon } from 'nr1';
 
 // https://docs.newrelic.com/docs/new-relic-programmable-platform-introduction
 
@@ -25,7 +26,7 @@ export default class Meande extends React.Component {
   render() {
     return (
       <div>
-        <h1>Hello, meande Nerdlet!</h1>
+        <EventStream />
       </div>
     );
   }

@@ -24,7 +24,7 @@ export default class Board extends React.Component {
 
     this.state = {
       board: {
-        name: 'My board',
+        name: 'Video QoE',
         event: 'Page Action',
       },
       rows: [],
@@ -100,6 +100,17 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Availability',
+        },
+        {
+          col: 'CDN',
+          details: {
+            is: '', // Possible values are 'more' and 'less'
+            key: 'someattribute',
+            name: 'latest_someattribute',
+            str: 'latest(`someattribute`) AS latest_someattribute',
+            value: '1',
+          },
+          row: 'Error Budget',
         },
       ],
       cols: ['Users', 'Video', 'Client', 'CDN', 'Services', 'Infra Cloud'],
@@ -244,7 +255,11 @@ export default class Board extends React.Component {
       //     status.class = eval(comparator) ? 'alert' : 'ok';
       //   }
 
-      status.class = 'circle ok';
+      const possibilities = ['circle ok', 'circle alert'];
+      const randomIndex = Math.floor(
+        Math.random() * (possibilities.length - 1 + 1) + 1
+      );
+      status.class = possibilities[randomIndex - 1];
 
       return (
         <span className={'text ' + status.class}>
@@ -314,15 +329,7 @@ export default class Board extends React.Component {
             ))}
           </tbody>
         </table>
-        <div className="control-bar">
-          <a href="#" className="default" onClick={e => this.openAdmin(e)}>
-            admin
-          </a>
-          &nbsp;|&nbsp;
-          <a href="#" className="default" onClick={e => this.closeBoard(e)}>
-            boards
-          </a>
-        </div>
+
         {detailsForCell && (
           <CellDetails
             board={board}

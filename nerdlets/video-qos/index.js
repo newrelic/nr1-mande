@@ -58,9 +58,9 @@ export default class Wrapper extends React.PureComponent {
         ></AccountPicker>
         {accountId && (
           <PlatformStateContext.Consumer>
-            {launcherUrlState => (
+            {(launcherUrlState) => (
               <NerdletStateContext.Consumer>
-                {nerdletUrlState => (
+                {(nerdletUrlState) => (
                   <VideoQoSNerdlet
                     launcherUrlState={launcherUrlState}
                     nerdletUrlState={nerdletUrlState}

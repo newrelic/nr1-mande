@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import EventStream from '../../components/EventStream';
+import Board from '../../components/board';
 
 import { Button, Icon } from 'nr1';
 
@@ -26,6 +27,7 @@ export default class Meande extends React.Component {
   render() {
     return (
       <div>
+        <Board />
         <EventStream />
       </div>
     );

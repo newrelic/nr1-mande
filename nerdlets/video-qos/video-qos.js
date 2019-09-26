@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import FacetFilter from '../../components/facet-filter';
 import MultiFacetChart from '../../components/multi-facet';
 
-import { BillboardChart, BlockText, LineChart, navigation, Spinner, HeadingText } from 'nr1';
+import { Grid, GridItem, BillboardChart, BlockText, LineChart, navigation, Spinner, HeadingText } from 'nr1';
 
 export default class VideoQoSNerdlet extends React.Component {
   static propTypes = {
@@ -94,7 +94,7 @@ export default class VideoQoSNerdlet extends React.Component {
     const queries = this._generateQueries(durationInMinutes, eventType, whereClause);
 
     return (
-      <div className="qosContainer">
+      <>
         <div>
           <FacetFilter
             eventType={eventType}
@@ -122,113 +122,142 @@ export default class VideoQoSNerdlet extends React.Component {
 
         {facets && facets.length > 0 ? (
           <div>
-            <div className="chartContainer">
-
-              <div className="primarySectionChartContainer">
-                <div className="primarySectionChartHeader altHeader">
-                  <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>KPIs</HeadingText>
-                  <small className="sectionSubtitle">Since 3 days ago</small>
+            <Grid>
+              <GridItem columnSpan={9}>
+                <div className="primarySectionChartContainer">
+                  <div className="primarySectionChartHeader primarySectionChartaltHeader">
+                    <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>KPIs</HeadingText>
+                    <small className="sectionSubtitle">Since 3 days ago</small>
+                  </div>
+                  <div className="kpiCharts">
+                    <div className="billboardChart">
+                      <BillboardChart
+                        accountId={accountId}
+                        query={queries.kpiQueries.videosWithBufferEvents}
+                      ></BillboardChart>
+                    </div>
+                    <div className="billboardChart">
+                      <BillboardChart
+                        accountId={accountId}
+                        query={queries.kpiQueries.errorRate}
+                      ></BillboardChart>
+                    </div>
+                    <div className="billboardChart">
+                      <BillboardChart
+                        accountId={accountId}
+                        query={queries.kpiQueries.exitsBeforeVideoStart}
+                      ></BillboardChart>
+                    </div>
+                    <div className="billboardChart">
+                      <BillboardChart
+                        accountId={accountId}
+                        query={queries.kpiQueries.secondsToFirstFrame}
+                      ></BillboardChart>
+                    </div>
+                  </div>
                 </div>
-                <div className="kpiCharts">
-                  <div className="billboardChart">
-                    <BillboardChart
-                      accountId={accountId}
-                      query={queries.kpiQueries.videosWithBufferEvents}
-                    ></BillboardChart>
+
+                <div className="primarySectionChartContainer">
+                  <div className="primarySectionChartHeader">
+                    <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>KPIs over time</HeadingText>
+                    <small className="sectionSubtitle">Since 3 days ago compared with 3 days earlier</small>
                   </div>
-                  <div className="billboardChart">
-                    <BillboardChart
-                      accountId={accountId}
-                      query={queries.kpiQueries.errorRate}
-                    ></BillboardChart>
+                  <LineChart
+                    accountId={accountId}
+                    query={queries.kpisOverTimeQuery}
+                    fullWidth
+                    className="primarySectionChart"
+                  ></LineChart>
+                </div>
+              </GridItem>
+
+              <GridItem columnSpan={3}>
+                <div className="primarySectionChartContainer detailsPanel">
+                  <div className="primarySectionChartHeader primarySectionChartaltHeader">
+                    <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>Detail panel header</HeadingText>
+                    {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
                   </div>
-                  <div className="billboardChart">
-                    <BillboardChart
-                      accountId={accountId}
-                      query={queries.kpiQueries.exitsBeforeVideoStart}
-                    ></BillboardChart>
-                  </div>
-                  <div className="billboardChart">
-                    <BillboardChart
-                      accountId={accountId}
-                      query={queries.kpiQueries.secondsToFirstFrame}
-                    ></BillboardChart>
+                  <div className="detailPanelBody">
+                    <div className="chart barList">
+                      <MultiFacetChart
+                        facetClick={this.facetClick}
+                        entity={this.props.entity}
+                        facets={facets}
+                        launcherUrlState={launcherUrlState}
+                        queryProps={{
+                          accountId: this.state.accountId,
+                          compare: false,
+                          percentage: false,
+                          valueAttr: 'percentBuffering',
+                          sessionNrql: queries.sessionBufferEventsQuery,
+                          baseNrql: queries.viewsWithBufferEventsQuery,
+                          eventType,
+                          whereClause,
+                        }}
+                        title={`% views with buffer events`}
+                      />
+                    </div>
+                    
+                    <div className="emptyState">
+                      <div className="bar-chart-placeholder">
+                        <svg width="270" height="60" viewBox="0 0 270 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect width="270" height="60" rx="4" fill="#F4F5F5"/>
+                          <rect x="12" y="41" width="248" height="8" rx="4" fill="#E3E4E4"/>
+                          <rect x="12" y="41" width="100" height="8" rx="4" fill="#D5D7D7"/>
+                          <rect x="226" y="11" width="34" height="21" rx="2" fill="#E3E4E4"/>
+                          <rect x="12" y="11" width="150" height="21" rx="2" fill="#E3E4E4"/>
+                        </svg>
+                      </div>
+                      <h4 className="emptyStateHeader">Click on a KPI to view details</h4>
+                      <p className="emptyStateDescription">
+                        When you click on one of the KPIs (to the right) you will be able to view details for nulla quis tortor orci.
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </GridItem>
+            </Grid>
 
-              <div className="primarySectionChartContainer">
-                <div className="primarySectionChartHeader">
-                  <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>KPIs over time</HeadingText>
-                  <small className="sectionSubtitle">Since 3 days ago compared with 3 days earlier</small>
-                </div>
-                <LineChart
-                  accountId={accountId}
-                  query={queries.kpisOverTimeQuery}
-                  fullWidth
-                  className="primarySectionChart"
-                ></LineChart>
-              </div>
+{/*}
+            <div className="chart barList">
+              <MultiFacetChart
+                facetClick={this.facetClick}
+                facets={facets}
+                launcherUrlState={launcherUrlState}
+                queryProps={{
+                  accountId: this.state.accountId,
+                  compare: false,
+                  percentage: true,
+                  valueAttr: 'errorPercentage',
+                  sessionNrql: queries.sessionErrorsQuery,
+                  baseNrql: queries.viewsWithErrorsQuery,
+                  eventType,
+                  whereClause,
+                }}
+                title={`% views with errors`}
+              />
+            </div>
 
-              <div className="chart doubleHeight">
-                <MultiFacetChart
-                  facetClick={this.facetClick}
-                  entity={this.props.entity}
-                  facets={facets}
-                  launcherUrlState={launcherUrlState}
-                  queryProps={{
-                    accountId: this.state.accountId,
-                    compare: false,
-                    percentage: false,
-                    valueAttr: 'percentBuffering',
-                    sessionNrql: queries.sessionBufferEventsQuery,
-                    baseNrql: queries.viewsWithBufferEventsQuery,
-                    eventType,
-                    whereClause,
-                  }}
-                  title={`% views with buffer events`}
-                />
-              </div>
+            <div className="chart barList">
+              <MultiFacetChart
+                facetClick={this.facetClick}
+                facets={facets}
+                launcherUrlState={launcherUrlState}
+                queryProps={{
+                  accountId: this.state.accountId,
+                  compare: false,
+                  percentage: false,
+                  valueAttr: 'EBVS',
+                  sessionNrql: queries.sessionsWithExitsBeforeStartQuery,
+                  baseNrql: queries.viewsWithExitsBeforeStartQuery,
+                  eventType,
+                  whereClause,
+                }}
+                title={`% of exits before the video starts`}
+              />
+            </div>
 
-              <div className="chart doubleHeight">
-                <MultiFacetChart
-                  facetClick={this.facetClick}
-                  facets={facets}
-                  launcherUrlState={launcherUrlState}
-                  queryProps={{
-                    accountId: this.state.accountId,
-                    compare: false,
-                    percentage: true,
-                    valueAttr: 'errorPercentage',
-                    sessionNrql: queries.sessionErrorsQuery,
-                    baseNrql: queries.viewsWithErrorsQuery,
-                    eventType,
-                    whereClause,
-                  }}
-                  title={`% views with errors`}
-                />
-              </div>
-
-              <div className="chart doubleHeight">
-                <MultiFacetChart
-                  facetClick={this.facetClick}
-                  facets={facets}
-                  launcherUrlState={launcherUrlState}
-                  queryProps={{
-                    accountId: this.state.accountId,
-                    compare: false,
-                    percentage: false,
-                    valueAttr: 'EBVS',
-                    sessionNrql: queries.sessionsWithExitsBeforeStartQuery,
-                    baseNrql: queries.viewsWithExitsBeforeStartQuery,
-                    eventType,
-                    whereClause,
-                  }}
-                  title={`% of exits before the video starts`}
-                />
-              </div>
-
-              <div className="chart doubleHeight">
+            <div className="chart barList">
                 <MultiFacetChart
                   facetClick={this.facetClick}
                   facets={facets}
@@ -245,12 +274,12 @@ export default class VideoQoSNerdlet extends React.Component {
                   title={`Average seconds to first frame`}
                 />
               </div>
-            </div>
-          </div>
+                */}
+              </div>
         ) : (
           <Spinner fillContainer />
         )}
-      </div>
+      </>
     );
   }
 }

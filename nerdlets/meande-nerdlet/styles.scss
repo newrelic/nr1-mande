@@ -104,7 +104,64 @@
     }
 }
 
+.detailsPanel {
+
+    .emptyState {
+        display: none;
+        flex-direction: column;
+    }
+
+    .emptyStateHeader {
+        margin-bottom: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #464E4E;
+        text-transform: none;
+    }
+
+    .emptyStateDescription {
+        font-size: 12px;
+        color: #8E9494;
+        line-height: 16px;
+        max-width: 75%;
+        text-align: center;
+    }
+
+    .primarySectionChartHeader {
+        display: none;
+    }
+
+    .bar-chart-placeholder {
+        margin-bottom: 16px;
+    }
+
+    &.isEmpty {
+        .primarySectionChartHeader {
+            display: flex;
+        }
+
+        .emptyState {
+            display: flex;
+            border: 3px dashed #e3e4e4;
+            box-sizing: border-box;
+            border-radius: 5px;
+            min-height: 339px;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}
+
+.detailPanelBody {
+    padding: 0;
+
+    .isEmpty & {
+        padding: 16px;
+    }
+}
+
 .primarySectionChart {
+    height: 300px;
     box-sizing: border-box;
     padding: 16px;
 }
@@ -112,14 +169,14 @@
 .primarySectionChartHeader {
     box-sizing: border-box;
     padding: 8px 16px;
+}
 
-    &.altHeader {
-        display: flex;
-        height: 48px;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #edeeee;
-    }
+.primarySectionChartaltHeader {
+    display: flex;
+    height: 48px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #edeeee;
 }
 
 .billboardChart {
@@ -129,6 +186,7 @@
     & > [class*="wnd-Chart"] {
         height: 135px;
         margin: 0 auto;
+        width: 100%;
     }
 
     &:last-child {
@@ -145,6 +203,49 @@
 .sectionSubtitle {
     color: #8E9494;
     font-size: 12px;
+}
+
+.barList {
+    [class$="type-heading-2"] {
+        display: flex;
+        align-items: center;
+        height: 48px;
+        box-sizing: border-box;
+        padding: 16px;
+        font-size: 16px;
+        font-weight: 600;
+        border-bottom: 1px solid #edeeee;
+        color: #464e4e;
+    }
+}
+
+.barList [class*="wnd-Chart"] {
+    width: 100%;
+    height: 500px;
+    box-sizing: border-box;
+    padding: 16px;
+}
+
+.barList [class$="bar-item"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    background-color: #fafbfb;
+    margin-bottom: 8px;
+    border-radius: 3px;
+
+    &:hover {
+        background-color: #f4f5f5;
+    }
+
+    &.selected {
+        background-color: #edffff;
+    }
+}
+
+[class$="bar-item-info-label"] {
+    padding-top: 0;
+    padding-left: 0;
 }
 
 // ==============================================================

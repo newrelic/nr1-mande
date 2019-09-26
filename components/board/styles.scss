@@ -4,7 +4,7 @@
 
 body {
   background: white;
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 h1,
@@ -13,7 +13,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Fira Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   line-height: 1.5;
 }
 
@@ -71,7 +71,7 @@ h6 {
     }
 
     .hr-text {
-      font-family: 'Fira Sans', sans-serif;
+      font-family: 'Open Sans', sans-serif;
       padding: 0 15px;
     }
   }
@@ -125,7 +125,7 @@ h6 {
     @include transition(color 0.5s, background-color 0.5s, transform 0.5s);
 
     h2 {
-      font: 700 40px/48px 'Fira Sans', sans-serif;
+      font: 700 40px/48px 'Open Sans', sans-serif;
     }
 
     &:before {
@@ -190,7 +190,7 @@ h6 {
   margin: 1em auto;
 
   h2 {
-    font: 700 40px/48px 'Fira Sans', sans-serif;
+    font: 700 40px/48px 'Open Sans', sans-serif;
   }
 }
 
@@ -202,7 +202,7 @@ h6 {
 
   td {
     min-width: 3em;
-    // font: 500 1.5em/2.25em 'Fira Sans', sans-serif;
+    // font: 500 1.5em/2.25em 'Open Sans', sans-serif;
     height: 3em;
     text-align: center;
     padding: 1em 1.5em;
@@ -216,7 +216,7 @@ h6 {
     }
 
     .text {
-      font: 500 1.5em 'Fira Sans', sans-serif;
+      font: 500 1.5em 'Open Sans', sans-serif;
       border-radius: 1em;
       padding: 0 0.3em;
 
@@ -279,7 +279,7 @@ h6 {
     height: 8em;
     white-space: nowrap;
     overflow: visible;
-    font: 500 1.5em/2.25em 'Fira Sans', sans-serif;
+    font: 500 1.5em/2.25em 'Open Sans', sans-serif;
 
     & > div {
       -webkit-transform: translate(25px, 51px) rotate(315deg);
@@ -333,7 +333,7 @@ h6 {
   th.row-header {
     padding: 0 1em;
     border-bottom: 1px solid #ccc;
-    font: 500 1.5em/2.25em 'Fira Sans', sans-serif;
+    font: 500 1.5em/2.25em 'Open Sans', sans-serif;
     background-color: #edeeee;
     position: relative;
 
@@ -345,7 +345,7 @@ h6 {
 
 .control-bar {
   text-align: center;
-  font: 100 1em 'Fira Sans', sans-serif;
+  font: 100 1em 'Open Sans', sans-serif;
 }
 
 // /board
@@ -433,13 +433,13 @@ h6 {
   }
 
   h5 {
-    font: 400 1em 'Fira Sans', sans-serif;
+    font: 400 1em 'Open Sans', sans-serif;
     margin: 0;
   }
 
   .details,
   .options {
-    font: 100 1em 'Fira Sans', sans-serif;
+    font: 100 1em 'Open Sans', sans-serif;
     display: block;
     margin: 0;
   }
@@ -461,7 +461,7 @@ h6 {
     outline: none;
     padding: 2em;
     color: #666;
-    font: 400 1em/1.1em 'Fira Sans', sans-serif;
+    font: 400 1em/1.1em 'Open Sans', sans-serif;
   }
 }
 // /timeline

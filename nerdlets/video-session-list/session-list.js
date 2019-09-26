@@ -9,7 +9,7 @@ import {
   HeadingText,
 } from 'nr1';
 import SessionList from '../../components/session-list';
-import EventStream from '../../components/event-stream';
+import EventStream from '../../components/EventStream';
 import Timeline from '../../components/timeline';
 import SessionColors from '../../utils/colors';
 
@@ -55,7 +55,6 @@ export default class VideoSessionList extends React.Component {
   }
 
   sessionClick(chart) {
-    console.log(chart);
     this.setState({ session: chart.metadata.name, sessionEvents: null });
   }
 
@@ -95,13 +94,14 @@ export default class VideoSessionList extends React.Component {
           />
         </GridItem>
         <GridItem columnSpan={6} className="column">
-          <EventStream
-            data={this.state.sessionEvents}
-            session={this.state.session}
-          />
           <Timeline
             data={this.state.sessionEvents}
             session={this.state.session}
+          />
+          <EventStream
+            accountId={accountId}
+            session={session}
+            eventType={eventType}
           />
         </GridItem>
       </Grid>

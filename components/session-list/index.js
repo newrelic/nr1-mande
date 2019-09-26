@@ -28,7 +28,6 @@ export default class SessionList extends Component {
           accountId={account_id}
           query={query}
           onClickBar={callbacks.sessionClick}
-          // fullHeight={true}
           fullWidth={true}
         />
       </section>

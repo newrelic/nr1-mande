@@ -32,7 +32,12 @@ export default class VideoQoSNerdlet extends React.Component {
 
   _generateQueries(durationInMinutes, eventType, whereClause) {
     return {
-      kpiQuery: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100  as '% Videos with Buffer Events', (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(viewId))*100 as 'Error Rate', ((filter(count(viewId), WHERE actionName = 'CONTENT_REQUEST')-filter(count(viewId), WHERE actionName = 'CONTENT_START'))/ filter(count(viewId), WHERE actionName = 'CONTENT_START'))*100 as '% Exits before Video Start', average(timeSinceRequested)/1000 as 'Seconds to First Frame' FROM ${eventType} ${whereClause} `,
+      kpiQueries: {
+        videosWithBufferEvents: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100  as '% Videos with Buffer Events' FROM ${eventType} ${whereClause} `,
+        errorRate: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(viewId))*100 as 'Error Rate' FROM ${eventType} ${whereClause} `,
+        exitsBeforeVideoStart: `SELECT ((filter(count(viewId), WHERE actionName = 'CONTENT_REQUEST')-filter(count(viewId), WHERE actionName = 'CONTENT_START'))/ filter(count(viewId), WHERE actionName = 'CONTENT_START'))*100 as '% Exits before Video Start' FROM ${eventType} ${whereClause} `,
+        secondsToFirstFrame: `SELECT average(timeSinceRequested)/1000 as 'Seconds to First Frame' FROM ${eventType} ${whereClause} `
+      },
       viewsQuery: `SELECT count(viewId)`,
       kpisOverTimeQuery: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100  as '% Videos with Buffer Events', (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(viewId))*100 as 'Error Rate', ((filter(count(viewId), WHERE actionName = 'CONTENT_REQUEST')-filter(count(viewId), WHERE actionName = 'CONTENT_START'))/ filter(count(viewId), WHERE actionName = 'CONTENT_START'))*100 as '% Exits before Video Start', average(timeSinceRequested)/1000 as 'Seconds to First Frame' FROM ${eventType} ${whereClause} TIMESERIES COMPARE WITH ${durationInMinutes} MINUTES AGO`,
       viewsWithErrorsQuery: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(viewId))*100 as 'errorPercentage'`,
@@ -121,7 +126,25 @@ export default class VideoQoSNerdlet extends React.Component {
               <div className="chart">
                 <BillboardChart
                   accountId={accountId}
-                  query={queries.kpiQuery}
+                  query={queries.kpiQueries.videosWithBufferEvents}
+                ></BillboardChart>
+              </div>
+              <div className="chart">
+                <BillboardChart
+                  accountId={accountId}
+                  query={queries.kpiQueries.errorRate}
+                ></BillboardChart>
+              </div>
+              <div className="chart">
+                <BillboardChart
+                  accountId={accountId}
+                  query={queries.kpiQueries.exitsBeforeVideoStart}
+                ></BillboardChart>
+              </div>
+              <div className="chart">
+                <BillboardChart
+                  accountId={accountId}
+                  query={queries.kpiQueries.secondsToFirstFrame}
                 ></BillboardChart>
               </div>
 

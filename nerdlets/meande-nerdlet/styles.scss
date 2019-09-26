@@ -6,6 +6,150 @@
     padding: 32px;
 }
 
+// ==============================================================
+// Meande General Styles
+// ==============================================================
+
+[class*="billboard-metric"] {
+    font-size: 42px;
+    color: #2A3434;
+    display: block;
+    text-align: center;
+
+}
+[class*="billboard-name"] {
+    font-size: 14px;
+    text-align: center;
+}
+
+[class*="billboard-element__inner"] {
+    padding: 0;
+
+    & > div {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+[class*="billboard-relative"] {
+    order: 3;
+    text-align: center;
+    font-size: 12px;
+    width: min-content;
+    margin: 6px auto 0;
+    padding: 7px 5px 8px;
+    border-radius: 3px;
+
+    &:before {
+        height: 11px;
+        width: 11px;
+        margin-right: 6px;
+        border: none;
+        position: relative;
+    }
+}
+
+[class*="billboard-relative--increase"] {
+    color: #BF0016;
+    background-color: #FCF2F3;
+
+    &:before {
+        top: 2px;
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTEiIGhlaWdodD0iMTEiIHZpZXdCb3g9IjAgMCAxMSAxMSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zLjAwMDEgMFYxSDkuMzAwMUwwLjYwMDA5OCA5LjZMMS40MDAxIDEwLjRMMTAuMDAwMSAxLjdWOEgxMS4wMDAxVjBIMy4wMDAxWiIgZmlsbD0iI0JGMDAxNiIvPgo8L3N2Zz4K")
+    }
+}
+
+[class*="billboard-relative--decrease"] {
+    color: #11A600;
+    background-color: #F2FCF3;
+
+    &:before {
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTEiIGhlaWdodD0iMTEiIHZpZXdCb3g9IjAgMCAxMSAxMSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMC41IDMuMDAwMDFIOS41TDkuNSA5LjMwMDAxTDAuOSAwLjYwMDAwNkwwLjEgMS40MDAwMUw4LjggMTBMMi41IDEwVjExTDEwLjUgMTFMMTAuNSAzLjAwMDAxWiIgZmlsbD0iIzExQTYwMCIvPgo8L3N2Zz4K");
+    }
+}
+
+[class*="billboard-name"] {
+    order: 1;
+}
+
+[class*="billboard-metric"] {
+    order: 2;
+    margin: 4px 0;
+}
+
+.kpiCharts {
+    display: flex;
+    width: 100%;
+    height: 135px;
+
+    [class*="component--loaded"] {
+        background-color: transparent;
+    }
+}
+
+.primarySectionChartContainer {
+    width: 100%;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow:
+        0px 1px 0px rgba(0, 63, 66, 0.07),
+        0px 3px 3px rgba(0, 39, 41, 0.03),
+        0px 5px 23px rgba(0, 45, 47, 0.03);
+
+    [class*="component--loaded"] {
+        background-color: transparent;
+    }
+}
+
+.primarySectionChart {
+    box-sizing: border-box;
+    padding: 16px;
+}
+
+.primarySectionChartHeader {
+    box-sizing: border-box;
+    padding: 8px 16px;
+
+    &.altHeader {
+        display: flex;
+        height: 48px;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #edeeee;
+    }
+}
+
+.billboardChart {
+    flex-grow: 1;
+    box-shadow: inset -1px 0 0 rgba(0,0,0, .075);
+
+    & > [class*="wnd-Chart"] {
+        height: 135px;
+        margin: 0 auto;
+    }
+
+    &:last-child {
+        box-shadow: none;
+    }
+}
+
+.sectionTitle {
+    color: #464E4E;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sectionSubtitle {
+    color: #8E9494;
+    font-size: 12px;
+}
+
+// ==============================================================
+// Event Stream Styles
+// ==============================================================
+
 .timeline-container {
     background-color: #fff;
 }
@@ -140,7 +284,7 @@
     align-items: center;
     border-bottom: 1px solid #edeeee;
     padding: 0 8px;
-    
+
     .key {
       font-weight: 600;
       color: #464e4e;

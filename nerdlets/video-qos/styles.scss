@@ -4,9 +4,9 @@
 // @import '~@datanerd/nr-filter/src/styles.scss';
 // @import "~react-vis/dist/style";
 .qosContainer {
-  margin: 10px;
+  box-sizing: border-box;
+  padding: 10px;
   width: 100%;
-  height: 100vh;
   .containerFilter {
     position: sticky;
     top: 10;

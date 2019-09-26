@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import FacetFilter from '../../components/facet-filter';
 import MultiFacetChart from '../../components/multi-facet';
 
-import { BillboardChart, BlockText, LineChart, navigation, Spinner } from 'nr1';
+import { BillboardChart, BlockText, LineChart, navigation, Spinner, HeadingText } from 'nr1';
 
 export default class VideoQoSNerdlet extends React.Component {
   static propTypes = {
@@ -33,10 +33,10 @@ export default class VideoQoSNerdlet extends React.Component {
   _generateQueries(durationInMinutes, eventType, whereClause) {
     return {
       kpiQueries: {
-        videosWithBufferEvents: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100  as '% Videos with Buffer Events' FROM ${eventType} ${whereClause} `,
-        errorRate: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(viewId))*100 as 'Error Rate' FROM ${eventType} ${whereClause} `,
-        exitsBeforeVideoStart: `SELECT ((filter(count(viewId), WHERE actionName = 'CONTENT_REQUEST')-filter(count(viewId), WHERE actionName = 'CONTENT_START'))/ filter(count(viewId), WHERE actionName = 'CONTENT_START'))*100 as '% Exits before Video Start' FROM ${eventType} ${whereClause} `,
-        secondsToFirstFrame: `SELECT average(timeSinceRequested)/1000 as 'Seconds to First Frame' FROM ${eventType} ${whereClause} `
+        videosWithBufferEvents: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100  as '% Videos with Buffer Events' FROM ${eventType} ${whereClause} COMPARE WITH 3 days AGO`,
+        errorRate: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(viewId))*100 as 'Error Rate' FROM ${eventType} ${whereClause} COMPARE WITH 3 days AGO`,
+        exitsBeforeVideoStart: `SELECT ((filter(count(viewId), WHERE actionName = 'CONTENT_REQUEST')-filter(count(viewId), WHERE actionName = 'CONTENT_START'))/ filter(count(viewId), WHERE actionName = 'CONTENT_START'))*100 as '% Exits before Video Start' FROM ${eventType} ${whereClause} COMPARE WITH 3 days AGO`,
+        secondsToFirstFrame: `SELECT average(timeSinceRequested)/1000 as 'Seconds to First Frame' FROM ${eventType} ${whereClause} COMPARE WITH 3 days AGO`
       },
       viewsQuery: `SELECT count(viewId)`,
       kpisOverTimeQuery: `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100  as '% Videos with Buffer Events', (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(viewId))*100 as 'Error Rate', ((filter(count(viewId), WHERE actionName = 'CONTENT_REQUEST')-filter(count(viewId), WHERE actionName = 'CONTENT_START'))/ filter(count(viewId), WHERE actionName = 'CONTENT_START'))*100 as '% Exits before Video Start', average(timeSinceRequested)/1000 as 'Seconds to First Frame' FROM ${eventType} ${whereClause} TIMESERIES COMPARE WITH ${durationInMinutes} MINUTES AGO`,
@@ -123,35 +123,50 @@ export default class VideoQoSNerdlet extends React.Component {
         {facets && facets.length > 0 ? (
           <div>
             <div className="chartContainer">
-              <div className="chart">
-                <BillboardChart
-                  accountId={accountId}
-                  query={queries.kpiQueries.videosWithBufferEvents}
-                ></BillboardChart>
-              </div>
-              <div className="chart">
-                <BillboardChart
-                  accountId={accountId}
-                  query={queries.kpiQueries.errorRate}
-                ></BillboardChart>
-              </div>
-              <div className="chart">
-                <BillboardChart
-                  accountId={accountId}
-                  query={queries.kpiQueries.exitsBeforeVideoStart}
-                ></BillboardChart>
-              </div>
-              <div className="chart">
-                <BillboardChart
-                  accountId={accountId}
-                  query={queries.kpiQueries.secondsToFirstFrame}
-                ></BillboardChart>
+
+              <div className="primarySectionChartContainer">
+                <div className="primarySectionChartHeader altHeader">
+                  <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>KPIs</HeadingText>
+                  <small className="sectionSubtitle">Since 3 days ago</small>
+                </div>
+                <div className="kpiCharts">
+                  <div className="billboardChart">
+                    <BillboardChart
+                      accountId={accountId}
+                      query={queries.kpiQueries.videosWithBufferEvents}
+                    ></BillboardChart>
+                  </div>
+                  <div className="billboardChart">
+                    <BillboardChart
+                      accountId={accountId}
+                      query={queries.kpiQueries.errorRate}
+                    ></BillboardChart>
+                  </div>
+                  <div className="billboardChart">
+                    <BillboardChart
+                      accountId={accountId}
+                      query={queries.kpiQueries.exitsBeforeVideoStart}
+                    ></BillboardChart>
+                  </div>
+                  <div className="billboardChart">
+                    <BillboardChart
+                      accountId={accountId}
+                      query={queries.kpiQueries.secondsToFirstFrame}
+                    ></BillboardChart>
+                  </div>
+                </div>
               </div>
 
-              <div className="chart threeQuartersWide">
+              <div className="primarySectionChartContainer">
+                <div className="primarySectionChartHeader">
+                  <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>KPIs over time</HeadingText>
+                  <small className="sectionSubtitle">Since 3 days ago compared with 3 days earlier</small>
+                </div>
                 <LineChart
                   accountId={accountId}
                   query={queries.kpisOverTimeQuery}
+                  fullWidth
+                  className="primarySectionChart"
                 ></LineChart>
               </div>
 

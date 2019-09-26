@@ -13,6 +13,7 @@
     "uuid": "31772363-062e-4261-a59f-6ba9217f8d16"
   },
   "dependencies": {
+    "file-loader": "^4.2.0",
     "graphql": "^14.5.7",
     "graphql-tag": "^2.10.1",
     "lodash": "^4.17.15",

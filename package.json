@@ -1,7 +1,7 @@
 {
   "private": true,
-  "name": "meande",
-  "description": "Nerdpack meande",
+  "name": "nr1-mande",
+  "description": "Nerdpack for the Media and Entertainment vertical, built against the internal Video Demo account.",
   "version": "0.1.0",
   "scripts": {
     "start": "nr1 nerdpack:serve",

@@ -41,14 +41,7 @@ export default class Wrapper extends React.PureComponent {
       accounts,
       account,
       accountId: account.id,
-      isMounted: true,
     });
-  }
-
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevState.isMounted !== this.state.isMounted) {
-      this.updateQueries();
-    }
   }
 
   setAccount(account) {

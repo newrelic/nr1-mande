@@ -11,7 +11,7 @@ import {
 import SessionList from '../../components/session-list';
 import EventStream from '../../components/EventStream';
 import Timeline from '../../components/timeline';
-import SessionColors from '../../utils/colors';
+import SessionColors from '../../utils/session-colors';
 
 // https://docs.newrelic.com/docs/new-relic-programmable-platform-introduction
 
@@ -41,11 +41,12 @@ export default class VideoSessionList extends React.Component {
       let prevItem = null;
       const sessionEvents = [];
       data[0].data.forEach(item => {
+        const color = SessionColors.getColor(eventType, prevItem);
         if (prevItem) {
           sessionEvents.push({
             label: SessionColors.getLabel(eventType, prevItem),
             value: item.timestamp - prevItem.timestamp,
-            color: SessionColors.getColor(eventType, prevItem),
+            color: color,
           });
         }
         prevItem = item;

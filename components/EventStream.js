@@ -11,7 +11,7 @@ export default class EventStream extends React.Component {
     super(props);
     console.log(props);
     this.state = {
-      expandedTimelineItem: 0,
+      expandedTimelineItem: null,
     };
     this.handleTimelineItemClick = this.handleTimelineItemClick.bind(this);
   }
@@ -19,9 +19,15 @@ export default class EventStream extends React.Component {
   handleTimelineItemClick(e) {
     e.preventDefault();
     let timelineItemId = e.currentTarget.getAttribute('data-timeline-item-id');
-    this.setState(state => ({
-      expandedTimelineItem: timelineItemId,
-    }));
+    if (timelineItemId == this.state.expandedTimelineItem) {
+      this.setState(state => ({
+        expandedTimelineItem: null,
+      }));
+    } else {
+      this.setState(state => ({
+        expandedTimelineItem: timelineItemId,
+      }));
+    }
   }
 
   _buildStreamTimeline(event) {
@@ -45,7 +51,7 @@ export default class EventStream extends React.Component {
     const sessionEvents = [];
     data[0].data.forEach((event, i) => {
       const sessionCategory = EventCategories.setCategory(pageAction, event);
-      const date = new Date(event.timestamp * 1000);
+      const date = new Date(event.timestamp);
       // eslint-disable-next-line prettier/prettier
       let open = (this.state.expandedTimelineItem == i) ? 'timeline-item-expanded': '';
       const streamTimeline = this._buildStreamTimeline(event);
@@ -59,7 +65,7 @@ export default class EventStream extends React.Component {
         >
           <div className="timeline-item-timestamp">
             <span className="timeline-timestamp-date">
-              <Moment format="MM/DD/YY" date={date} />
+              <Moment format="MM/DD/YYYY" date={date} />
             </span>
             <span className="timeline-timestamp-time">
               <Moment format="h:mm:ss a" date={date} />

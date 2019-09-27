@@ -279,7 +279,7 @@
 }
 
 .timeline-item-contents-item {
-    height: 30px;
+    min-height: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -287,16 +287,26 @@
     padding: 0 8px;
 
     .key {
-      font-weight: 600;
-      color: #464e4e;
+        margin-right: 8px;
+        font-weight: 600;
+        color: #464e4e;
     }
 
     .value {
-      color: #464e4e;
+        text-align: right;
+        color: #464e4e;
+        overflow-wrap: anywhere;
+        max-width: 80%;
+        padding: 8px 0;
     }
 
     &:last-child {
         border-bottom: none;
+    }
+
+    &:hover {
+        background-color: #f4f5f5;
+        cursor: default;
     }
   }
 

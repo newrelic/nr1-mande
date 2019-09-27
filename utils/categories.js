@@ -9,7 +9,7 @@ export default class EventCategories {
   };
   static HEARTBEAT = {
     class: '',
-    icon: null,
+    icon: Icon.TYPE.INTERFACE__STATE__LOADING,
     label: 'Heartbeat',
     color: '#222222',
   };
@@ -27,19 +27,19 @@ export default class EventCategories {
   };
   static BUFFER = {
     class: '',
-    icon: null,
+    icon: Icon.TYPE.INTERFACE__OPERATIONS__DRAG,
     label: 'Buffer',
     color: '#22222',
   };
   static GENERAL = {
     class: 'timeline-item-type-general',
-    icon: null,
+    icon: Icon.TYPE.INTERFACE__OPERATIONS__FOLLOW,
     label: 'General',
     color: '#22222',
   };
   static EXTERNAL = {
     class: '',
-    icon: null,
+    icon: Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__CLOUD,
     label: 'External Calls',
     color: '#22222',
   };

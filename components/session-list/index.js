@@ -25,6 +25,7 @@ export default class SessionList extends Component {
           <p className="subtitle">Since ...</p>
         </header>
         <BarChart
+          className="sessionChart"
           accountId={account_id}
           query={query}
           onClickBar={callbacks.sessionClick}

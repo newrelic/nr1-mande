@@ -33,7 +33,7 @@ export default class Timeline extends Component {
       <div>
         {session ? (<Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
           <StackItem>
-            (<NrqlQuery accountId={accountId} query={query}>
+            <NrqlQuery accountId={accountId} query={query}>
               {({ data, error, loading }) => {
                 if (loading) return <Spinner fillContainer />;
                 if (error) return <BlockText>{error.message}</BlockText>;
@@ -42,7 +42,7 @@ export default class Timeline extends Component {
                 const stream = this._buildGauge(eventType, data);
                 return <Gauge data={stream} height={25} showLegend={true} />;
               }}
-            </NrqlQuery>);
+            </NrqlQuery>
           </StackItem>
         </Stack>) : (
         <div className="no-session">

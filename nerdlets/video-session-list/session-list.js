@@ -83,7 +83,7 @@ export default class VideoSessionList extends React.Component {
             </p>
           </header>
         </GridItem>
-        <GridItem columnSpan={6} className="column">
+        <GridItem columnSpan={4} className="column">
           <SessionList
             account_id={accountId}
             query={sessionNrql}
@@ -93,7 +93,7 @@ export default class VideoSessionList extends React.Component {
             title={`Sessions in ${facet.title}:${facet.value}`}
           />
         </GridItem>
-        <GridItem columnSpan={6} className="column">
+        <GridItem columnSpan={8} className="column">
           <Timeline accountId={accountId}
             session={session}
             eventType={eventType}

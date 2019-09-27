@@ -1,0 +1,38 @@
+.column {
+    background-color: white;
+    height: 90vh;
+    margin-left: 4px;
+    padding: 16px;
+  }
+  .subtitle {
+    margin-bottom: 10px;
+    color: #aaaaaa;
+  }
+  .header{
+    height: 10vh;
+    left: 164px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    border-bottom: 1px solid #aaaaaa;
+  }
+  .no-session{
+    height: 121px;
+    text-align: center;
+    border: 3px dashed #E3E4E4;
+    box-sizing: border-box;
+    border-radius: 3px;
+    .head{
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 32px;
+    }
+    .msg{
+        font-family: 'Open Sans';
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 20px;
+    }
+}

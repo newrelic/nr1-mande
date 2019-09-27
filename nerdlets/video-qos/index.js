@@ -37,7 +37,18 @@ export default class Wrapper extends React.PureComponent {
     // console.debug(accounts);
 
     const account = accounts.length > 0 && accounts[0];
-    this.setState({ accounts, account, accountId: account.id });
+    this.setState({
+      accounts,
+      account,
+      accountId: account.id,
+      isMounted: true,
+    });
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (prevState.isMounted !== this.state.isMounted) {
+      this.updateQueries();
+    }
   }
 
   setAccount(account) {

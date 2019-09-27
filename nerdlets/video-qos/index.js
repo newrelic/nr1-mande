@@ -44,7 +44,6 @@ export default class Wrapper extends React.PureComponent {
     });
   }
 
-
   setAccount(account) {
     const accountId = account.id;
     this.setState({ accountId });

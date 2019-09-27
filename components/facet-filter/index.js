@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import gql from 'graphql-tag';
 import _ from 'lodash';
+import Select from 'react-select';
 
 import { Button, NerdGraphQuery, Spinner, Stack, StackItem } from 'nr1';
 
@@ -39,11 +40,32 @@ export default class FacetFilter extends React.Component {
       facets: null,
       selections: null,
     };
+
+    this.handleChange = this.handleChange.bind(this);
   }
 
   clickFacet(facet) {
     const { selections } = this.state;
     selections[facet] = !selections[facet];
+    debugger;
+    this.setState({ selections }, () => {
+      this.facetsUpdated();
+    });
+  }
+
+  handleChange(value, { action, removedValue, option }) {
+    let { selections } = this.state;
+    debugger;
+    if (action === 'remove-value') {
+      selections[removedValue.value] = !selections[removedValue.value];
+    } else if (action === 'select-option') {
+      selections[option.value] = !selections[option.value];
+    } else if (action === 'clear') {
+      selections = selections.map((selection, index) => {
+        debugger;
+        selections[index] = false;
+      });
+    }
     this.setState({ selections }, () => {
       this.facetsUpdated();
     });
@@ -156,30 +178,20 @@ export default class FacetFilter extends React.Component {
         </div>
       );
     } else {
+      let options = facets.map(facet => {
+        return { value: facet.valueAttr, label: facet.title };
+      });
+
       return (
         <div className="facetFilterContainer">
           <h4 style={{ marginLeft: '5px' }}>Selected Facets</h4>
-          <Stack className="facetGroup">
-            {facets.map((facet, index) => {
-              return (
-                <StackItem key={index}>
-                  <Button
-                    sizeType={Button.SIZE_TYPE.SMALL}
-                    onClick={() => {
-                      this.clickFacet(facet.valueAttr);
-                    }}
-                    styleType={
-                      !selections[facet.valueAttr]
-                        ? 'secondaryAlt'
-                        : 'secondary'
-                    }
-                  >
-                    {facet.title}
-                  </Button>
-                </StackItem>
-              );
-            })}
-          </Stack>
+          <Select
+            options={options}
+            className="facetFilter"
+            isMulti
+            onChange={this.handleChange}
+            defaultValue={options}
+          />
         </div>
       );
     }

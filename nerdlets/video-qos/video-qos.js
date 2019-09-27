@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import FacetFilter from '../../components/facet-filter';
 import MultiFacetChart from '../../components/multi-facet';
 
-import { Grid, GridItem, BillboardChart, BlockText, LineChart, navigation, Spinner, HeadingText } from 'nr1';
+import { Icon, Grid, GridItem, BillboardChart, BlockText, LineChart, navigation, Spinner, HeadingText } from 'nr1';
 
 export default class VideoQoSNerdlet extends React.Component {
   static propTypes = {
@@ -176,6 +176,9 @@ export default class VideoQoSNerdlet extends React.Component {
                   <div className="primarySectionChartHeader primarySectionChartaltHeader">
                     <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>Detail panel header</HeadingText>
                     {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
+                  </div>
+                  <div className="minimizePanelButton">
+                    <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD} color="#464e4e"></Icon>
                   </div>
                   <div className="detailPanelBody">
                     <div className="chart barList">

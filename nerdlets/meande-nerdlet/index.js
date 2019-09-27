@@ -82,7 +82,7 @@ export default class Meande extends React.Component {
                 <GridItem columnSpan={6}>
                   <LineChart
                     accountId={accountId}
-                    query="SELECT filter(count(*), WHERE actionName = 'CONTENT_ERROR') AS 'Errors', uniquecount(viewId) AS 'Concurrent Streams' FROM PageAction since 1 week ago TIMESERIES"
+                    query="SELECT sum(timeSinceRequested)/1000 AS 'Join Time', uniqueCount(viewId) AS 'Concurrent Sessions' FROM PageAction WHERE actionName = 'CONTENT_START' since 1 day ago timeseries"
                     fullWidth
                   />
                 </GridItem>

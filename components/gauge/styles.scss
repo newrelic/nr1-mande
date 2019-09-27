@@ -1,0 +1,39 @@
+.Gauge {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-right: 5px;
+
+  &-gauge {
+    width: 100%;
+    display: flex;
+
+    & > div {
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    & > :first-child {
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+    }
+  }
+
+  &-legend {
+    margin-top: 1rem;
+
+    &-item {
+      display: inline-flex;
+      margin-right: 1.5rem;
+
+      &-dot {
+        content: "";
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        margin-top: 3px;
+        margin-right: 4px;
+      }
+    }
+  }
+}

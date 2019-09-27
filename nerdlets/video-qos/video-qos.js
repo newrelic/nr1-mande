@@ -6,6 +6,8 @@ import MultiFacetChart from '../../components/multi-facet';
 
 import { Icon, Grid, GridItem, BillboardChart, BlockText, LineChart, navigation, Spinner, HeadingText } from 'nr1';
 
+const kpiIds = ['videosWithBufferEvents', 'errorRate', 'exitsBeforeVideoStart', 'secondsToFirstFrame'];
+
 export default class VideoQoSNerdlet extends React.Component {
   static propTypes = {
     launcherUrlState: PropTypes.object,
@@ -15,12 +17,13 @@ export default class VideoQoSNerdlet extends React.Component {
 
   constructor(props) {
     super(props);
-    console.debug(props);
+
     this.state = {
       eventType: 'PageAction',
       facets: null,
       whereClause: '',
-      accountId: props.accountId || null
+      accountId: props.accountId || null,
+      selectedKpi: 'secondsToFirstFrame'
     };
 
     this.setFacets = (facets) => {
@@ -28,6 +31,11 @@ export default class VideoQoSNerdlet extends React.Component {
     };
 
     this.facetClick = this.facetClick.bind(this);
+    this.kpiClick = this.kpiClick.bind(this);
+  }
+
+  kpiClick(selectedKpi) {
+    this.setState({ selectedKpi });
   }
 
   _generateQueries(durationInMinutes, eventType, whereClause) {
@@ -67,7 +75,7 @@ export default class VideoQoSNerdlet extends React.Component {
     });
   }
 
-  render() {
+  _getMultiFacetChart(queries) {
     const { launcherUrlState: { timeRange: { duration }}} = this.props;
     const { launcherUrlState } = this.props;
     //debugger;
@@ -76,7 +84,148 @@ export default class VideoQoSNerdlet extends React.Component {
       accountId,
       eventType,
       facets,
-      whereClause
+      whereClause,
+      selectedKpi
+    } = this.state;
+    switch (selectedKpi) {
+      case 'videosWithBufferEvents':
+      return (<React.Fragment>
+        <div className="primarySectionChartHeader primarySectionChartaltHeader">
+          <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>highest % videos with buffer events</HeadingText>
+          {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
+        </div>
+        <div className="minimizePanelButton">
+          <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD} color="#464e4e"></Icon>
+        </div>
+        <div className="detailPanelBody">
+          <div className="chart barList">
+            <MultiFacetChart
+              facetClick={this.facetClick}
+              entity={this.props.entity}
+              facets={facets}
+              launcherUrlState={launcherUrlState}
+              queryProps={{
+                accountId: accountId,
+                compare: false,
+                percentage: false,
+                valueAttr: 'percentBuffering',
+                sessionNrql: queries.sessionBufferEventsQuery,
+                baseNrql: queries.viewsWithBufferEventsQuery,
+                eventType,
+                whereClause,
+              }}
+              title={`% views with buffer events`}
+            />
+          </div>
+        </div>
+      </React.Fragment>);
+
+      case 'errorRate':
+      return (<React.Fragment>
+        <div className="primarySectionChartHeader primarySectionChartaltHeader">
+          <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>highest % videos with buffer events</HeadingText>
+          {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
+        </div>
+        <div className="minimizePanelButton">
+          <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD} color="#464e4e"></Icon>
+        </div>
+        <div className="detailPanelBody">
+          <div className="chart barList">
+              <MultiFacetChart
+                facetClick={this.facetClick}
+                facets={facets}
+                launcherUrlState={launcherUrlState}
+                queryProps={{
+                  accountId: accountId,
+                  compare: false,
+                  percentage: true,
+                  valueAttr: 'errorPercentage',
+                  sessionNrql: queries.sessionErrorsQuery,
+                  baseNrql: queries.viewsWithErrorsQuery,
+                  eventType,
+                  whereClause,
+                }}
+                title={`% views with errors`}
+              />
+            </div>
+          </div>
+        </React.Fragment>);
+
+      case 'exitsBeforeVideoStart':
+        return (<React.Fragment>
+          <div className="primarySectionChartHeader primarySectionChartaltHeader">
+            <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>highest % videos with buffer events</HeadingText>
+            {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
+          </div>
+          <div className="minimizePanelButton">
+            <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD} color="#464e4e"></Icon>
+          </div>
+          <div className="detailPanelBody">
+            <div className="chart barList">
+              <MultiFacetChart
+                facetClick={this.facetClick}
+                facets={facets}
+                launcherUrlState={launcherUrlState}
+                queryProps={{
+                  accountId: accountId,
+                  compare: false,
+                  percentage: false,
+                  valueAttr: 'EBVS',
+                  sessionNrql: queries.sessionsWithExitsBeforeStartQuery,
+                  baseNrql: queries.viewsWithExitsBeforeStartQuery,
+                  eventType,
+                  whereClause,
+                }}
+                title={`% of exits before the video starts`}
+              />
+            </div>
+          </div>
+        </React.Fragment>);
+
+      case 'secondsToFirstFrame':
+        return (<React.Fragment>
+          <div className="primarySectionChartHeader primarySectionChartaltHeader">
+            <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>highest % videos with buffer events</HeadingText>
+            {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
+          </div>
+          <div className="minimizePanelButton">
+            <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD} color="#464e4e"></Icon>
+          </div>
+          <div className="detailPanelBody">
+            <div className="chart barList">
+              <MultiFacetChart
+                facetClick={this.facetClick}
+                facets={facets}
+                launcherUrlState={launcherUrlState}
+                queryProps={{
+                  accountId: accountId,
+                  compare: false,
+                  percentage: false,
+                  valueAttr: 'TTFF',
+                  baseNrql: queries.timeToFirstFrameQuery,
+                  eventType,
+                  whereClause,
+                }}
+                title={`Average seconds to first frame`}
+              />
+            </div>
+          </div>
+        </React.Fragment>);
+      default:
+        return null;
+    }
+  }
+
+  render() {
+    const { launcherUrlState: { timeRange: { duration }}} = this.props;
+    //debugger;
+    const durationInMinutes = duration / 1000 / 60;
+    const {
+      accountId,
+      eventType,
+      facets,
+      whereClause,
+      selectedKpi
     } = this.state;
 
     // console.debug(facets);
@@ -94,7 +243,7 @@ export default class VideoQoSNerdlet extends React.Component {
     const queries = this._generateQueries(durationInMinutes, eventType, whereClause);
 
     return (
-      <>
+      <React.Fragment>
         <div>
           <FacetFilter
             eventType={eventType}
@@ -130,30 +279,14 @@ export default class VideoQoSNerdlet extends React.Component {
                     <small className="sectionSubtitle">Since 3 days ago</small>
                   </div>
                   <div className="kpiCharts">
-                    <div className="billboardChart">
+                    {kpiIds.map((kpiId, key) => {
+                      return <div className={`billboardChart ${selectedKpi == kpiId ? 'billboardChart-selected' : ''}`} key={key}>
                       <BillboardChart
                         accountId={accountId}
-                        query={queries.kpiQueries.videosWithBufferEvents}
-                      ></BillboardChart>
-                    </div>
-                    <div className="billboardChart">
-                      <BillboardChart
-                        accountId={accountId}
-                        query={queries.kpiQueries.errorRate}
-                      ></BillboardChart>
-                    </div>
-                    <div className="billboardChart">
-                      <BillboardChart
-                        accountId={accountId}
-                        query={queries.kpiQueries.exitsBeforeVideoStart}
-                      ></BillboardChart>
-                    </div>
-                    <div className="billboardChart">
-                      <BillboardChart
-                        accountId={accountId}
-                        query={queries.kpiQueries.secondsToFirstFrame}
-                      ></BillboardChart>
-                    </div>
+                        query={queries.kpiQueries[kpiId]}
+                        onClickBillboard={() => { this.kpiClick(kpiId)}}
+                      ></BillboardChart></div>
+                    })}
                   </div>
                 </div>
 
@@ -172,35 +305,9 @@ export default class VideoQoSNerdlet extends React.Component {
               </GridItem>
 
               <GridItem columnSpan={3}>
-                <div className="primarySectionChartContainer detailsPanel">
-                  <div className="primarySectionChartHeader primarySectionChartaltHeader">
-                    <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>Detail panel header</HeadingText>
-                    {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
-                  </div>
-                  <div className="minimizePanelButton">
-                    <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD} color="#464e4e"></Icon>
-                  </div>
-                  <div className="detailPanelBody">
-                    <div className="chart barList">
-                      <MultiFacetChart
-                        facetClick={this.facetClick}
-                        entity={this.props.entity}
-                        facets={facets}
-                        launcherUrlState={launcherUrlState}
-                        queryProps={{
-                          accountId: this.state.accountId,
-                          compare: false,
-                          percentage: false,
-                          valueAttr: 'percentBuffering',
-                          sessionNrql: queries.sessionBufferEventsQuery,
-                          baseNrql: queries.viewsWithBufferEventsQuery,
-                          eventType,
-                          whereClause,
-                        }}
-                        title={`% views with buffer events`}
-                      />
-                    </div>
-                    
+                <div className={`primarySectionChartContainer detailsPanel ${!selectedKpi ? 'emptyState' : ''}`}>
+                  {selectedKpi && this._getMultiFacetChart(queries)}
+
                     <div className="emptyState">
                       <div className="bar-chart-placeholder">
                         <svg width="270" height="60" viewBox="0 0 270 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -217,72 +324,13 @@ export default class VideoQoSNerdlet extends React.Component {
                       </p>
                     </div>
                   </div>
-                </div>
               </GridItem>
             </Grid>
-
-{/*}
-            <div className="chart barList">
-              <MultiFacetChart
-                facetClick={this.facetClick}
-                facets={facets}
-                launcherUrlState={launcherUrlState}
-                queryProps={{
-                  accountId: this.state.accountId,
-                  compare: false,
-                  percentage: true,
-                  valueAttr: 'errorPercentage',
-                  sessionNrql: queries.sessionErrorsQuery,
-                  baseNrql: queries.viewsWithErrorsQuery,
-                  eventType,
-                  whereClause,
-                }}
-                title={`% views with errors`}
-              />
-            </div>
-
-            <div className="chart barList">
-              <MultiFacetChart
-                facetClick={this.facetClick}
-                facets={facets}
-                launcherUrlState={launcherUrlState}
-                queryProps={{
-                  accountId: this.state.accountId,
-                  compare: false,
-                  percentage: false,
-                  valueAttr: 'EBVS',
-                  sessionNrql: queries.sessionsWithExitsBeforeStartQuery,
-                  baseNrql: queries.viewsWithExitsBeforeStartQuery,
-                  eventType,
-                  whereClause,
-                }}
-                title={`% of exits before the video starts`}
-              />
-            </div>
-
-            <div className="chart barList">
-                <MultiFacetChart
-                  facetClick={this.facetClick}
-                  facets={facets}
-                  launcherUrlState={launcherUrlState}
-                  queryProps={{
-                    accountId: this.state.accountId,
-                    compare: false,
-                    percentage: false,
-                    valueAttr: 'TTFF',
-                    baseNrql: queries.timeToFirstFrameQuery,
-                    eventType,
-                    whereClause,
-                  }}
-                  title={`Average seconds to first frame`}
-                />
-              </div>
-                */}
-              </div>
+          </div>
         ) : (
           <Spinner fillContainer />
         )}
-      </>
+      </React.Fragment>
     );
   }
 }

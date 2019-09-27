@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { PlatformStateContext, NerdletStateContext } from 'nr1';
 import VideoQoSNerdlet from './video-qos';
 import AccountPicker from '../../components/account-picker';
-import { NerdGraphQuery } from 'nr1';
+import { Button, navigation, NerdGraphQuery, Stack, StackItem } from 'nr1';
 
 export default class Wrapper extends React.PureComponent {
   constructor(props) {
@@ -41,15 +41,9 @@ export default class Wrapper extends React.PureComponent {
       accounts,
       account,
       accountId: account.id,
-      isMounted: true,
     });
   }
 
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevState.isMounted !== this.state.isMounted) {
-      this.updateQueries();
-    }
-  }
 
   setAccount(account) {
     const accountId = account.id;
@@ -62,16 +56,47 @@ export default class Wrapper extends React.PureComponent {
 
     return (
       <React.Fragment>
-        <AccountPicker
-          accounts={accounts}
-          account={account}
-          setAccount={this.setAccount}
-        ></AccountPicker>
+        <Stack
+          fullWidth={true}
+          directionType={Stack.DIRECTION_TYPE.VERTICAL}
+          horizontalType={Stack.HORIZONTAL_TYPE.LEFT}
+          gapType={Stack.GAP_TYPE.SMALL}
+          style={{ marginLeft: '50px' }}
+        >
+          <StackItem>
+            <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}>
+              <StackItem>
+                <AccountPicker
+                  accounts={accounts}
+                  account={account}
+                  setAccount={this.setAccount}
+                ></AccountPicker>
+              </StackItem>
+              <StackItem>
+                <Button
+                  onClick={() => {
+                    const launcher = {
+                      id:
+                        'f25f5637-7dc5-4502-b824-6fe021ddab55.meande-launcher',
+                      urlStateOptions: '',
+                    };
+                    navigation.openLauncher(launcher);
+                  }}
+                  type={Button.TYPE.PRIMARY}
+                  iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__SHARE}
+                >
+                  Main Page
+                </Button>
+              </StackItem>
+            </Stack>
+          </StackItem>
+        </Stack>
+
         {accountId && (
           <PlatformStateContext.Consumer>
-            {(launcherUrlState) => (
+            {launcherUrlState => (
               <NerdletStateContext.Consumer>
-                {(nerdletUrlState) => (
+                {nerdletUrlState => (
                   <VideoQoSNerdlet
                     launcherUrlState={launcherUrlState}
                     nerdletUrlState={nerdletUrlState}

@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
+  Button,
   Grid,
   GridItem,
+  navigation,
   NerdGraphQuery,
   Stack,
   StackItem,
@@ -54,23 +56,53 @@ export default class Meande extends React.Component {
 
     return (
       <React.Fragment>
-        <AccountPicker
-          accounts={accounts}
-          account={account}
-          setAccount={this.setAccount}
-        ></AccountPicker>
+        <Stack
+          fullWidth={true}
+          directionType={Stack.DIRECTION_TYPE.VERTICAL}
+          horizontalType={Stack.HORIZONTAL_TYPE.LEFT}
+          gapType={Stack.GAP_TYPE.SMALL}
+          style={{ marginLeft: '50px' }}
+        >
+          <StackItem>
+            <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}>
+              <StackItem>
+                <AccountPicker
+                  accounts={accounts}
+                  account={account}
+                  setAccount={this.setAccount}
+                ></AccountPicker>
+              </StackItem>
+              <StackItem>
+                <Button
+                  onClick={() => {
+                    const launcher = {
+                      id:
+                        'f25f5637-7dc5-4502-b824-6fe021ddab55.video-qos-launcher',
+                      urlStateOptions: '',
+                    };
+                    navigation.openLauncher(launcher);
+                  }}
+                  type={Button.TYPE.PRIMARY}
+                  iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__SHARE}
+                >
+                  Video QoS
+                </Button>
+              </StackItem>
+            </Stack>
+          </StackItem>
+        </Stack>
         {accountId && (
           <Stack
             fullWidth={true}
             directionType={Stack.DIRECTION_TYPE.VERTICAL}
             horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
             gapType={Stack.GAP_TYPE.SMALL}
-            style={{ width: '1200px' }}
           >
             <StackItem>
               <Board accountId={accountId} />
             </StackItem>
-            <StackItem style={{ width: '100%' }}>
+
+            <StackItem style={{ width: '100%', maxWidth: '1200px' }}>
               <Grid>
                 <GridItem columnSpan={6}>
                   <LineChart

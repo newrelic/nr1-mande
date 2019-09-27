@@ -131,10 +131,10 @@ export default class MultiFacetChart extends Component {
   render() {
     const { title, facetClick } = this.props;
     const q = this._buildNerdGraphQuery();
-    console.debug(q);
+
     return (<NerdGraphQuery query={q}>
       {({data, loading, error}) => {
-        console.debug([data, loading, error]);
+
         if (loading) {
           return <Spinner fillContainer />
         }

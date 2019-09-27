@@ -15,7 +15,7 @@ export default class VideoQoSNerdlet extends React.Component {
 
   constructor(props) {
     super(props);
-    console.debug(props);
+
     this.state = {
       eventType: 'PageAction',
       facets: null,

@@ -1,6 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { generateClassName, capitalize } from './display-helpers'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { generateClassName, capitalize } from './display-helpers';
 
 const GaugeDataLegendItem = ({label, color}) => {
   const labelClass = generateClassName(label)
@@ -19,4 +19,4 @@ GaugeDataLegendItem.propTypes = {
   color: PropTypes.string,
 }
 
-export default GaugeDataLegendItem
+export default GaugeDataLegendItem;

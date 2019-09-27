@@ -65,13 +65,12 @@ export default class VideoSessionList extends React.Component {
   }
 
   render() {
-    const { session } = this.state;
+    const { session, sessionEvents } = this.state;
     const { launcherUrlState, nerdletUrlState } = this.props;
     const { accountId, eventType, facet } = nerdletUrlState;
     const durationInMinutes = launcherUrlState.timeRange.duration/1000/60;
     const baseNrql = `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100 as 'percentBuffering'`;
     const sessionNrql = `${baseNrql} FROM ${eventType} ${this._getWhereClause()} FACET session SINCE ${durationInMinutes} minutes ago limit 25`;
-
     return (
       <Grid>
         <GridItem columnSpan={12}>
@@ -95,9 +94,10 @@ export default class VideoSessionList extends React.Component {
           />
         </GridItem>
         <GridItem columnSpan={6} className="column">
-          <Timeline
-            data={this.state.sessionEvents}
-            session={this.state.session}
+          <Timeline accountId={accountId}
+            session={session}
+            eventType={eventType}
+            durationInMinutes={durationInMinutes}
           />
           <EventStream
             accountId={accountId}

@@ -47,7 +47,7 @@ export default class Wrapper extends React.PureComponent {
 
   async componentDidUpdate(prevProps, prevState) {
     if (prevState.isMounted !== this.state.isMounted) {
-      this.updateQueries();
+      //this.updateQueries();
     }
   }
 

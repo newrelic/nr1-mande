@@ -55,7 +55,7 @@ export default class VideoSessionList extends React.Component {
   }
 
   sessionClick(chart) {
-    this.setState({ session: chart.metadata.name, sessionEvents: null });
+    this.setState({ session: chart.metadata.name, sessionEvents: null }, console.log('state', this.state));
   }
 
   _getWhereClause() {
@@ -68,8 +68,9 @@ export default class VideoSessionList extends React.Component {
     const { session } = this.state;
     const { launcherUrlState, nerdletUrlState } = this.props;
     const { accountId, eventType, facet } = nerdletUrlState;
+    const durationInMinutes = launcherUrlState.timeRange.duration/1000/60;
     const baseNrql = `SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START')/uniqueCount(viewId))*100 as 'percentBuffering'`;
-    const sessionNrql = `${baseNrql} FROM ${eventType} ${this._getWhereClause()} FACET session SINCE 1 month ago limit 25`;
+    const sessionNrql = `${baseNrql} FROM ${eventType} ${this._getWhereClause()} FACET session SINCE ${durationInMinutes} minutes ago limit 25`;
 
     return (
       <Grid>
@@ -102,6 +103,7 @@ export default class VideoSessionList extends React.Component {
             accountId={accountId}
             session={session}
             eventType={eventType}
+            durationInMinutes={durationInMinutes}
           />
         </GridItem>
       </Grid>

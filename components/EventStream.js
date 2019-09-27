@@ -9,10 +9,10 @@ import EventCategories from '../utils/categories';
 export default class EventStream extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
       expandedTimelineItem: 0,
     };
-
     this.handleTimelineItemClick = this.handleTimelineItemClick.bind(this);
   }
 
@@ -46,8 +46,8 @@ export default class EventStream extends React.Component {
     data[0].data.forEach((event, i) => {
       const sessionCategory = EventCategories.setCategory(pageAction, event);
       const date = new Date(event.timestamp * 1000);
-      const open =
-        this.state.expandedTimelineItem == i ? 'timeline-item-expanded' : '';
+      // eslint-disable-next-line prettier/prettier
+      let open = (this.state.expandedTimelineItem == i) ? 'timeline-item-expanded': '';
       const streamTimeline = this._buildStreamTimeline(event);
 
       sessionEvents.push(
@@ -96,11 +96,12 @@ export default class EventStream extends React.Component {
   }
 
   render() {
-    const { accountId, session, eventType } = this.props;
-    const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 SINCE 7 days ago`;
+    const { accountId, session, eventType, durationInMinutes } = this.props;
+    const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 since ${durationInMinutes} minutes ago`;
 
     if (!session) return <div>Please select a session.</div>;
 
+    console.log(session, query);
     return (
       <NrqlQuery accountId={accountId} query={query}>
         {({ data, error, loading }) => {

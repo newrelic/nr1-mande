@@ -76,7 +76,7 @@ export default class Wrapper extends React.PureComponent {
                   onClick={() => {
                     const launcher = {
                       id:
-                        'f25f5637-7dc5-4502-b824-6fe021ddab55.meande-launcher',
+                        'eea3de01-ef97-4602-b795-37db5dbb3982.meande-launcher',
                       urlStateOptions: '',
                     };
                     navigation.openLauncher(launcher);

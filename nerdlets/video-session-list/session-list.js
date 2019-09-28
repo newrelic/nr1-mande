@@ -56,10 +56,7 @@ export default class VideoSessionList extends React.Component {
   }
 
   sessionClick(chart) {
-    this.setState(
-      { session: chart.metadata.name, sessionEvents: null },
-      console.log('state', this.state)
-    );
+    this.setState({ session: chart.metadata.name, sessionEvents: null });
   }
 
   _getWhereClause() {

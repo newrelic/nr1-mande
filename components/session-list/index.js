@@ -13,7 +13,6 @@ export default class SessionList extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
   }
 
   render() {
@@ -29,6 +28,7 @@ export default class SessionList extends Component {
           query={query}
           onClickBar={callbacks.sessionClick}
           fullWidth={true}
+          fullHeight={true}
         />
       </section>
     );

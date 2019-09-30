@@ -9,7 +9,6 @@ import EventCategories from '../utils/categories';
 export default class EventStream extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       expandedTimelineItem: null,
     };
@@ -53,7 +52,8 @@ export default class EventStream extends React.Component {
       const sessionCategory = EventCategories.setCategory(pageAction, event);
       const date = new Date(event.timestamp);
       // eslint-disable-next-line prettier/prettier
-      let open = (this.state.expandedTimelineItem == i) ? 'timeline-item-expanded': '';
+      let open =
+        this.state.expandedTimelineItem == i ? 'timeline-item-expanded' : '';
       const streamTimeline = this._buildStreamTimeline(event);
 
       sessionEvents.push(
@@ -107,13 +107,12 @@ export default class EventStream extends React.Component {
 
     if (!session) return <div>Please select a session.</div>;
 
-    console.log(session, query);
     return (
       <NrqlQuery accountId={accountId} query={query}>
         {({ data, error, loading }) => {
           if (loading) return <Spinner />;
           if (error) return 'ERROR';
-          console.log('data', data);
+
           const stream = this._buildStream(eventType, data);
           return (
             <div className="temporary-dummy-class-to-ensure-timeline-container-isnt-too-wide">

@@ -249,3 +249,7 @@
 .timeline-item-expanded .timeline-item-body {
   height: auto;
 }
+
+.timeline-item-expanded .timeline-item-dropdown-arrow {
+  transform: rotate(180deg);
+}

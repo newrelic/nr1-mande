@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { navigation, NerdGraphQuery } from 'nr1';
+import { Link, navigation, NerdGraphQuery } from 'nr1';
 
 import CellDetails from './cell-details';
 
@@ -35,6 +35,13 @@ export default class Board extends React.Component {
     this.parseAlertStatuses = this.parseAlertStatuses.bind(this);
     this.humanizeNumber = this.humanizeNumber.bind(this);
     this.getCellContent = this.getCellContent.bind(this);
+
+    this.videoQosLauncher = () => {
+      return {
+        id: 'eea3de01-ef97-4602-b795-37db5dbb3982.video-qos-launcher',
+        urlStateOptions: '',
+      };
+    };
   }
 
   componentDidMount() {
@@ -78,12 +85,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Availability',
-          launcher: () => {
-            return {
-              id: 'd2e63bc4-02a8-49f8-8d8e-b00255dd194c.video-qos-launcher',
-              urlStateOptions: '',
-            };
-          },
+          launcher: this.videoQosLauncher,
         },
         {
           col: 'Video',
@@ -95,6 +97,43 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Availability',
+          launcher: this.videoQosLauncher,
+        },
+        {
+          col: 'Video',
+          details: {
+            is: '', // Possible values are 'more' and 'less'
+            key: 'someattribute',
+            name: 'latest_someattribute',
+            str: 'latest(`someattribute`) AS latest_someattribute',
+            value: '1',
+          },
+          row: 'Latency',
+          launcher: this.videoQosLauncher,
+        },
+        {
+          col: 'Video',
+          details: {
+            is: '', // Possible values are 'more' and 'less'
+            key: 'someattribute',
+            name: 'latest_someattribute',
+            str: 'latest(`someattribute`) AS latest_someattribute',
+            value: '1',
+          },
+          row: 'Error Budget',
+          launcher: this.videoQosLauncher,
+        },
+        {
+          col: 'Video',
+          details: {
+            is: '', // Possible values are 'more' and 'less'
+            key: 'someattribute',
+            name: 'latest_someattribute',
+            str: 'latest(`someattribute`) AS latest_someattribute',
+            value: '1',
+          },
+          row: 'Capacity',
+          launcher: this.videoQosLauncher,
         },
         {
           col: 'CDN',
@@ -108,7 +147,20 @@ export default class Board extends React.Component {
           row: 'Error Budget',
         },
       ],
-      cols: ['Users', 'Video', 'Client', 'CDN', 'Services', 'Infra Cloud'],
+      cols: [
+        {
+          label: 'Users',
+          to: undefined,
+        },
+        {
+          label: 'Video',
+          to: navigation.getOpenLauncherLocation(this.videoQosLauncher()),
+        },
+        { label: 'Client', to: undefined },
+        { label: 'CDN', to: undefined },
+        { label: 'Services', to: undefined },
+        { label: 'Infra Cloud', to: undefined },
+      ],
       rows: ['Availability', 'Latency', 'Error Budget', 'Capacity'],
     });
   }
@@ -277,36 +329,49 @@ export default class Board extends React.Component {
           <thead>
             <tr>
               <th></th>
-              {cols.map(c => (
-                <th className="rotate" key={c}>
-                  <div>
-                    <span>{c}</span>
-                  </div>
-                </th>
-              ))}
+              {cols.map(c => {
+                const label = c.label;
+                return (
+                  <th className="rotate" key={label}>
+                    <div>
+                      {c.to && (
+                        <span>
+                          <Link to={c.to}>{label}</Link>
+                        </span>
+                      )}
+                      {!c.to && <span>{label}</span>}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
             {rows.map(r => (
               <tr key={r}>
                 <th className="row-header">{r}</th>
-                {cols.map(c => (
-                  <td
-                    onClick={() => {
-                      const matchingCell = cells.find(cell => cell.col === c);
-                      if (matchingCell) {
-                        const { launcher } = matchingCell;
-                        if (launcher) {
-                          navigation.openLauncher(launcher());
+                {cols.map(c => {
+                  const label = c.label;
+                  return (
+                    <td
+                      onClick={() => {
+                        const matchingCell = cells.find(
+                          cell => cell.col === label
+                        );
+                        if (matchingCell) {
+                          const { launcher } = matchingCell;
+                          if (launcher) {
+                            navigation.openLauncher(launcher());
+                          }
                         }
-                      }
-                      return null;
-                    }}
-                    key={r + '-' + c}
-                  >
-                    {this.getCellContent(r, c)}
-                  </td>
-                ))}
+                        return null;
+                      }}
+                      key={r + '-' + c.label}
+                    >
+                      {this.getCellContent(r, c.label)}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

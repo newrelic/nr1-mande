@@ -232,33 +232,6 @@ export default class VideoQoSNerdlet extends React.Component {
         );
 
       case 'secondsToFirstFrame':
-<<<<<<< HEAD
-        return (<React.Fragment>
-          <div className="primarySectionChartHeader primarySectionChartaltHeader">
-            <HeadingText className="sectionTitle" type={HeadingText.TYPE.HEADING_3}>highest % videos with buffer events</HeadingText>
-            {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
-          </div>
-          <div className="minimizePanelButton">
-            <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD} color="#464e4e"></Icon>
-          </div>
-          <div className="detailPanelBody">
-            <div className="chart barList">
-              <MultiFacetChart
-                facetClick={this.facetClick}
-                facets={facets}
-                launcherUrlState={launcherUrlState}
-                queryProps={{
-                  accountId: accountId,
-                  compare: false,
-                  percentage: false,
-                  valueAttr: 'TTFF',
-                  baseNrql: queries.timeToFirstFrameQuery,
-                  eventType,
-                  whereClause: whereClause + ` WHERE actionName = 'CONTENT_START' `,
-                }}
-                title={`Average seconds to first frame`}
-              />
-=======
         return (
           <React.Fragment>
             <div className="primarySectionChartHeader primarySectionChartaltHeader">
@@ -269,7 +242,6 @@ export default class VideoQoSNerdlet extends React.Component {
                 highest % videos with buffer events
               </HeadingText>
               {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
->>>>>>> 6ab8d571bbdc18171d83657346a932fec414f8ff
             </div>
             <div className="minimizePanelButton">
               <Icon
@@ -290,10 +262,38 @@ export default class VideoQoSNerdlet extends React.Component {
                     valueAttr: 'TTFF',
                     baseNrql: queries.timeToFirstFrameQuery,
                     eventType,
-                    whereClause,
+                    whereClause:
+                      whereClause + ` WHERE actionName = 'CONTENT_START' `,
                   }}
                   title={`Average seconds to first frame`}
                 />
+              </div>
+              <div className="minimizePanelButton">
+                <Icon
+                  type={
+                    Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD
+                  }
+                  color="#464e4e"
+                ></Icon>
+              </div>
+              <div className="detailPanelBody">
+                <div className="chart barList">
+                  <MultiFacetChart
+                    facetClick={this.facetClick}
+                    facets={facets}
+                    launcherUrlState={launcherUrlState}
+                    queryProps={{
+                      accountId: accountId,
+                      compare: false,
+                      percentage: false,
+                      valueAttr: 'TTFF',
+                      baseNrql: queries.timeToFirstFrameQuery,
+                      eventType,
+                      whereClause,
+                    }}
+                    title={`Average seconds to first frame`}
+                  />
+                </div>
               </div>
             </div>
           </React.Fragment>

@@ -115,7 +115,7 @@ export default class EventStream extends React.Component {
 
           const stream = this._buildStream(eventType, data);
           return (
-            <div className="temporary-dummy-class-to-ensure-timeline-container-isnt-too-wide">
+            <div className="sessionSectionBase">
               <div className="timeline-container">{stream}</div>
             </div>
           );

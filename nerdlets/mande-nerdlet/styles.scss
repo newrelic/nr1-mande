@@ -280,3 +280,21 @@
   position: relative;
   z-index: 100;
 }
+
+h4 {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #464e4e;
+  text-transform: none;
+}
+
+.sessionSectionBase {
+  margin-bottom: 8px;
+  padding: 16px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07),
+    0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);
+}

@@ -18,7 +18,7 @@ export default class SessionList extends Component {
   render() {
     const { account_id, title, query, callbacks } = this.props;
     return (
-      <section className="list-wrapper">
+      <section className="list-wrapper sessionSectionBase">
         <header className="list-header">
           <HeadingText type={HeadingText.TYPE.HEADING_4}>{title}</HeadingText>
           <p className="subtitle">Since ...</p>
@@ -28,7 +28,6 @@ export default class SessionList extends Component {
           query={query}
           onClickBar={callbacks.sessionClick}
           fullWidth={true}
-          fullHeight={true}
         />
       </section>
     );

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import _ from 'lodash';
+import { Dropdown, DropdownItem, Stack, StackItem } from 'nr1';
 
 import GaugeDataLegendItem from './GaugeDataLegendItem';
 import GaugeDataValue from './GaugeDataValue';
@@ -79,6 +80,30 @@ export default class Gauge extends Component {
 
     return (
       <div className="Gauge">
+        <Stack
+          className="gaugeHeader"
+          fullWidth
+          verticalType={Stack.VERTICAL_TYPE.CENTER}
+        >
+          <StackItem grow>
+            <h4>Session breakdown</h4>
+          </StackItem>
+          <StackItem>
+            <Dropdown
+              className="gaugeFilterDropdown"
+              label="Filter by"
+              title="Select a filter"
+            >
+              <DropdownItem value="" selected>
+                None
+              </DropdownItem>
+              <DropdownItem value="NonQualityEvents">
+                Non-quality events
+              </DropdownItem>
+            </Dropdown>
+          </StackItem>
+        </Stack>
+
         <div className="Gauge-gauge" style={{ height: height }}>
           {displayData.map(GaugeDataValue)}
         </div>

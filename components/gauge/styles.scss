@@ -6,6 +6,10 @@
   width: 100%;
 }
 
+.gaugeHeader {
+  margin-bottom: 16px;
+}
+
 .Gauge {
   display: flex;
   flex-direction: column;
@@ -21,13 +25,16 @@
 
   &-legend {
     margin-top: 1rem;
+    display: flex;
+    justify-content: center;
 
     &-item {
       display: inline-flex;
       margin-right: 1.5rem;
+      color: #464e4e;
 
       &-dot {
-        content: "";
+        content: '';
         border-radius: 50%;
         width: 10px;
         height: 10px;

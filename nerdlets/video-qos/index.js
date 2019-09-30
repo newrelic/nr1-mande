@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import { PlatformStateContext, NerdletStateContext } from 'nr1';
 import VideoQoSNerdlet from './video-qos';
 import AccountPicker from '../../components/account-picker';
-import { Button, navigation, NerdGraphQuery, Stack, StackItem } from 'nr1';
+import { AccountsQuery, Button, navigation, Stack, StackItem } from 'nr1';
 
 export default class Wrapper extends React.PureComponent {
   constructor(props) {
@@ -20,21 +20,8 @@ export default class Wrapper extends React.PureComponent {
   }
 
   async componentDidMount() {
-    const query = gql`
-      {
-        actor {
-          accounts {
-            name
-            id
-          }
-        }
-      }
-    `;
-    const { data } = await NerdGraphQuery.query({ query: query });
-
-    const { accounts } = data.actor;
-
-    // console.debug(accounts);
+    const { data } = await AccountsQuery.query();
+    const accounts = data;
 
     const account = accounts.length > 0 && accounts[0];
     this.setState({

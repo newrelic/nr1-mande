@@ -1,8 +1,10 @@
-import React, {Component} from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import GaugeDataLegendItem from './GaugeDataLegendItem'
-import GaugeDataValue from './GaugeDataValue'
+import _ from 'lodash';
+
+import GaugeDataLegendItem from './GaugeDataLegendItem';
+import GaugeDataValue from './GaugeDataValue';
 
 export default class Gauge extends Component {
   static propTypes = {
@@ -29,54 +31,63 @@ export default class Gauge extends Component {
      * That is the question.
      */
     showLegend: PropTypes.bool,
-  }
+  };
 
   static defaultProps = {
     height: 15,
     hue: 193,
     showLegend: true,
-  }
+  };
 
-  proportionateValues = (data) => {
-    const { height } = this.props
-    const totalValue = data.reduce((acc, {value}) => {
-      acc += value
-      return acc
-    }, 0)
+  proportionateValues = data => {
+    const { height } = this.props;
+    const totalValue = data.reduce((acc, { value }) => {
+      acc += value;
+      return acc;
+    }, 0);
 
-    return data.map(({value, label, color}, index) => {
-      const displayColor = color || this.generateColor(index, data.length)
-      const proportionateValue = value * 100 / totalValue
-      return { value: proportionateValue, label, color: displayColor, height }
-    })
-  }
+    return data.map(({ value, label, color }, index) => {
+      const displayColor = color || this.generateColor(index, data.length);
+      const proportionateValue = (value * 100) / totalValue;
+      return { value: proportionateValue, label, color: displayColor, height };
+    });
+  };
 
   generateColor = (size, scale) => {
-    const { hue } = this.props
-    const defaultSaturation = 70
-    const defaultMinLightness = 25
-    const lightnessRange = 70
+    const { hue } = this.props;
+    const defaultSaturation = 70;
+    const defaultMinLightness = 25;
+    const lightnessRange = 70;
 
-    const lightnessScale = Math.round(lightnessRange / scale)
-    const appliedLightness = defaultMinLightness + (size * lightnessScale)
-    return `hsl(${hue},${defaultSaturation}%,${appliedLightness}%)`
-  }
+    const lightnessScale = Math.round(lightnessRange / scale);
+    const appliedLightness = defaultMinLightness + size * lightnessScale;
+    return `hsl(${hue},${defaultSaturation}%,${appliedLightness}%)`;
+  };
 
-  render () {
-    const { data, height, showLegend } = this.props
-    const displayData = this.proportionateValues(data, height)
+  render() {
+    const { data, height, showLegend } = this.props;
+    const displayData = this.proportionateValues(data, height);
+
+    // Jump through some hoops to get unique legend items
+    const legend = {};
+    displayData.map(d => {
+      legend[d.label] = d.color;
+    });
+    const legendItems = Object.entries(legend).map(([label, color]) => {
+      return { label, color };
+    });
 
     return (
       <div className="Gauge">
-        <div className="Gauge-gauge" style={{height: height}}>
+        <div className="Gauge-gauge" style={{ height: height }}>
           {displayData.map(GaugeDataValue)}
         </div>
-        { showLegend &&
+        {showLegend && (
           <div className="Gauge-legend">
-            {displayData.map(GaugeDataLegendItem)}
+            {legendItems.map(GaugeDataLegendItem)}
           </div>
-        }
+        )}
       </div>
-    )
+    );
   }
 }

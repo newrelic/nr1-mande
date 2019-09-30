@@ -32,8 +32,11 @@ export default class Timeline extends Component {
     return (
       <div>
         {session ? (
-          <Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
-            <StackItem>
+          <Stack
+            className="gaugeStack"
+            directionType={Stack.DIRECTION_TYPE.VERTICAL}
+          >
+            <StackItem className="gaugeStackItem">
               <NrqlQuery accountId={accountId} query={query}>
                 {({ data, error, loading }) => {
                   if (loading) return <Spinner fillContainer />;

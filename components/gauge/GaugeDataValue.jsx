@@ -14,12 +14,11 @@ const GaugeDataValue = ({ value, label, color, height }, index, data) => {
   return (
     <div
       key={index + ' - ' + labelClass}
-      className={`Gauge-series-${labelClass}`}
+      className={`gaugeItem Gauge-series-${labelClass}`}
       style={{
         width: `${displayValue}%`,
         backgroundColor: color,
         zIndex: arrayLength - index,
-        marginRight: -overlapProportion,
       }}
     />
   );

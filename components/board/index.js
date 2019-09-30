@@ -1,14 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  AccountStorageQuery,
-  AccountStorageMutation,
-  NerdGraphQuery,
-  Modal,
-} from 'nr1';
+import { navigation, NerdGraphQuery } from 'nr1';
 
-// import BoardAdmin from './board-admin';
 import CellDetails from './cell-details';
 
 export default class Board extends React.Component {
@@ -41,11 +35,6 @@ export default class Board extends React.Component {
     this.parseAlertStatuses = this.parseAlertStatuses.bind(this);
     this.humanizeNumber = this.humanizeNumber.bind(this);
     this.getCellContent = this.getCellContent.bind(this);
-    this.showCellDetails = this.showCellDetails.bind(this);
-
-    // nerdlet.setUrlState({
-    //   id: ((props || {}).board || {}).id
-    // })
   }
 
   componentDidMount() {
@@ -89,6 +78,12 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Availability',
+          launcher: () => {
+            return {
+              id: 'd2e63bc4-02a8-49f8-8d8e-b00255dd194c.video-qos-launcher',
+              urlStateOptions: '',
+            };
+          },
         },
         {
           col: 'Video',
@@ -269,30 +264,8 @@ export default class Board extends React.Component {
     }
   }
 
-  showCellDetails(row, col) {
-    const { cells, data, alerts } = this.state;
-
-    const match = cells
-      .filter(cell => cell.row === row && cell.col === col)
-      .shift();
-
-    if (match)
-      this.setState({
-        modalHidden: false,
-        detailsForCell: match,
-      });
-  }
-
   render() {
-    console.debug('render board');
-    const {
-      board,
-      rows,
-      cols,
-      cells,
-      modalHidden,
-      detailsForCell,
-    } = this.state;
+    const { board, rows, cells, cols, detailsForCell } = this.state;
     const { accountId, currentUser } = this.props;
 
     return (
@@ -319,7 +292,16 @@ export default class Board extends React.Component {
                 <th className="row-header">{r}</th>
                 {cols.map(c => (
                   <td
-                    onClick={() => this.showCellDetails(r, c)}
+                    onClick={() => {
+                      const matchingCell = cells.find(cell => cell.col === c);
+                      if (matchingCell) {
+                        const { launcher } = matchingCell;
+                        if (launcher) {
+                          navigation.openLauncher(launcher());
+                        }
+                      }
+                      return null;
+                    }}
                     key={r + '-' + c}
                   >
                     {this.getCellContent(r, c)}

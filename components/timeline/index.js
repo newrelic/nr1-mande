@@ -19,7 +19,7 @@ export default class Timeline extends Component {
       eventStream.push({
         label: SessionColors.getLabel(eventType, prevEvent),
         value: value > 0 ? value : 1,
-        color: SessionColors.getColor(eventType, prevEvent)
+        color: SessionColors.getColor(eventType, prevEvent),
       });
       prevEvent = result;
     });
@@ -31,27 +31,29 @@ export default class Timeline extends Component {
     const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 since ${durationInMinutes} minutes ago`;
     return (
       <div>
-        {session ? (<Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
-          <StackItem>
-            <NrqlQuery accountId={accountId} query={query}>
-              {({ data, error, loading }) => {
-                if (loading) return <Spinner fillContainer />;
-                if (error) return <BlockText>{error.message}</BlockText>;
-                console.log('data', data);
-                //debugger;
-                const stream = this._buildGauge(eventType, data);
-                return <Gauge data={stream} height={25} showLegend={true} />;
-              }}
-            </NrqlQuery>
-          </StackItem>
-        </Stack>) : (
-        <div className="no-session">
-          <p className="head">Select a session to review a timeline</p>
-          <p className="msg">
-            When you select a session (in the column on the left) you will be
-            able to review a visual timeline for it here.
-          </p>
-        </div>)}
+        {session ? (
+          <Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
+            <StackItem>
+              <NrqlQuery accountId={accountId} query={query}>
+                {({ data, error, loading }) => {
+                  if (loading) return <Spinner fillContainer />;
+                  if (error) return <BlockText>{error.message}</BlockText>;
+
+                  const stream = this._buildGauge(eventType, data);
+                  return <Gauge data={stream} height={25} showLegend={true} />;
+                }}
+              </NrqlQuery>
+            </StackItem>
+          </Stack>
+        ) : (
+          <div className="no-session">
+            <p className="head">Select a session to review a timeline</p>
+            <p className="msg">
+              When you select a session (in the column on the left) you will be
+              able to review a visual timeline for it here.
+            </p>
+          </div>
+        )}
       </div>
     );
   }

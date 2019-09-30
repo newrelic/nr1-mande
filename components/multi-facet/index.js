@@ -30,7 +30,7 @@ export default class MultiFacetChart extends Component {
       eventType: PropTypes.string.isRequired,
       whereClause: PropTypes.string,
     }),
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -48,7 +48,10 @@ export default class MultiFacetChart extends Component {
   }
 
   _facetGraphqlNrql(facet, durationInMinutes) {
-    return `${facet.valueAttr}: nrql (query: "${this._facetNrql(facet, durationInMinutes)}") {
+    return `${facet.valueAttr}: nrql (query: "${this._facetNrql(
+      facet,
+      durationInMinutes
+    )}") {
       results
     }`;
   }
@@ -72,27 +75,44 @@ export default class MultiFacetChart extends Component {
   }
 
   _buildNerdGraphQuery() {
-    const { facets, queryProps, launcherUrlState: { timeRange: { duration }} } = this.props;
+    const {
+      facets,
+      queryProps,
+      launcherUrlState: {
+        timeRange: { duration },
+      },
+    } = this.props;
     const durationInMinutes = duration / 1000 / 60;
     return `{
       actor {
         account(id: ${queryProps.accountId}) {
-          ${queryProps.valueAttr}: nrql (query: "${this._facetNrql(null, durationInMinutes)}") {
+          ${queryProps.valueAttr}: nrql (query: "${this._facetNrql(
+      null,
+      durationInMinutes
+    )}") {
               results
           }
-          ${facets.map(facet => this._facetGraphqlNrql(facet, durationInMinutes))}
+          ${facets.map(facet =>
+            this._facetGraphqlNrql(facet, durationInMinutes)
+          )}
         }
       }
     }`;
   }
 
   _processData(data) {
-    const { queryProps: { percentage }, facets } = this.props;
+    const {
+      queryProps: { percentage },
+      facets,
+    } = this.props;
     const { queryProps } = this.props;
     const chartData = [];
     // foreach domain, look for it's data and add it.
     facets.forEach(facet => {
-      if (data.actor.account[facet.valueAttr] && data.actor.account[facet.valueAttr].results) {
+      if (
+        data.actor.account[facet.valueAttr] &&
+        data.actor.account[facet.valueAttr].results
+      ) {
         data.actor.account[facet.valueAttr].results.forEach((row, index) => {
           const value = row[queryProps.valueAttr];
           const obj = {
@@ -131,30 +151,41 @@ export default class MultiFacetChart extends Component {
   render() {
     const { title, facetClick } = this.props;
     const q = this._buildNerdGraphQuery();
-    console.debug(q);
-    return (<NerdGraphQuery query={q}>
-      {({data, loading, error}) => {
-
-        if (loading) {
-          return <Spinner fillContainer />
-        }
-        if (error) {
-          return (<React.Fragment>
-            <HeadingText type={HeadingText.TYPE.HEADING_4}>An error occurred</HeadingText>
-            <BlockText>{error.message}</BlockText>
-          </React.Fragment>)
-        }
-        //debugger;
-        const results = this._processData(data);
-        if (results) {
-          return <div>
-            <HeadingText>{title}</HeadingText>
-            <BarChart data={results} onClickBar={facetClick} />
-          </div>
-        } else {
-          return <BlockText type={BlockText.TYPE.PARAGRAPH}>No data found</BlockText>
-        }
-      }}
-    </NerdGraphQuery>);
+    // console.debug(q);
+    return (
+      <NerdGraphQuery query={q}>
+        {({ data, loading, error }) => {
+          if (loading) {
+            return <Spinner fillContainer />;
+          }
+          if (error) {
+            return (
+              <React.Fragment>
+                <HeadingText type={HeadingText.TYPE.HEADING_4}>
+                  An error occurred
+                </HeadingText>
+                <BlockText>{error.message}</BlockText>
+              </React.Fragment>
+            );
+          }
+          //debugger;
+          const results = this._processData(data);
+          if (results) {
+            return (
+              <div>
+                <HeadingText>{title}</HeadingText>
+                <BarChart data={results} onClickBar={facetClick} />
+              </div>
+            );
+          } else {
+            return (
+              <BlockText type={BlockText.TYPE.PARAGRAPH}>
+                No data found
+              </BlockText>
+            );
+          }
+        }}
+      </NerdGraphQuery>
+    );
   }
 }

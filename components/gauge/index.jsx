@@ -65,6 +65,18 @@ export default class Gauge extends Component {
     return `hsl(${hue},${defaultSaturation}%,${appliedLightness}%)`;
   };
 
+  renderTimeAxis(data) {
+    const numberOfAxisValues = 12;
+    const desiredAxisItems = [...Array(numberOfAxisValues).keys()];
+
+    const timeValues = data.map(d => d.timeSinceLoad);
+    const maxTime = Math.ceil(timeValues[timeValues.length - 1]);
+    const intervalSize = maxTime / numberOfAxisValues;
+
+    const timeAxisValues = desiredAxisItems.map(a => (a + 1) * intervalSize);
+    return timeAxisValues;
+  }
+
   render() {
     const { data, height, showLegend } = this.props;
     const displayData = this.proportionateValues(data, height);
@@ -78,7 +90,7 @@ export default class Gauge extends Component {
       return { label, color };
     });
 
-    const timeValues = data.map(d => d.timeSinceLoad);
+    const timeAxisValues = this.renderTimeAxis(data);
 
     return (
       <div className="Gauge">
@@ -109,6 +121,17 @@ export default class Gauge extends Component {
         <div className="Gauge-gauge" style={{ height: height }}>
           {displayData.map(GaugeDataValue)}
         </div>
+
+        <Stack
+          directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}
+          horizontalType={Stack.HORIZONTAL_TYPE.FILL_EVENLY}
+        >
+          <StackItem key={0}>{0}</StackItem>
+          {timeAxisValues.map((v, index) => {
+            return <StackItem key={v}>{v}</StackItem>;
+          })}
+        </Stack>
+
         {showLegend && (
           <div className="Gauge-legend">
             {legendItems.map(GaugeDataLegendItem)}

@@ -8,7 +8,7 @@
 }
 
 // ==============================================================
-// Meande General Styles
+// Mande General Styles
 // ==============================================================
 
 [class*="billboard-metric"] {
@@ -218,7 +218,7 @@
         cursor: pointer;
         box-shadow: inset 0 0 0 2px #f4f5f5;
     }
-    
+
     &:active {
         transform: translateY(1px);
     }
@@ -270,7 +270,7 @@
         background-color: #f4f5f5;
         transform: translateY(-1px)
     }
-    
+
     &:active {
         transform: translateY(1px)
     }

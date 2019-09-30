@@ -15,7 +15,7 @@ import {
 import AccountPicker from '../../components/account-picker';
 import Board from '../../components/board';
 
-export default class Meande extends React.Component {
+export default class Mande extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -77,7 +77,7 @@ export default class Meande extends React.Component {
                   onClick={() => {
                     const launcher = {
                       id:
-                        'f25f5637-7dc5-4502-b824-6fe021ddab55.video-qos-launcher',
+                        '5317892d-9cac-4199-8ee1-f6c08d5d9597.video-qos-launcher',
                       urlStateOptions: '',
                     };
                     navigation.openLauncher(launcher);

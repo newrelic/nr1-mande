@@ -1,0 +1,7 @@
+{
+  "schemaType": "LAUNCHER",
+  "id": "mande-launcher",
+  "description": "Describe me",
+  "displayName": "Mande",
+  "rootNerdletId": "mande-nerdlet"
+}

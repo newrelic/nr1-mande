@@ -1,11 +1,13 @@
-# nr1-meande
-A simple process monitor for New Relic One, similar to the Unix _top_ command.
+# nr1-mande
+
+Media and Entertainment monitoring in NR1.
 
 ## Usage
 
 <!-- TO DO  -->
 
 ## Screenshot
+
 ![Screenshot](./screenshots/main.png)
 
 ## Open Source License
@@ -21,8 +23,8 @@ This project is distributed under the [Apache 2 license](./LICENSE).
 Clone this repository and run the following scripts:
 
 ```bash
-nr1 nerdpack:clone -r https://github.com/newrelic/nr1-meande.git
-cd nr1-meande
+nr1 nerdpack:clone -r https://github.com/newrelic/nr1-mande.git
+cd nr1-mande
 nr1 nerdpack:uuid -gf
 npm install
 npm start

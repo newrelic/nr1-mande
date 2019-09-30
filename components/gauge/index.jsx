@@ -78,6 +78,8 @@ export default class Gauge extends Component {
       return { label, color };
     });
 
+    const timeValues = data.map(d => d.timeSinceLoad);
+
     return (
       <div className="Gauge">
         <Stack

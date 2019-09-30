@@ -20,6 +20,7 @@ export default class Timeline extends Component {
         label: SessionColors.getLabel(eventType, prevEvent),
         value: value > 0 ? value : 1,
         color: SessionColors.getColor(eventType, prevEvent),
+        timeSinceLoad: result.timeSinceLoad,
       });
       prevEvent = result;
     });

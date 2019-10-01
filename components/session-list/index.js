@@ -28,6 +28,7 @@ export default class SessionList extends Component {
           query={query}
           onClickBar={callbacks.sessionClick}
           fullWidth={true}
+          className="barList"
         />
       </section>
     );

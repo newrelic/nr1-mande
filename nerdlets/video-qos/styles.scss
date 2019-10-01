@@ -102,3 +102,27 @@
   background-image: url(../assets/event-stream-placeholder.png);
   background-size: 100%;
 }
+
+.barList [class$='bar-item'],
+.barList [class*='bar-item'].selected {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background-color: #fafbfb;
+  margin-bottom: 8px;
+  border-radius: 3px;
+  transition: 0.075s all ease-in-out;
+
+  &:hover {
+    background-color: #f4f5f5;
+    transform: translateY(-1px);
+  }
+
+  [class*='item-progress'] {
+    background-color: #edeeee;
+  }
+}
+
+.barList [class*='bar-item'].selected [class*='item-progress'] {
+  background-color: #d5d7d7;
+}

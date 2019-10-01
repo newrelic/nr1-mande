@@ -32,12 +32,12 @@ export default class Timeline extends Component {
     const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 since ${durationInMinutes} minutes ago`;
     return (
       <div>
-        {session ? (
-          <Stack
-            className="gaugeStack"
-            directionType={Stack.DIRECTION_TYPE.VERTICAL}
-          >
-            <StackItem className="gaugeStackItem sessionSectionBase">
+        <Stack
+          className="gaugeStack"
+          directionType={Stack.DIRECTION_TYPE.VERTICAL}
+        >
+          <StackItem className="gaugeStackItem sessionSectionBase">
+            {session ? (
               <NrqlQuery accountId={accountId} query={query}>
                 {({ data, error, loading }) => {
                   if (loading) return <Spinner fillContainer />;
@@ -47,17 +47,27 @@ export default class Timeline extends Component {
                   return <Gauge data={stream} height={25} showLegend={true} />;
                 }}
               </NrqlQuery>
-            </StackItem>
-          </Stack>
-        ) : (
-          <div className="no-session">
-            <p className="head">Select a session to review a timeline</p>
-            <p className="msg">
-              When you select a session (in the column on the left) you will be
-              able to review a visual timeline for it here.
-            </p>
-          </div>
-        )}
+            ) : (
+              <Stack
+                fullWidth
+                className="emptyState timelineEmptyState"
+                directionType={Stack.DIRECTION_TYPE.VERTICAL}
+                verticalType={Stack.VERTICAL_TYPE.CENTER}
+                horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
+              >
+                <StackItem>
+                  <p className="emptyStateHeader">Session breakdown</p>
+                </StackItem>
+                <StackItem>
+                  <p className="emptyStateDescription">
+                    Click one of the sessions to the right to view it’s
+                    breakdown here
+                  </p>
+                </StackItem>
+              </Stack>
+            )}
+          </StackItem>
+        </Stack>
       </div>
     );
   }

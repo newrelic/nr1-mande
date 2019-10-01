@@ -62,3 +62,43 @@
   margin-top: -50px;
   margin-left: -100px;
 }
+
+.emptyState {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 3px dashed #e3e4e4;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.emptyStateHeader {
+  margin-bottom: 4px;
+  color: #464e4e;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.emptyStateDescription {
+  max-width: 420px;
+  margin: 0 auto;
+  color: #8e9494;
+  line-height: 20px;
+}
+
+.timelineEmptyState {
+  min-height: 170px;
+}
+
+.eventStreamEmptyState {
+  min-height: 500px;
+}
+
+.eventStreamEmptyState:before {
+  content: '';
+  width: 288.5px;
+  height: 345px;
+  margin: 0 auto;
+  background-image: url(../assets/event-stream-placeholder.png);
+  background-size: 100%;
+}

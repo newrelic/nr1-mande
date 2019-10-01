@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NrqlQuery, Spinner, Button, Icon } from 'nr1';
+import { NrqlQuery, Spinner, Button, Icon, Stack, StackItem } from 'nr1';
 import Moment from 'react-moment';
 import EventCategories from '../utils/categories';
+import eventStreamPlaceholder from '../nerdlets/assets/event-stream-placeholder.png';
 
 // https://docs.newrelic.com/docs/new-relic-programmable-platform-introduction
 
@@ -105,22 +106,41 @@ export default class EventStream extends React.Component {
     const { accountId, session, eventType, durationInMinutes } = this.props;
     const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 since ${durationInMinutes} minutes ago`;
 
-    if (!session) return <div>Please select a session.</div>;
-
     return (
-      <NrqlQuery accountId={accountId} query={query}>
-        {({ data, error, loading }) => {
-          if (loading) return <Spinner />;
-          if (error) return 'ERROR';
+      <div className="eventStreamSectionBase sessionSectionBase">
+        {session ? (
+          <NrqlQuery accountId={accountId} query={query}>
+            {({ data, error, loading }) => {
+              if (loading) return <Spinner />;
+              if (error) return 'ERROR';
 
-          const stream = this._buildStream(eventType, data);
-          return (
-            <div className="sessionSectionBase">
-              <div className="timeline-container">{stream}</div>
-            </div>
-          );
-        }}
-      </NrqlQuery>
+              const stream = this._buildStream(eventType, data);
+              return <div className="timeline-container">{stream}</div>;
+            }}
+          </NrqlQuery>
+        ) : (
+          <Stack
+            fullWidth
+            fullHeight
+            className="emptyState eventStreamEmptyState"
+            directionType={Stack.DIRECTION_TYPE.VERTICAL}
+            horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
+            verticalType={Stack.VERTICAL_TYPE.CENTER}
+          >
+            <StackItem>
+              <p className="emptyStateHeader">
+                Select a session to review a timeline
+              </p>
+            </StackItem>
+            <StackItem>
+              <p className="emptyStateDescription">
+                When you select a session (in the column on the left) you will
+                be able to review a visual timeline for it here.
+              </p>
+            </StackItem>
+          </Stack>
+        )}
+      </div>
     );
   }
 }

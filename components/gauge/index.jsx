@@ -124,6 +124,7 @@ export default class Gauge extends Component {
 
         <Stack
           directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}
+          verticalType={Stack.VERTICAL_TYPE.CENTER}
           className="gaugeTimeline"
         >
           <StackItem className="gaugeTimelineItem" key={0}>

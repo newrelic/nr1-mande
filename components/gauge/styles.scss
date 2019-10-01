@@ -44,3 +44,54 @@
     }
   }
 }
+
+.Gauge .gaugeTimeline {
+  justify-content: space-between;
+  position: relative;
+  margin-top: 8px;
+  padding-top: 8px;
+
+  &:before {
+    content: '';
+    border-top: 1px dotted #d5d7d7;
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0;
+  }
+}
+
+.gaugeTimelineItem {
+  margin-top: -12px;
+  color: #8e9494;
+  width: 25px;
+  overflow: hidden;
+  text-overflow: '';
+  text-align: center;
+
+  &:first-of-type {
+    text-align: left;
+
+    &:before {
+      margin: 0px 0 4px;
+    }
+  }
+
+  &:last-of-type {
+    text-align: right;
+
+    &:before {
+      position: relative;
+      left: 12px;
+    }
+  }
+
+  &:before {
+    content: '';
+    display: block;
+    height: 9px;
+    width: 1px;
+    background-color: #d5d7d7;
+    margin: 0px auto 3px;
+  }
+}

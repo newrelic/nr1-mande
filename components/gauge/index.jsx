@@ -124,11 +124,17 @@ export default class Gauge extends Component {
 
         <Stack
           directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}
-          horizontalType={Stack.HORIZONTAL_TYPE.FILL_EVENLY}
+          className="gaugeTimeline"
         >
-          <StackItem key={0}>{0}</StackItem>
+          <StackItem className="gaugeTimelineItem" key={0}>
+            {0}
+          </StackItem>
           {timeAxisValues.map((v, index) => {
-            return <StackItem key={v}>{v}</StackItem>;
+            return (
+              <StackItem className="gaugeTimelineItem" shrink key={v}>
+                {v}
+              </StackItem>
+            );
           })}
         </Stack>
 

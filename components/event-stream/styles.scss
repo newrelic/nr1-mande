@@ -56,8 +56,12 @@
   background-color: #fcf2f3;
 }
 
+.timeline-item-type-general .timeline-item-symbol-icon {
+  display: none;
+}
+
 .timeline-item-type-general .timeline-item-symbol:after {
-  background-color: #e4ffe3;
+  background-color: #d0f0ff;
 }
 
 .timeline-item-type-general .timeline-item-symbol:before {
@@ -65,7 +69,7 @@
   display: block;
   width: 10px;
   height: 10px;
-  border: 1px solid #11a600;
+  border: 1px solid #003555;
   border-radius: 100%;
   position: relative;
   z-index: 10;

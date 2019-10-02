@@ -19,16 +19,11 @@ export default class MultiFacetChart extends Component {
         onClick: PropTypes.func,
       })
     ),
-    launcherUrlState: PropTypes.object,
     queryProps: PropTypes.shape({
       accountId: PropTypes.number.isRequired,
-      compare: PropTypes.any,
       percentage: PropTypes.bool,
       valueAttr: PropTypes.string.isRequired, //what's the name of the value attribute in the query?
-      sessionNrql: PropTypes.string,
-      baseNrql: PropTypes.string.isRequired,
-      eventType: PropTypes.string.isRequired,
-      whereClause: PropTypes.string,
+      nrql: PropTypes.string.isRequired
     }),
     title: PropTypes.string.isRequired,
   };
@@ -47,54 +42,35 @@ export default class MultiFacetChart extends Component {
     });
   }
 
-  _facetGraphqlNrql(facet, durationInMinutes) {
-    return `${facet.valueAttr}: nrql (query: "${this._facetNrql(
-      facet,
-      durationInMinutes
-    )}") {
+  _facetGraphqlNrql(facet) {
+    return `${facet.valueAttr}: nrql (query: "${this._facetNrql(facet)}") {
       results
     }`;
   }
 
-  _facetNrql(facet, durationInMinutes) {
+  _facetNrql(facet) {
     const { queryProps } = this.props;
     if (facet) {
-      let compareStmt = '';
-      // by default, a true value will compare with a day ago; but the prop can also contain a NRQL fragment
-      if (queryProps.compare === true) {
-        compareStmt = ' COMPARE WITH 1 DAY AGO ';
-      } else if (queryProps.compare) {
-        compareStmt = queryProps.compare;
-      }
       const limit = facet.limit ? ` LIMIT ${facet.limit} ` : '';
 
-      return `${queryProps.baseNrql} FROM ${queryProps.eventType} ${queryProps.whereClause} facet ${facet.valueAttr} ${limit} SINCE ${durationInMinutes} MINUTES AGO ${compareStmt}`;
+      return `${queryProps.nrql} facet ${facet.valueAttr} ${limit}`;
     } else {
-      return `${queryProps.baseNrql} FROM ${queryProps.eventType} ${queryProps.whereClause} SINCE ${durationInMinutes} MINUTES AGO`;
+      return `${queryProps.nrql}`;
     }
   }
 
   _buildNerdGraphQuery() {
     const {
       facets,
-      queryProps,
-      launcherUrlState: {
-        timeRange: { duration },
-      },
+      queryProps
     } = this.props;
-    const durationInMinutes = duration / 1000 / 60;
     return `{
       actor {
         account(id: ${queryProps.accountId}) {
-          ${queryProps.valueAttr}: nrql (query: "${this._facetNrql(
-      null,
-      durationInMinutes
-    )}") {
+          ${queryProps.valueAttr}: nrql (query: "${this._facetNrql(null)}") {
               results
           }
-          ${facets.map(facet =>
-            this._facetGraphqlNrql(facet, durationInMinutes)
-          )}
+          ${facets.map(facet => this._facetGraphqlNrql(facet))}
         }
       }
     }`;

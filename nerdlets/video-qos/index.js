@@ -47,7 +47,6 @@ export default class Wrapper extends React.PureComponent {
           directionType={Stack.DIRECTION_TYPE.VERTICAL}
           horizontalType={Stack.HORIZONTAL_TYPE.LEFT}
           gapType={Stack.GAP_TYPE.SMALL}
-          style={{ marginLeft: '50px' }}
         >
           <StackItem>
             <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}>

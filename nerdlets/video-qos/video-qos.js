@@ -127,12 +127,6 @@ export default class VideoQoSNerdlet extends React.Component {
       case 'videosWithBufferEvents':
         return (
           <React.Fragment>
-            <div className="minimizePanelButton">
-              <Icon
-                type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD}
-                color="#464e4e"
-              ></Icon>
-            </div>
             <div className="detailPanelBody">
               <div className="chart barList">
                 <MultiFacetChart
@@ -160,12 +154,6 @@ export default class VideoQoSNerdlet extends React.Component {
       case 'errorRate':
         return (
           <React.Fragment>
-            <div className="minimizePanelButton">
-              <Icon
-                type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD}
-                color="#464e4e"
-              ></Icon>
-            </div>
             <div className="detailPanelBody">
               <div className="chart barList">
                 <MultiFacetChart
@@ -192,12 +180,6 @@ export default class VideoQoSNerdlet extends React.Component {
       case 'exitsBeforeVideoStart':
         return (
           <React.Fragment>
-            <div className="minimizePanelButton">
-              <Icon
-                type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD}
-                color="#464e4e"
-              ></Icon>
-            </div>
             <div className="detailPanelBody">
               <div className="chart barList">
                 <MultiFacetChart
@@ -224,12 +206,6 @@ export default class VideoQoSNerdlet extends React.Component {
       case 'secondsToFirstFrame':
         return (
           <React.Fragment>
-            <div className="minimizePanelButton">
-              <Icon
-                type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD}
-                color="#464e4e"
-              ></Icon>
-            </div>
             <div className="detailPanelBody">
               <div className="chart barList">
                 <MultiFacetChart

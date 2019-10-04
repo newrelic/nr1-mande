@@ -140,25 +140,6 @@
   }
 }
 
-.minimizePanelButton {
-  background-color: #f4f5f5;
-  padding: 4px 2px 3px 5px;
-  position: absolute;
-  top: 12px;
-  right: 0;
-  border-radius: 3px 0 0 3px;
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  &:hover {
-    cursor: pointer;
-    background-color: #e3e4e4;
-  }
-}
-
 .detailPanelBody {
   padding: 0;
 

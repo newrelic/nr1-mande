@@ -221,3 +221,12 @@
 .facetFilterLabel {
   font-size: 13px;
 }
+
+div.optionsBar {
+  background-color: #edeeee;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  box-shadow: inset 0 0 0 1px #e3e4e4;
+  box-sizing: border-box;
+  justify-content: space-between;
+}

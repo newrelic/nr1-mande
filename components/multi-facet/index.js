@@ -173,7 +173,6 @@ export default class MultiFacetChart extends Component {
           if (results) {
             return (
               <div>
-                <HeadingText>{title}</HeadingText>
                 <BarChart data={results} onClickBar={facetClick} />
               </div>
             );

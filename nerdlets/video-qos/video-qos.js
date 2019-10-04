@@ -90,6 +90,23 @@ export default class VideoQoSNerdlet extends React.Component {
     });
   }
 
+  getMultiFacetChartHeader() {
+    const { selectedKpi } = this.state;
+
+    switch (selectedKpi) {
+      case 'videosWithBufferEvents':
+        return '% views with buffer events';
+      case 'errorRate':
+        return '% views with errors';
+      case 'exitsBeforeVideoStart':
+        return '% of exits before the video starts';
+      case 'secondsToFirstFrame':
+        return 'Average seconds to first frame';
+      default:
+        return null;
+    }
+  }
+
   _getMultiFacetChart(queries) {
     const {
       launcherUrlState: {
@@ -110,15 +127,6 @@ export default class VideoQoSNerdlet extends React.Component {
       case 'videosWithBufferEvents':
         return (
           <React.Fragment>
-            <div className="primarySectionChartHeader primarySectionChartaltHeader">
-              <HeadingText
-                className="sectionTitle"
-                type={HeadingText.TYPE.HEADING_3}
-              >
-                highest % videos with buffer events
-              </HeadingText>
-              {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
-            </div>
             <div className="minimizePanelButton">
               <Icon
                 type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD}
@@ -152,15 +160,6 @@ export default class VideoQoSNerdlet extends React.Component {
       case 'errorRate':
         return (
           <React.Fragment>
-            <div className="primarySectionChartHeader primarySectionChartaltHeader">
-              <HeadingText
-                className="sectionTitle"
-                type={HeadingText.TYPE.HEADING_3}
-              >
-                highest % videos with buffer events
-              </HeadingText>
-              {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
-            </div>
             <div className="minimizePanelButton">
               <Icon
                 type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD}
@@ -193,15 +192,6 @@ export default class VideoQoSNerdlet extends React.Component {
       case 'exitsBeforeVideoStart':
         return (
           <React.Fragment>
-            <div className="primarySectionChartHeader primarySectionChartaltHeader">
-              <HeadingText
-                className="sectionTitle"
-                type={HeadingText.TYPE.HEADING_3}
-              >
-                highest % videos with buffer events
-              </HeadingText>
-              {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
-            </div>
             <div className="minimizePanelButton">
               <Icon
                 type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD}
@@ -234,15 +224,6 @@ export default class VideoQoSNerdlet extends React.Component {
       case 'secondsToFirstFrame':
         return (
           <React.Fragment>
-            <div className="primarySectionChartHeader primarySectionChartaltHeader">
-              <HeadingText
-                className="sectionTitle"
-                type={HeadingText.TYPE.HEADING_3}
-              >
-                highest % videos with buffer events
-              </HeadingText>
-              {/* <small className="sectionSubtitle">Since 3 days ago</small> */}
-            </div>
             <div className="minimizePanelButton">
               <Icon
                 type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD}
@@ -267,33 +248,6 @@ export default class VideoQoSNerdlet extends React.Component {
                   }}
                   title={`Average seconds to first frame`}
                 />
-              </div>
-              <div className="minimizePanelButton">
-                <Icon
-                  type={
-                    Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__WEIGHT_BOLD
-                  }
-                  color="#464e4e"
-                ></Icon>
-              </div>
-              <div className="detailPanelBody">
-                <div className="chart barList">
-                  <MultiFacetChart
-                    facetClick={this.facetClick}
-                    facets={facets}
-                    launcherUrlState={launcherUrlState}
-                    queryProps={{
-                      accountId: accountId,
-                      compare: false,
-                      percentage: false,
-                      valueAttr: 'TTFF',
-                      baseNrql: queries.timeToFirstFrameQuery,
-                      eventType,
-                      whereClause,
-                    }}
-                    title={`Average seconds to first frame`}
-                  />
-                </div>
               </div>
             </div>
           </React.Fragment>
@@ -339,8 +293,9 @@ export default class VideoQoSNerdlet extends React.Component {
 
     return (
       <React.Fragment>
-        <div>
+        <div className="headerFacetFilter">
           <FacetFilter
+            isClearable={false}
             eventType={eventType}
             duration={durationInMinutes}
             accountId={accountId}
@@ -423,12 +378,44 @@ export default class VideoQoSNerdlet extends React.Component {
                 </div>
               </GridItem>
 
-              <GridItem columnSpan={3}>
+              <GridItem columnSpan={3} className="detailsPanelGridItem">
                 <div
                   className={`primarySectionChartContainer detailsPanel ${
                     !selectedKpi ? 'emptyState' : ''
                   }`}
                 >
+                  <div className="primarySectionChartaltHeader primarySectionChartHeader">
+                    <HeadingText
+                      className="sectionTitle"
+                      type={HeadingText.TYPE.HEADING_3}
+                    >
+                      {this.getMultiFacetChartHeader()}
+                    </HeadingText>
+                  </div>
+
+                  <FacetFilter
+                    isClearable={false}
+                    eventType={eventType}
+                    duration={durationInMinutes}
+                    accountId={accountId}
+                    setFacets={this.setFacets}
+                    nrqlSelect={queries.viewsQuery}
+                    config={{
+                      excludeDualFacets: true,
+                      excludes: [
+                        'session',
+                        'viewId',
+                        'elementId',
+                        'appName',
+                        'asnLatitude',
+                        'asnLongitude',
+                        'actionName',
+                        'viewSessionId',
+                        'viewSession',
+                      ],
+                      includes: ['deviceType'],
+                    }}
+                  />
                   {selectedKpi && this._getMultiFacetChart(queries)}
 
                   <div className="emptyState">

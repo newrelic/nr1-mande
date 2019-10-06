@@ -1,10 +1,8 @@
 import React from 'react';
-import gql from 'graphql-tag';
 
-import { PlatformStateContext, NerdletStateContext } from 'nr1';
 import VideoQoSNerdlet from './video-qos';
 import AccountPicker from '../../components/account-picker';
-import { AccountsQuery, Button, navigation, Stack, StackItem } from 'nr1';
+import { PlatformStateContext, AccountsQuery, Button, navigation, Stack, StackItem } from 'nr1';
 
 export default class Wrapper extends React.PureComponent {
   constructor(props) {
@@ -80,15 +78,10 @@ export default class Wrapper extends React.PureComponent {
         {accountId && (
           <PlatformStateContext.Consumer>
             {launcherUrlState => (
-              <NerdletStateContext.Consumer>
-                {nerdletUrlState => (
-                  <VideoQoSNerdlet
-                    launcherUrlState={launcherUrlState}
-                    nerdletUrlState={nerdletUrlState}
-                    accountId={accountId}
-                  />
-                )}
-              </NerdletStateContext.Consumer>
+              <VideoQoSNerdlet
+                launcherUrlState={launcherUrlState}
+                accountId={accountId}
+              />
             )}
           </PlatformStateContext.Consumer>
         )}

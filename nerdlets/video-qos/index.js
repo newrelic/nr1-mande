@@ -41,37 +41,34 @@ export default class Wrapper extends React.PureComponent {
     return (
       <React.Fragment>
         <Stack
-          fullWidth={true}
-          directionType={Stack.DIRECTION_TYPE.VERTICAL}
-          horizontalType={Stack.HORIZONTAL_TYPE.LEFT}
-          gapType={Stack.GAP_TYPE.SMALL}
-          style={{ marginLeft: '50px' }}
+          directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}
+          verticalType={Stack.VERTICAL_TYPE.CENTER}
+          className="optionsBar"
+          fullWidth
         >
           <StackItem>
-            <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}>
-              <StackItem>
-                <AccountPicker
-                  accounts={accounts}
-                  account={account}
-                  setAccount={this.setAccount}
-                ></AccountPicker>
-              </StackItem>
-              <StackItem>
-                <Button
-                  onClick={() => {
-                    const launcher = {
-                      id: 'eea3de01-ef97-4602-b795-37db5dbb3982.mande-launcher',
-                      urlStateOptions: '',
-                    };
-                    navigation.openLauncher(launcher);
-                  }}
-                  type={Button.TYPE.PRIMARY}
-                  iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__SHARE}
-                >
-                  Main Page
-                </Button>
-              </StackItem>
-            </Stack>
+            <Button
+              onClick={() => {
+                const launcher = {
+                  id: 'eea3de01-ef97-4602-b795-37db5dbb3982.mande-launcher',
+                  urlStateOptions: '',
+                };
+                navigation.openLauncher(launcher);
+              }}
+              type={Button.TYPE.PLAIN}
+              iconType={
+                Button.ICON_TYPE.INTERFACE__CHEVRON__CHEVRON_LEFT__V_ALTERNATE
+              }
+            >
+              Main Page
+            </Button>
+          </StackItem>
+          <StackItem>
+            <AccountPicker
+              accounts={accounts}
+              account={account}
+              setAccount={this.setAccount}
+            ></AccountPicker>
           </StackItem>
         </Stack>
 

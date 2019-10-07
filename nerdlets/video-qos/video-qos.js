@@ -4,9 +4,13 @@ import PropTypes from 'prop-types';
 import FacetFilter from '../../components/facet-filter';
 import MultiFacetChart from '../../components/multi-facet';
 import MultiQueryTimeseries from '../../components/multi-query-timeseries';
-import { generateQueries, kpiIds, multiFacetChartTitles } from '../../utils/kpi-queries';
+import { kpiIds, generateQueries, multiFacetChartTitles } from '../../utils/kpi-queries';
 
-import { navigation } from 'nr1';
+import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
+momentDurationFormatSetup(moment);
+
+import { navigation, Spinner, HeadingText, BillboardChart, Grid, GridItem } from 'nr1';
 
 export default class VideoQoSNerdlet extends React.Component {
   static propTypes = {
@@ -16,13 +20,14 @@ export default class VideoQoSNerdlet extends React.Component {
 
   constructor(props) {
     super(props);
-
+    //console.debug([props, kpiIds]);
+    //debugger;
     this.state = {
       eventType: 'PageAction',
       facets: null,
       whereClause: '',
       accountId: props.accountId || null,
-      selectedKpi: kpiIds[0],
+      selectedKpi: null,
     };
 
     this.setFacets = facets => {
@@ -65,7 +70,8 @@ export default class VideoQoSNerdlet extends React.Component {
       facets,
       selectedKpi,
     } = this.state;
-    const nrql = queries.kpiQueries[selectedKpi];
+    //console.debug([this.state, queries]);
+    const nrql = queries.kpiQueries[selectedKpi](false, false);
     const title = multiFacetChartTitles[selectedKpi];
     return (
         <div className="detailPanelBody">
@@ -76,7 +82,7 @@ export default class VideoQoSNerdlet extends React.Component {
               queryProps={{
                 accountId: accountId,
                 percentage: selectedKpi == 'secondsToFirstFrame',
-                valueAttr: 'percentBuffering',
+                valueAttr: selectedKpi,
                 nrql,
               }}
               title={title}
@@ -87,11 +93,9 @@ export default class VideoQoSNerdlet extends React.Component {
   }
 
   render() {
-    const {
-      launcherUrlState: {
-        timeRange: { duration },
-      },
-    } = this.props;
+    const { launcherUrlState: { timeRange } } = this.props;
+    const { duration } = timeRange;
+
     //debugger;
     const durationInMinutes = duration / 1000 / 60;
     const {
@@ -118,8 +122,9 @@ export default class VideoQoSNerdlet extends React.Component {
 
     return (
       <React.Fragment>
-        <div>
+        <div className="headerFacetFilter">
           <FacetFilter
+            isClearable={false}
             eventType={eventType}
             duration={durationInMinutes}
             accountId={accountId}
@@ -155,7 +160,7 @@ export default class VideoQoSNerdlet extends React.Component {
                     >
                       KPIs
                     </HeadingText>
-                    <small className="sectionSubtitle">Since 3 days ago</small>
+                    <small className="sectionSubtitle">Since {moment.duration(duration).format()}</small>
                   </div>
                   <div className="kpiCharts">
                     {kpiIds.map((kpiId, key) => {
@@ -174,7 +179,7 @@ export default class VideoQoSNerdlet extends React.Component {
                             onClickBillboard={() => {
                               this.kpiClick(kpiId);
                             }}
-                          ></BillboardChart>
+                          />
                         </div>
                       );
                     })}
@@ -190,24 +195,58 @@ export default class VideoQoSNerdlet extends React.Component {
                       KPIs over time
                     </HeadingText>
                     <small className="sectionSubtitle">
-                      Since 3 days ago compared with 3 days earlier
+                      Since  {moment.duration(duration).format({trim: true})} compared with  {moment.duration(duration*2).format({trim: true})} earlier
                     </small>
                   </div>
-                  <MultiQueryTimeseries
+                  <div className="primarySectionChart" style={{padding: '10px'}}>
+                    <MultiQueryTimeseries
                     accountId={accountId}
+                    timeRange={timeRange}
                     queries={queries.kpiQueries}
                     fullWidth
-                    className="primarySectionChart"
-                  />
+                    />
+                  </div>
                 </div>
               </GridItem>
 
-              <GridItem columnSpan={3}>
+              <GridItem columnSpan={3} className="detailsPanelGridItem">
                 <div
                   className={`primarySectionChartContainer detailsPanel ${
                     !selectedKpi ? 'emptyState' : ''
                   }`}
                 >
+                  <div className="primarySectionChartaltHeader primarySectionChartHeader">
+                    <HeadingText
+                      className="sectionTitle"
+                      type={HeadingText.TYPE.HEADING_3}
+                    >
+                      {multiFacetChartTitles[selectedKpi]}
+                    </HeadingText>
+                  </div>
+
+                  <FacetFilter
+                    isClearable={false}
+                    eventType={eventType}
+                    duration={durationInMinutes}
+                    accountId={accountId}
+                    setFacets={this.setFacets}
+                    nrqlSelect={queries.viewsQuery}
+                    config={{
+                      excludeDualFacets: true,
+                      excludes: [
+                        'session',
+                        'viewId',
+                        'elementId',
+                        'appName',
+                        'asnLatitude',
+                        'asnLongitude',
+                        'actionName',
+                        'viewSessionId',
+                        'viewSession',
+                      ],
+                      includes: ['deviceType'],
+                    }}
+                  />
                   {selectedKpi && this._getMultiFacetChart(queries)}
 
                   <div className="emptyState">
@@ -258,8 +297,7 @@ export default class VideoQoSNerdlet extends React.Component {
                       Click on a KPI to view details
                     </h4>
                     <p className="emptyStateDescription">
-                      When you click on one of the KPIs (to the right) you will
-                      be able to view details for nulla quis tortor orci.
+                      When you click on one of the KPIs (to the right), you'll see a list of the most relevant attribute to that performance. From there, you can click through to explore individual sessions.
                     </p>
                   </div>
                 </div>

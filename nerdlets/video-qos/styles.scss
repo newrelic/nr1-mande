@@ -46,6 +46,7 @@
   }
   .facetFilterContainer {
     overflow: wrap;
+
     .facetGroup {
       flex-wrap: wrap;
       margin-bottom: 10px;
@@ -55,6 +56,92 @@
     }
   }
 }
+
+.facetFilterContainer {
+  padding: 8px 16px;
+  background-color: #fafbfb;
+  border-bottom: 1px solid #edeeee;
+}
+
+.facetFilter__control {
+  border-color: #d5d7d7;
+}
+
+.facetFilter__multi-value {
+  background-color: #d0f0ff;
+  flex-shrink: 0;
+}
+
+.facetFilter__multi-value__label {
+  color: #003555;
+}
+
+.facetFilter__multi-value__remove {
+  margin-left: 3px;
+  border-radius: 0;
+  border-left: 1px solid rgba(0, 121, 191, 0.11);
+
+  &:hover {
+    background-color: rgb(182, 226, 247);
+    cursor: pointer;
+
+    svg {
+      color: #003555;
+    }
+  }
+
+  svg {
+    color: #003455b7;
+  }
+}
+
+.facetFilter__value-container {
+  overflow: scroll;
+  flex-wrap: nowrap;
+}
+
+.facetFilter__indicators {
+  position: relative;
+
+  &:before {
+    content: '';
+    width: 40px;
+    height: 20px;
+    position: absolute;
+    left: -40px;
+    z-index: 100;
+    pointer-events: none;
+    background-image: linear-gradient(to right, transparent, white);
+  }
+}
+
+.facetFilter__clear-indicator,
+.facetFilter__indicator-separator {
+  display: none;
+}
+
+.facetFilter__control--is-focused {
+  border-color: #007e8a;
+  box-shadow: 0 0 0 1px #007e8a;
+
+  &:hover {
+    border-color: #007e8a;
+    box-shadow: 0 0 0 1px #007e8a;
+  }
+}
+
+.facetFilter__option--is-focused {
+  background-color: #007e8a18;
+}
+
+.facetFilter__option--is-selected {
+  background-color: #007e8a;
+
+  &:hover {
+    background-color: #007e8a;
+  }
+}
+
 .centered {
   position: fixed;
   top: 50%;
@@ -125,4 +212,21 @@
 
 .barList [class*='bar-item'].selected [class*='item-progress'] {
   background-color: #d5d7d7;
+}
+
+.detailsPanelGridItem {
+  width: 100%;
+}
+
+.facetFilterLabel {
+  font-size: 13px;
+}
+
+div.optionsBar {
+  background-color: #edeeee;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  box-shadow: inset 0 0 0 1px #e3e4e4;
+  box-sizing: border-box;
+  justify-content: space-between;
 }

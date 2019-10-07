@@ -47,7 +47,6 @@ export default class FacetFilter extends React.Component {
   clickFacet(facet) {
     const { selections } = this.state;
     selections[facet] = !selections[facet];
-    debugger;
     this.setState({ selections }, () => {
       this.facetsUpdated();
     });
@@ -55,14 +54,12 @@ export default class FacetFilter extends React.Component {
 
   handleChange(value, { action, removedValue, option }) {
     let { selections } = this.state;
-    debugger;
     if (action === 'remove-value') {
       selections[removedValue.value] = !selections[removedValue.value];
     } else if (action === 'select-option') {
       selections[option.value] = !selections[option.value];
     } else if (action === 'clear') {
       selections = selections.map((selection, index) => {
-        debugger;
         selections[index] = false;
       });
     }
@@ -184,10 +181,11 @@ export default class FacetFilter extends React.Component {
 
       return (
         <div className="facetFilterContainer">
-          <h4 style={{ marginLeft: '5px' }}>Selected Facets</h4>
+          <h4 className="facetFilterLabel">Selected Facets</h4>
           <Select
             options={options}
             className="facetFilter"
+            classNamePrefix="facetFilter"
             isMulti
             onChange={this.handleChange}
             defaultValue={options}

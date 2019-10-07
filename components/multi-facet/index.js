@@ -53,7 +53,7 @@ export default class MultiFacetChart extends Component {
     if (facet) {
       const limit = facet.limit ? ` LIMIT ${facet.limit} ` : '';
 
-      return `${queryProps.nrql} facet ${facet.valueAttr} ${limit}`;
+      return `${queryProps.nrql} FACET ${facet.valueAttr} ${limit}`;
     } else {
       return `${queryProps.nrql}`;
     }
@@ -77,6 +77,7 @@ export default class MultiFacetChart extends Component {
   }
 
   _processData(data) {
+    //console.debug(data);
     const {
       queryProps: { percentage },
       facets,
@@ -127,7 +128,7 @@ export default class MultiFacetChart extends Component {
   render() {
     const { title, facetClick } = this.props;
     const q = this._buildNerdGraphQuery();
-    // console.debug(q);
+    //debug(q);
     return (
       <NerdGraphQuery query={q}>
         {({ data, loading, error }) => {
@@ -149,7 +150,6 @@ export default class MultiFacetChart extends Component {
           if (results) {
             return (
               <div>
-                <HeadingText>{title}</HeadingText>
                 <BarChart data={results} onClickBar={facetClick} />
               </div>
             );

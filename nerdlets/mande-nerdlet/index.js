@@ -76,22 +76,6 @@ export default class Mande extends React.Component {
                   setAccount={this.setAccount}
                 ></AccountPicker>
               </StackItem>
-              <StackItem>
-                <Button
-                  onClick={() => {
-                    const launcher = {
-                      id:
-                        '5317892d-9cac-4199-8ee1-f6c08d5d9597.video-qos-launcher',
-                      urlStateOptions: '',
-                    };
-                    navigation.openLauncher(launcher);
-                  }}
-                  type={Button.TYPE.PRIMARY}
-                  iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__SHARE}
-                >
-                  Video QoS
-                </Button>
-              </StackItem>
             </Stack>
           </StackItem>
         </Stack>

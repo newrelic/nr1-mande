@@ -167,7 +167,7 @@ export default class VideoQoSNerdlet extends React.Component {
                       KPIs
                     </HeadingText>
                     <small className="sectionSubtitle">
-                      Since {moment.duration(duration).format()}
+                      Since {moment.duration(duration).format()} ago
                     </small>
                   </div>
                   <div className="kpiCharts">
@@ -204,7 +204,7 @@ export default class VideoQoSNerdlet extends React.Component {
                     </HeadingText>
                     <small className="sectionSubtitle">
                       Since {moment.duration(duration).format({ trim: true })}{' '}
-                      compared with{' '}
+                      ago ompared with{' '}
                       {moment.duration(duration * 2).format({ trim: true })}{' '}
                       earlier
                     </small>

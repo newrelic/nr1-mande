@@ -36,9 +36,9 @@ export default class Board extends React.Component {
     this.humanizeNumber = this.humanizeNumber.bind(this);
     this.getCellContent = this.getCellContent.bind(this);
 
-    this.videoQosLauncher = () => {
+    this.videoQosNerdlet = () => {
       return {
-        id: 'eea3de01-ef97-4602-b795-37db5dbb3982.video-qos-launcher',
+        id: 'video-qos-nerdlet',
         urlStateOptions: '',
       };
     };
@@ -85,7 +85,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Availability',
-          launcher: this.videoQosLauncher,
+          nerdlet: this.videoQosNerdlet,
         },
         {
           col: 'Video',
@@ -97,7 +97,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Availability',
-          launcher: this.videoQosLauncher,
+          nerdlet: this.videoQosNerdlet,
         },
         {
           col: 'Video',
@@ -109,7 +109,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Latency',
-          launcher: this.videoQosLauncher,
+          nerdlet: this.videoQosNerdlet,
         },
         {
           col: 'Video',
@@ -121,7 +121,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Error Budget',
-          launcher: this.videoQosLauncher,
+          nerdlet: this.videoQosNerdlet,
         },
         {
           col: 'Video',
@@ -133,7 +133,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Capacity',
-          launcher: this.videoQosLauncher,
+          nerdlet: this.videoQosNerdlet,
         },
         {
           col: 'CDN',
@@ -154,7 +154,7 @@ export default class Board extends React.Component {
         },
         {
           label: 'Video',
-          to: navigation.getOpenLauncherLocation(this.videoQosLauncher()),
+          to: navigation.getReplaceNerdletLocation(this.videoQosNerdlet()),
         },
         { label: 'Client', to: undefined },
         { label: 'CDN', to: undefined },
@@ -376,9 +376,9 @@ export default class Board extends React.Component {
                           cell => cell.col === label
                         );
                         if (matchingCell) {
-                          const { launcher } = matchingCell;
-                          if (launcher) {
-                            navigation.openLauncher(launcher());
+                          const { nerdlet } = matchingCell;
+                          if (nerdlet) {
+                            navigation.openNerdlet(nerdlet);
                           }
                         }
                         return null;

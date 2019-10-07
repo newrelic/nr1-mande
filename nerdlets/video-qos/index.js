@@ -49,11 +49,11 @@ export default class Wrapper extends React.PureComponent {
           <StackItem>
             <Button
               onClick={() => {
-                const launcher = {
-                  id: 'eea3de01-ef97-4602-b795-37db5dbb3982.mande-launcher',
+                const nerdlet = {
+                  id: 'mande-nerdlet',
                   urlStateOptions: '',
                 };
-                navigation.openLauncher(launcher);
+                navigation.openNerdlet(nerdlet);
               }}
               type={Button.TYPE.PLAIN}
               iconType={

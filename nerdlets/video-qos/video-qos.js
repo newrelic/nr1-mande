@@ -147,6 +147,7 @@ export default class VideoQoSNerdlet extends React.Component {
                 'asnLongitude',
                 'actionName',
                 'viewSessionId',
+                'message',
                 'viewSession',
               ],
               includes: ['deviceType'],

@@ -67,7 +67,7 @@ export default class VideoSessionList extends React.Component {
             launcherUrlState={launcherUrlState}
             nerdletUrlState={nerdletUrlState}
             callbacks={this.callbacks}
-            title={`Sessions in ${facet.title}:${facet.value}`}
+            title={`Sessions in ${facet.title}: ${facet.value}`}
           />
         </GridItem>
         <GridItem columnSpan={8}>

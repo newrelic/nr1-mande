@@ -187,6 +187,21 @@
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #edeeee;
+
+  .detailsPanel & {
+    height: auto;
+    align-items: baseline;
+    flex-direction: column;
+    text-align: left;
+    justify-content: flex-start;
+  }
+}
+
+.primarySectionChartHeaderDescription {
+  font-size: 12px;
+  color: #8e9494;
+  margin: 8px 0 4px;
+  line-height: 17px;
 }
 
 .billboardChart {
@@ -367,7 +382,6 @@ h4 {
 }
 
 [class*='wnd-StackItem'] div.options-bar {
-  height: 50px;
   justify-content: space-between;
   margin-bottom: 24px;
   box-sizing: border-box;
@@ -375,4 +389,8 @@ h4 {
   background-color: #edeeee;
   border-top: 1px solid #e3e4e4;
   border-bottom: 1px solid #e3e4e4;
+
+  & > [class*='StackItem'] {
+    padding: 4px 0 4px;
+  }
 }

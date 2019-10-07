@@ -60,8 +60,8 @@ export default class Timeline extends Component {
                 </StackItem>
                 <StackItem>
                   <p className="emptyStateDescription">
-                    Click one of the sessions to the right to view it’s
-                    breakdown here
+                    Click one of the sessions to the left to view it’s breakdown
+                    here
                   </p>
                 </StackItem>
               </Stack>

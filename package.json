@@ -2,7 +2,7 @@
   "private": true,
   "name": "nr1-mande",
   "description": "Nerdpack for the Media and Entertainment vertical, built against the internal Video Demo account.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "start": "nr1 nerdpack:serve",
     "test": "exit 0",
@@ -10,7 +10,7 @@
     "eslint-fix": "eslint nerdlets/ --fix"
   },
   "nr1": {
-    "uuid": "eea3de01-ef97-4602-b795-37db5dbb3982"
+    "uuid": "857e87a0-8729-4137-b045-9fd8cda1ca16"
   },
   "dependencies": {
     "file-loader": "^4.2.0",

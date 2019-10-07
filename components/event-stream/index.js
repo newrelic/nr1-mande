@@ -18,7 +18,7 @@ export default class EventStream extends Component {
           <div className="no-session">
             <p className="head">Session Breakdown</p>
             <p className="msg">
-              Click one of the sessions to the right to view it's breakdown here
+              Click one of the sessions to the left to view it's breakdown here
             </p>
           </div>
         )}

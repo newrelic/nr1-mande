@@ -225,8 +225,15 @@
 div.optionsBar {
   background-color: #edeeee;
   margin-bottom: 16px;
-  padding: 8px 16px;
   box-shadow: inset 0 0 0 1px #e3e4e4;
   box-sizing: border-box;
-  justify-content: space-between;
+
+  & > [class*='StackItem'] {
+    padding: 8px 4px 8px;
+  }
+}
+
+div.optionsBar .mainPageButtonStackItem {
+  padding: 4px 4px 4px;
+  border-right: 1px solid #e3e4e4;
 }

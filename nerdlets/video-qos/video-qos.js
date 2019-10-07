@@ -4,13 +4,26 @@ import PropTypes from 'prop-types';
 import FacetFilter from '../../components/facet-filter';
 import MultiFacetChart from '../../components/multi-facet';
 import MultiQueryTimeseries from '../../components/multi-query-timeseries';
-import { kpiIds, generateQueries, multiFacetChartTitles } from '../../utils/kpi-queries';
+import {
+  kpiIds,
+  generateQueries,
+  multiFacetChartTitles,
+} from '../../utils/kpi-queries';
 
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 momentDurationFormatSetup(moment);
 
-import { navigation, Spinner, HeadingText, BillboardChart, Grid, GridItem } from 'nr1';
+import {
+  navigation,
+  Spinner,
+  HeadingText,
+  BillboardChart,
+  Grid,
+  GridItem,
+  Stack,
+  StackItem,
+} from 'nr1';
 
 export default class VideoQoSNerdlet extends React.Component {
   static propTypes = {
@@ -44,12 +57,7 @@ export default class VideoQoSNerdlet extends React.Component {
 
   facetClick({ data, metadata }) {
     // Note: data is x,y coordinates? Why? Of where they clicked? Or where the chart is located?
-    const {
-      accountId,
-      eventType,
-      whereClause,
-      selectedKpi,
-    } = this.state;
+    const { accountId, eventType, whereClause, selectedKpi } = this.state;
 
     console.dir(metadata);
     navigation.openStackedNerdlet({
@@ -59,41 +67,39 @@ export default class VideoQoSNerdlet extends React.Component {
         accountId,
         eventType,
         whereClause,
-        selectedKpi
+        selectedKpi,
       },
     });
   }
 
   _getMultiFacetChart(queries) {
-    const {
-      accountId,
-      facets,
-      selectedKpi,
-    } = this.state;
+    const { accountId, facets, selectedKpi } = this.state;
     //console.debug([this.state, queries]);
     const nrql = queries.kpiQueries[selectedKpi](false, false);
     const title = multiFacetChartTitles[selectedKpi];
     return (
-        <div className="detailPanelBody">
-          <div className="chart barList">
-            <MultiFacetChart
-              facetClick={this.facetClick}
-              facets={facets}
-              queryProps={{
-                accountId: accountId,
-                percentage: selectedKpi == 'secondsToFirstFrame',
-                valueAttr: selectedKpi,
-                nrql,
-              }}
-              title={title}
-            />
-          </div>
+      <div className="detailPanelBody">
+        <div className="chart barList">
+          <MultiFacetChart
+            facetClick={this.facetClick}
+            facets={facets}
+            queryProps={{
+              accountId: accountId,
+              percentage: selectedKpi == 'secondsToFirstFrame',
+              valueAttr: selectedKpi,
+              nrql,
+            }}
+            title={title}
+          />
         </div>
+      </div>
     );
   }
 
   render() {
-    const { launcherUrlState: { timeRange } } = this.props;
+    const {
+      launcherUrlState: { timeRange },
+    } = this.props;
     const { duration } = timeRange;
 
     //debugger;
@@ -160,7 +166,9 @@ export default class VideoQoSNerdlet extends React.Component {
                     >
                       KPIs
                     </HeadingText>
-                    <small className="sectionSubtitle">Since {moment.duration(duration).format()}</small>
+                    <small className="sectionSubtitle">
+                      Since {moment.duration(duration).format()}
+                    </small>
                   </div>
                   <div className="kpiCharts">
                     {kpiIds.map((kpiId, key) => {
@@ -195,15 +203,22 @@ export default class VideoQoSNerdlet extends React.Component {
                       KPIs over time
                     </HeadingText>
                     <small className="sectionSubtitle">
-                      Since  {moment.duration(duration).format({trim: true})} compared with  {moment.duration(duration*2).format({trim: true})} earlier
+                      Since {moment.duration(duration).format({ trim: true })}{' '}
+                      compared with{' '}
+                      {moment.duration(duration * 2).format({ trim: true })}{' '}
+                      earlier
                     </small>
                   </div>
-                  <div className="primarySectionChart" style={{padding: '10px'}}>
+                  <div
+                    className="primarySectionChart"
+                    style={{ padding: '10px' }}
+                  >
                     <MultiQueryTimeseries
-                    accountId={accountId}
-                    timeRange={timeRange}
-                    queries={queries.kpiQueries}
-                    fullWidth
+                      accountId={accountId}
+                      timeRange={timeRange}
+                      queries={queries.kpiQueries}
+                      fullWidth
+                      fullHeight
                     />
                   </div>
                 </div>
@@ -212,7 +227,7 @@ export default class VideoQoSNerdlet extends React.Component {
               <GridItem columnSpan={3} className="detailsPanelGridItem">
                 <div
                   className={`primarySectionChartContainer detailsPanel ${
-                    !selectedKpi ? 'emptyState' : ''
+                    !selectedKpi ? 'emptyStateActive' : ''
                   }`}
                 >
                   <div className="primarySectionChartaltHeader primarySectionChartHeader">
@@ -249,8 +264,15 @@ export default class VideoQoSNerdlet extends React.Component {
                   />
                   {selectedKpi && this._getMultiFacetChart(queries)}
 
-                  <div className="emptyState">
-                    <div className="bar-chart-placeholder">
+                  <Stack
+                    className="emptyState"
+                    verticalType={Stack.VERTICAL_TYPE.CENTER}
+                    horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
+                    directionType={Stack.DIRECTION_TYPE.VERTICAL}
+                    fullHeight
+                    fullWidth
+                  >
+                    <StackItem className="bar-chart-placeholder">
                       <svg
                         width="270"
                         height="60"
@@ -292,14 +314,21 @@ export default class VideoQoSNerdlet extends React.Component {
                           fill="#E3E4E4"
                         />
                       </svg>
-                    </div>
-                    <h4 className="emptyStateHeader">
-                      Click on a KPI to view details
-                    </h4>
-                    <p className="emptyStateDescription">
-                      When you click on one of the KPIs (to the right), you'll see a list of the most relevant attribute to that performance. From there, you can click through to explore individual sessions.
-                    </p>
-                  </div>
+                    </StackItem>
+                    <StackItem>
+                      <h4 className="emptyStateHeader">
+                        Click on a KPI to view details
+                      </h4>
+                    </StackItem>
+                    <StackItem>
+                      <p className="emptyStateDescription">
+                        When you click on one of the KPIs (to the right), you'll
+                        see a list of the most relevant attribute to that
+                        performance. From there, you can click through to
+                        explore individual sessions.
+                      </p>
+                    </StackItem>
+                  </Stack>
                 </div>
               </GridItem>
             </Grid>

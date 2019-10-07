@@ -103,6 +103,24 @@
     flex-direction: column;
   }
 
+  &.emptyStateActive {
+    padding: 16px;
+
+    .primarySectionChartHeader,
+    .facetFilterContainer {
+      display: none;
+    }
+
+    div.emptyState {
+      display: flex;
+      height: 500px;
+
+      & > [class*='StackItem'] {
+        margin-top: 0;
+      }
+    }
+  }
+
   .emptyStateHeader {
     margin-bottom: 8px;
     font-size: 16px;
@@ -115,7 +133,7 @@
     font-size: 12px;
     color: #8e9494;
     line-height: 16px;
-    max-width: 75%;
+    max-width: 80%;
     text-align: center;
   }
 
@@ -149,9 +167,13 @@
 }
 
 .primarySectionChart {
-  height: 468px;
+  height: 400px;
   box-sizing: border-box;
   padding: 16px;
+
+  & > [class*='Chart'] {
+    height: 100%;
+  }
 }
 
 .primarySectionChartHeader {
@@ -266,7 +288,7 @@
 
 .barList [class*='wnd-Chart'] {
   width: 100%;
-  height: 500px;
+  height: 432px;
   box-sizing: border-box;
   padding: 16px;
 }

@@ -237,6 +237,12 @@ export default class VideoQoSNerdlet extends React.Component {
                     >
                       {multiFacetChartTitles[selectedKpi]}
                     </HeadingText>
+
+                    <p className="primarySectionChartHeaderDescription">
+                      The following attributes were most common to this
+                      measurement. Click on an attribute to review sessions that
+                      match that characteristic in this time window.
+                    </p>
                   </div>
 
                   <FacetFilter
@@ -322,7 +328,7 @@ export default class VideoQoSNerdlet extends React.Component {
                     </StackItem>
                     <StackItem>
                       <p className="emptyStateDescription">
-                        When you click on one of the KPIs (to the right), you'll
+                        When you click on one of the KPIs (to the left), you'll
                         see a list of the most relevant attribute to that
                         performance. From there, you can click through to
                         explore individual sessions.

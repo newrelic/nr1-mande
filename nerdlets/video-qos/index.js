@@ -2,7 +2,14 @@ import React from 'react';
 
 import VideoQoSNerdlet from './video-qos';
 import AccountPicker from '../../components/account-picker';
-import { PlatformStateContext, AccountsQuery, Button, navigation, Stack, StackItem } from 'nr1';
+import {
+  PlatformStateContext,
+  AccountsQuery,
+  Button,
+  navigation,
+  Stack,
+  StackItem,
+} from 'nr1';
 
 export default class Wrapper extends React.PureComponent {
   constructor(props) {
@@ -46,7 +53,7 @@ export default class Wrapper extends React.PureComponent {
           className="optionsBar"
           fullWidth
         >
-          <StackItem>
+          <StackItem fullHeight className="mainPageButtonStackItem">
             <Button
               onClick={() => {
                 const nerdlet = {
@@ -63,7 +70,7 @@ export default class Wrapper extends React.PureComponent {
               Main Page
             </Button>
           </StackItem>
-          <StackItem>
+          <StackItem fullHeight className="accountPickerStackItem">
             <AccountPicker
               accounts={accounts}
               account={account}

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Link, navigation, NerdGraphQuery } from 'nr1';
+import { Link, navigation, NerdGraphQuery, Icon } from 'nr1';
 
 import CellDetails from './cell-details';
 
@@ -286,9 +286,17 @@ export default class Board extends React.Component {
 
     if (match.policy) {
       return (
-        <span
-          className={'circle ' + (match.policy in alerts ? 'alert' : 'ok')}
-        />
+        <span className={'circle ' + (match.policy in alerts ? 'alert' : 'ok')}>
+          <Icon
+            type={
+              match.polity in alerts === 'alert'
+                ? Icon.TYPE.INTERFACE__SIGN__CLOSE
+                : Icon.TYPE.INTERFACE__SIGN__CHECKMARK
+            }
+            color="#ffffff"
+            className="circle-icon"
+          ></Icon>
+        </span>
       );
     } else if (match.details) {
       const num = data[match.details.name];
@@ -311,6 +319,15 @@ export default class Board extends React.Component {
       return (
         <span className={'text ' + status.class}>
           {this.humanizeNumber(num)}
+          <Icon
+            type={
+              randomIndex > 1
+                ? Icon.TYPE.INTERFACE__SIGN__CLOSE
+                : Icon.TYPE.INTERFACE__SIGN__CHECKMARK
+            }
+            color="#ffffff"
+            className="circle-icon"
+          ></Icon>
         </span>
       );
     }
@@ -332,7 +349,7 @@ export default class Board extends React.Component {
               {cols.map(c => {
                 const label = c.label;
                 return (
-                  <th className="rotate" key={label}>
+                  <th key={label} className="row-header">
                     <div>
                       {c.to && (
                         <span>

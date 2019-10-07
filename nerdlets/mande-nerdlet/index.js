@@ -59,12 +59,16 @@ export default class Mande extends React.Component {
         <Stack
           fullWidth={true}
           directionType={Stack.DIRECTION_TYPE.VERTICAL}
-          horizontalType={Stack.HORIZONTAL_TYPE.LEFT}
           gapType={Stack.GAP_TYPE.SMALL}
-          style={{ marginLeft: '50px' }}
+          className="options-bar-parent"
         >
-          <StackItem>
-            <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}>
+          <StackItem grow>
+            <Stack
+              directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}
+              verticalType={Stack.VERTICAL_TYPE.CENTER}
+              className="options-bar"
+              fullWidth
+            >
               <StackItem>
                 <AccountPicker
                   accounts={accounts}
@@ -102,16 +106,18 @@ export default class Mande extends React.Component {
               <Board accountId={accountId} />
             </StackItem>
 
-            <StackItem style={{ width: '100%', maxWidth: '1200px' }}>
+            <StackItem
+              style={{ width: '100%', maxWidth: '1200px', marginTop: '0' }}
+            >
               <Grid>
-                <GridItem columnSpan={6}>
+                <GridItem columnSpan={6} className="homepage-chart-grid-item">
                   <LineChart
                     accountId={accountId}
                     query="SELECT filter(count(*), WHERE actionName = 'CONTENT_ERROR') AS 'Errors', uniquecount(viewId) AS 'Concurrent Streams' FROM PageAction since 1 week ago TIMESERIES"
                     fullWidth
                   />
                 </GridItem>
-                <GridItem columnSpan={6}>
+                <GridItem columnSpan={6} className="homepage-chart-grid-item">
                   <LineChart
                     accountId={accountId}
                     query="SELECT sum(timeSinceRequested)/1000 AS 'Join Time', uniqueCount(viewId) AS 'Concurrent Sessions' FROM PageAction WHERE actionName = 'CONTENT_START' since 1 day ago timeseries"

@@ -330,3 +330,27 @@ h4 {
 .headerFacetFilter {
   display: none;
 }
+
+.homepage-chart-grid-item {
+  grid-column: auto / span 6;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 0px;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.025),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.085);
+}
+
+.options-bar-parent > [class*='StackItem'] {
+  width: 100%;
+}
+
+[class*='wnd-StackItem'] div.options-bar {
+  height: 50px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  box-sizing: border-box;
+  padding: 0 16px 0;
+  background-color: #edeeee;
+  border-top: 1px solid #e3e4e4;
+  border-bottom: 1px solid #e3e4e4;
+}

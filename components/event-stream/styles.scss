@@ -117,6 +117,11 @@
   }
 }
 
+.timeline-item-contents {
+  height: 300px;
+  overflow: scroll;
+}
+
 .timeline-item-contents-container {
   display: none;
   box-shadow: inset 0 10px 3px -5px rgba(0, 0, 0, 0.005),

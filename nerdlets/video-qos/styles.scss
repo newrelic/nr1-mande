@@ -237,3 +237,7 @@ div.optionsBar .mainPageButtonStackItem {
   padding: 4px 4px 4px;
   border-right: 1px solid #e3e4e4;
 }
+
+.sessionColumn .barList {
+  height: calc(100% - 50px);
+}

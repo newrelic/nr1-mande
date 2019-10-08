@@ -22,18 +22,29 @@ export default class SessionList extends Component {
   }
 
   render() {
-    const { account_id, title, query, callbacks, launcherUrlState: { timeRange: { duration }} } = this.props;
+    const {
+      account_id,
+      title,
+      query,
+      callbacks,
+      launcherUrlState: {
+        timeRange: { duration },
+      },
+    } = this.props;
     return (
       <section className="list-wrapper sessionSectionBase">
         <header className="list-header">
           <HeadingText type={HeadingText.TYPE.HEADING_4}>{title}</HeadingText>
-          <p className="subtitle">Since {moment.duration(duration).format({ trim: true })} ago</p>
+          <p className="subtitle">
+            Since {moment.duration(duration).format({ trim: true })} ago
+          </p>
         </header>
         <BarChart
           accountId={account_id}
           query={query}
           onClickBar={callbacks.sessionClick}
           fullWidth={true}
+          fullHeight
           className="barList"
         />
       </section>

@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import _ from 'lodash';
 import Select from 'react-select';
 
-import { Button, NerdGraphQuery, Spinner, Stack, StackItem } from 'nr1';
+import { NerdGraphQuery, Spinner } from 'nr1';
 
 function capitalize(s) {
   return s[0].toUpperCase() + s.slice(1);

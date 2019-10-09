@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import gql from 'graphql-tag';
 
 import FacetFilter from '../../components/facet-filter';
 import MultiFacetChart from '../../components/multi-facet';
@@ -16,6 +17,7 @@ momentDurationFormatSetup(moment);
 
 import {
   navigation,
+  NerdGraphQuery,
   Spinner,
   HeadingText,
   BillboardChart,
@@ -96,6 +98,103 @@ export default class VideoQoSNerdlet extends React.Component {
     );
   }
 
+  buildFacets() {
+    function capitalize(s) {
+      return s[0].toUpperCase() + s.slice(1);
+    }
+
+    function replacer1(match, p1, p2, p3) {
+      return p1 + capitalize(p2) + ' ' + p3;
+    }
+
+    const { accountId, duration, eventType, nrqlSelect } = this.props;
+    const durationInMinutes =
+      duration / 1000 / 60 < 24 * 60 ? 24 * 60 : duration / 1000 / 60;
+    const query = gql`{
+            actor {
+                account(id: ${accountId}) {
+                    nrql(query: "${nrqlSelect} FROM ${eventType} SINCE ${durationInMinutes} MINUTES AGO") {
+                        results
+                        suggestedFacets {
+                            attributes
+                        }
+                    }
+                }
+            }
+        }`;
+
+    let facets = [];
+    const selections = [];
+    const { excludeDualFacets, excludes, includes } = {
+      excludeDualFacets: true,
+      excludes: [
+        'session',
+        'viewId',
+        'elementId',
+        'appName',
+        'asnLatitude',
+        'asnLongitude',
+        'actionName',
+        'viewSessionId',
+        'message',
+        'viewSession',
+      ],
+      includes: ['deviceType'],
+    };
+
+    if (includes) {
+      includes.forEach(include => {
+        facets.push({
+          valueAttr: include,
+          title: include.replace(/(^|[^a-z])([a-z]+)([A-Z])/, replacer1),
+          limit: 5,
+        });
+        selections[include] = true;
+      });
+    }
+
+    NerdGraphQuery.query({ query }).then(res => {
+      const { loading, data, errors } = res;
+      const suggestedFacets = _.get(
+        data,
+        'actor.account.nrql.suggestedFacets',
+        []
+      );
+
+      suggestedFacets.forEach(suggestedFacet => {
+        let addFacet = true;
+        const valueAttr = suggestedFacet.attributes[0];
+
+        if (excludeDualFacets && valueAttr.indexOf(',') < 0) {
+          addFacet = false;
+        }
+
+        if (excludes) {
+          addFacet = excludes.find(exclude => exclude == valueAttr) == null;
+        }
+
+        if (
+          addFacet &&
+          facets.find(facet => facet.valueAttr == valueAttr) == null
+        ) {
+          facets.push({
+            valueAttr,
+            title: valueAttr.replace(/(^|[^a-z])([a-z]+)([A-Z])/, replacer1),
+            limit: 5,
+          });
+          selections[valueAttr] = true;
+        }
+      });
+      facets = facets.sort();
+
+      this.setFacets(facets);
+    });
+  }
+
+  componentDidMount() {
+    this.buildFacets();
+  }
+
   render() {
     const {
       launcherUrlState: { timeRange },
@@ -128,33 +227,6 @@ export default class VideoQoSNerdlet extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="headerFacetFilter">
-          <FacetFilter
-            isClearable={false}
-            eventType={eventType}
-            duration={durationInMinutes}
-            accountId={accountId}
-            setFacets={this.setFacets}
-            nrqlSelect={queries.facetFilterQuery}
-            config={{
-              excludeDualFacets: true,
-              excludes: [
-                'session',
-                'viewId',
-                'elementId',
-                'appName',
-                'asnLatitude',
-                'asnLongitude',
-                'actionName',
-                'viewSessionId',
-                'message',
-                'viewSession',
-              ],
-              includes: ['deviceType'],
-            }}
-          />
-        </div>
-
         {facets && facets.length > 0 ? (
           <div>
             <Grid>

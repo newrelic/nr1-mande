@@ -42,6 +42,13 @@ export default class Board extends React.Component {
         urlStateOptions: '',
       };
     };
+
+    this.containerExplorerNerdlet = () => {
+      return {
+        id: 'container-explorer',
+        urlStateOptions: '',
+      };
+    };
   }
 
   componentDidMount() {
@@ -85,7 +92,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Availability',
-          nerdlet: this.videoQosNerdlet,
+          navigateTo: this.videoQosNerdlet,
         },
         {
           col: 'Video',
@@ -97,7 +104,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Availability',
-          nerdlet: this.videoQosNerdlet,
+          navigateTo: this.videoQosNerdlet,
         },
         {
           col: 'Video',
@@ -109,7 +116,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Latency',
-          nerdlet: this.videoQosNerdlet,
+          navigateTo: this.videoQosNerdlet,
         },
         {
           col: 'Video',
@@ -121,7 +128,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Error Budget',
-          nerdlet: this.videoQosNerdlet,
+          navigateTo: this.videoQosNerdlet,
         },
         {
           col: 'Video',
@@ -133,7 +140,7 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Capacity',
-          nerdlet: this.videoQosNerdlet,
+          navigateTo: this.videoQosNerdlet,
         },
         {
           col: 'CDN',
@@ -145,21 +152,39 @@ export default class Board extends React.Component {
             value: '1',
           },
           row: 'Error Budget',
+          navigateTo: this.containerExplorerNerdlet,
         },
       ],
       cols: [
         {
           label: 'Users',
-          to: undefined,
+          navigateTo: undefined,
         },
         {
           label: 'Video',
-          to: navigation.getReplaceNerdletLocation(this.videoQosNerdlet()),
+          navigateTo: navigation.getReplaceNerdletLocation(
+            this.videoQosNerdlet()
+          ),
         },
         { label: 'Client', to: undefined },
-        { label: 'CDN', to: undefined },
-        { label: 'Services', to: undefined },
-        { label: 'Infra Cloud', to: undefined },
+        {
+          label: 'CDN',
+          navigateTo: navigation.getReplaceNerdletLocation(
+            this.containerExplorerNerdlet()
+          ),
+        },
+        {
+          label: 'Services',
+          navigateTo: navigation.getReplaceNerdletLocation(
+            this.containerExplorerNerdlet()
+          ),
+        },
+        {
+          label: 'Infra Cloud',
+          navigateTo: navigation.getReplaceNerdletLocation(
+            this.containerExplorerNerdlet()
+          ),
+        },
       ],
       rows: ['Availability', 'Latency', 'Error Budget', 'Capacity'],
     });
@@ -351,12 +376,12 @@ export default class Board extends React.Component {
                 return (
                   <th key={label} className="row-header">
                     <div>
-                      {c.to && (
+                      {c.navigateTo && (
                         <span>
-                          <Link to={c.to}>{label}</Link>
+                          <Link to={c.navigateTo}>{label}</Link>
                         </span>
                       )}
-                      {!c.to && <span>{label}</span>}
+                      {!c.navigateTo && <span>{label}</span>}
                     </div>
                   </th>
                 );
@@ -376,9 +401,9 @@ export default class Board extends React.Component {
                           cell => cell.col === label
                         );
                         if (matchingCell) {
-                          const { nerdlet } = matchingCell;
-                          if (nerdlet) {
-                            navigation.openNerdlet(nerdlet);
+                          const { navigateTo } = matchingCell;
+                          if (navigateTo) {
+                            navigation.openNerdlet(navigateTo());
                           }
                         }
                         return null;

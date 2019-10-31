@@ -82,7 +82,7 @@ export default class EventStream extends React.Component {
                   color={sessionCategory.color}
                 ></Icon>
               </div>
-              <div className="timeline-item-title">{sessionCategory.label}</div>
+              <div className="timeline-item-title">{event.actionName}</div>
               <Button
                 className="timeline-item-dropdown-arrow"
                 type={Button.TYPE.PLAIN_NEUTRAL}

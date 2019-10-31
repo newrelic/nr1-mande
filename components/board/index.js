@@ -176,7 +176,7 @@ export default class Board extends React.Component {
         {
           label: 'Services',
           navigateTo: navigation.getOpenStackedEntityLocation(
-            'MTU2NzI3N3xWSVp8REFTSEJPQVJEfDg3ODExNA'
+            'MTU2NzI3N3xWSVp8REFTSEJPQVJEfDEwMjY0NTU'
           ),
         },
         {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { NrqlQuery } from 'nr1'
+import { Spinner, NrqlQuery } from 'nr1'
 import Compare from './Compare'
 import MetricValue from './MetricValue'
 
@@ -9,6 +9,7 @@ export default class Metric extends React.Component {
     previous: null,
     difference: null,
     change: '',
+    loading: true,
   }
 
   // ============== HANDLERS/METHODS ===============
@@ -18,14 +19,17 @@ export default class Metric extends React.Component {
     const compare = ` COMPARE WITH ${duration} MINUTES AGO`
     const query = metric.query.nrql + since + compare
 
-    const { data } = await NrqlQuery.query({
+    const { data, error } = await NrqlQuery.query({
       accountId: accountId,
       query: query,
       formatType: 'raw',
     })
 
-    // console.debug('metrc query data', query, data)
+    if (error) {
+      console.error(error)
+    }
 
+    // console.debug('metrc query data', query, data)
     if (data) {
       let current = data.raw.current.results[0][metric.query.lookup]
       let previous = data.raw.previous.results[0][metric.query.lookup]
@@ -60,6 +64,7 @@ export default class Metric extends React.Component {
         previous,
         difference: rounded,
         change: change(),
+        loading: false,
       })
     }
   }
@@ -78,10 +83,12 @@ export default class Metric extends React.Component {
     console.debug('Metric render')
 
     const { metric } = this.props
-    const { change, difference, current } = this.state
+    const { loading, change, difference, current } = this.state
 
-    return (
-      <div className="metric-chart">
+    let metricContent = loading ? (
+      <Spinner fillContainer />
+    ) : (
+      <React.Fragment>
         <p className="name">{metric.title}</p>
         <MetricValue
           threshold={metric.threshold}
@@ -92,7 +99,9 @@ export default class Metric extends React.Component {
           change={change}
           difference={difference}
         />
-      </div>
+      </React.Fragment>
     )
+
+    return <div className="metric-chart">{metricContent}</div>
   }
 }

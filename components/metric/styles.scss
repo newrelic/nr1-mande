@@ -1,0 +1,115 @@
+.landingTitle {
+  text-align: center;
+  width: 100%;
+  margin: 1em 0 2em 0;
+
+  h2 {
+    font: 700 35px/40px "Open Sans", sans-serif;
+  }
+}
+
+.metricStack {
+  width: 100%;
+  margin: 0px 10px auto;
+}
+
+.metric {
+  width: 100%;
+  margin: 8px 0px auto;
+  text-align: center;
+
+  &.title {
+    box-shadow: 0 2px 3px #ccc;
+    border: 1px solid #ddd;
+    font: 400 16px/22px "Open Sans", sans-serif;
+    padding: 5px;
+  }
+
+  > .metric-chart {
+    height: 135px;
+    margin: 0 5px auto;
+    width: 100%;
+    border: 1px solid #ddd;
+    max-width: 100%;
+    max-height: 100%;
+    background-color: white;
+
+    
+    > .name {
+      display: block;
+      font-size: 14px;
+      color: #797878;
+      text-align: center;
+      white-space: normal;
+      margin: 1em 0 .5em 0;
+    }
+
+    > .value {
+      font-size: 42px;
+      line-height: 1em;
+    }
+
+    > .compareTo {
+      display: inline-block;
+      text-align: center;
+      font-size: 12px;
+      width: fit-content;
+      margin: 6px auto 0;
+      padding: 5px;
+      border-radius: 3px;
+
+      &:before {
+        height: 11px;
+        width: 11px;
+        margin-right: 6px;
+        border: none;
+        position: relative;
+      }
+    }
+    
+    > .increase {
+      &:before {
+        content: '\2197';
+      }
+    }
+
+    > .decrease {
+      &:before {
+        content: '\2198';
+      }
+    }
+
+    > .noChange {
+      color: #797878;
+      background-color: #f4f0f0;
+      
+      &:before {
+        content: '\2194';
+      }
+    }
+ 
+    > .good {
+      color: #11a600;
+      background-color: #f2fcf3;  
+    }
+
+    > .bad {
+      color: #bf0016;
+      background-color: #fcf2f3;
+    }
+
+  }
+}
+
+.redLight {
+  color: #bf0016;
+}
+
+.yellowLight {
+  color: #f1cf50;
+}
+
+.greenLight {
+  color: #11a600;
+}
+

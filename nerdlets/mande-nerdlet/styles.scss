@@ -1,4 +1,4 @@
-@import '../../components/board/styles';
+@import '../../components/metric/styles';
 @import '../../components/event-stream/styles';
 
 // ==============================================================
@@ -389,4 +389,8 @@ h4 {
   & > [class*='StackItem'] {
     padding: 4px 0 4px;
   }
+}
+
+.main-panel > [class*='StackItem'] {
+  width: 100%;
 }

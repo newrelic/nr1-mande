@@ -35,34 +35,33 @@ export default class Metric extends React.Component {
         previous = Object.values(previous)[0]
       }
 
-      this.setState({ current, previous })
+      console.info(
+        'metric.getData() current previous',
+        this.props.metric.title,
+        current,
+        previous
+      )
+
+      const difference = Math.abs(previous - current)
+      let rounded = difference
+
+      if (difference > 0) {
+        rounded = this.roundToTwoDigits((difference / previous) * 100)
+      }
+
+      const change = () => {
+        if (current > previous) return 'increase'
+        else if (current < previous) return 'decrease'
+        else return 'noChange'
+      }
+
+      this.setState({
+        current,
+        previous,
+        difference: rounded,
+        change: change(),
+      })
     }
-  }
-
-  getDifference = () => {
-    const { current, previous } = this.state
-
-    console.debug(
-      'metric getDifference current previous',
-      this.props.metric.title,
-      current,
-      previous
-    )
-
-    const difference = Math.abs(previous - current)
-    let rounded = difference
-
-    if (difference > 0) {
-      rounded = this.roundToTwoDigits((difference / previous) * 100)
-    }
-
-    const change = () => {
-      if (current > previous) return 'increase'
-      else if (current < previous) return 'decrease'
-      else return 'noChange'
-    }
-
-    this.setState({ difference: rounded, change: change() })
   }
 
   roundToTwoDigits = value => {
@@ -71,11 +70,13 @@ export default class Metric extends React.Component {
 
   // ============== LIFECYCLE METHODS ================
   async componentDidMount() {
+    console.debug('metric componentDidMount')
     await this.getData()
-    this.getDifference()
   }
 
   render() {
+    console.debug('Metric render')
+
     const { metric } = this.props
     const { change, difference, current } = this.state
 

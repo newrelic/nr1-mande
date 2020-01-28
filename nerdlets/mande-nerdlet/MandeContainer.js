@@ -29,13 +29,13 @@ const mandeContainer = props => {
           title: 'Stream Joins',
           threshold: {
             critical: 10,
-            warning: 30,
+            warning: 50,
             type: 'below',
           },
           invertCompareTo: 'true',
           query: {
-            nrql: `SELECT count(*) FROM PageAction, MobileVideo, RokuVideo  WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')`,
-            lookup: 'count',
+            nrql: `SELECT count(*)  as 'result' FROM PageAction, MobileVideo, RokuVideo  WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')`,
+            lookup: 'result',
           }
         },
         {
@@ -55,7 +55,7 @@ const mandeContainer = props => {
         {
           title: 'Javascript Error Rate',
           query: {
-            nrql: `SELECT filter(count(*), WHERE eventType() = 'JavaScriptError') / filter(count(*), WHERE eventType() = 'PageView') * 100 FROM JavaScriptError,PageView`,
+            nrql: `SELECT filter(count(*), WHERE eventType() = 'JavaScriptError') / filter(count(*), WHERE eventType() = 'PageView') * 100  as 'result' FROM JavaScriptError,PageView`,
             lookup: 'result',
           },
         },
@@ -72,22 +72,22 @@ const mandeContainer = props => {
         {
           title: '5xx Error Rate',
           query: {
-            nrql: `SELECT percentage(count(*), where httpResponseCode like '5%') FROM Transaction`,
+            nrql: `SELECT percentage(count(*), where httpResponseCode like '5%') as 'result' FROM Transaction`,
             lookup: 'result',
           },
         },
         {
           title: 'Non 5xx Error Rate',
           query: {
-            nrql: `SELECT percentage(count(*), where httpResponseCode like '4%') FROM Transaction`,
+            nrql: `SELECT percentage(count(*), where httpResponseCode like '4%') as 'result' FROM Transaction`,
             lookup: 'result',
           },
         },
         {
           title: 'Latency 90th Percentile',
           query: {
-            nrql: `SELECT percentile(duration, 90) FROM Transaction`,
-            lookup: 'percentiles',
+            nrql: `SELECT percentile(duration, 90) as 'percentile' FROM Transaction`,
+            lookup: 'percentile',
           },
         },
       ],
@@ -99,42 +99,42 @@ const mandeContainer = props => {
         {
           title: 'Player Ready',
           query: {
-            nrql: `SELECT percentile(timeSinceLoad, 50) as 'Player Ready' FROM PageAction`,
-            lookup: 'percentiles',
+            nrql: `SELECT percentile(timeSinceLoad, 50) as 'percentile' FROM PageAction`,
+            lookup: 'percentile',
           },
         },
         {
           title: 'Video Start Failure',
           query: {
-            nrql: `SELECT count(*) AS 'Video Start Failure' FROM PageAction, MobileVideo, RokuVideo  WHERE actionName = 'CONTEN_ERROR' and contentPlayhead = 0`,
-            lookup: 'count',
+            nrql: `SELECT count(*) AS 'result' FROM PageAction, MobileVideo, RokuVideo  WHERE actionName = 'CONTEN_ERROR' and contentPlayhead = 0`,
+            lookup: 'result',
           },
         },
         {
           title: 'Exit Before Video Start',
           query: {
-            nrql: `SELECT filter(count(*), WHERE actionName IN ('CONTENT_REQUEST', 'CONTENT_NEXT')) - filter(count(*), WHERE actionName = 'CONTENT_START') as 'Exits Before Video Start' FROM PageAction, MobileVideo, RokuVideo`,
+            nrql: `SELECT filter(count(*), WHERE actionName IN ('CONTENT_REQUEST', 'CONTENT_NEXT')) - filter(count(*), WHERE actionName = 'CONTENT_START') as 'result' FROM PageAction, MobileVideo, RokuVideo`,
             lookup: 'result',
           },
         },
         {
           title: 'Time to First Frame',
           query: {
-            nrql: `SELECT percentile(timeSinceRequested/1000, 50) as 'Time To First Frame' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START'`,
-            lookup: 'percentiles',
+            nrql: `SELECT percentile(timeSinceRequested/1000, 50) as 'percentile' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START'`,
+            lookup: 'percentile',
           },
         },
         {
           title: 'Rebuffer Ratio',
           query: {
-            nrql: `SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and isInitialBuffering = 0) / filter(sum(playtimeSinceLastEvent), WHERE contentPlayhead is not null) as 'Rebuffer Ratio' FROM PageAction, MobileVideo, RokuVideo`,
+            nrql: `SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and isInitialBuffering = 0) / filter(sum(playtimeSinceLastEvent), WHERE contentPlayhead is not null) as 'result' FROM PageAction, MobileVideo, RokuVideo`,
             lookup: 'result',
           },
         },
         {
           title: 'Interruption Ratio',
           query: {
-            nrql: `SELECT filter(count(*), where actionName = 'CONTENT_BUFFER_START') / filter(count(*), where actionName = 'CONTENT_START') AS 'Interruption Ratio' FROM PageAction, MobileVideo, RokuVideo`,
+            nrql: `SELECT filter(count(*), where actionName = 'CONTENT_BUFFER_START') / filter(count(*), where actionName = 'CONTENT_START') AS 'result' FROM PageAction, MobileVideo, RokuVideo`,
             lookup: 'result',
           },
         },
@@ -182,7 +182,7 @@ const mandeContainer = props => {
     },
   ]
 
-  // convert metricStacks from state into components
+  // convert metricStacks into components
   const { accountId } = props
   const metricStacks = metricConfigs
     .map(config => {
@@ -201,6 +201,7 @@ const mandeContainer = props => {
       return arr.concat(val)
     }, [])
 
+  console.info('MandeContainer render')
   return (
     <Stack
       fullWidth={true}

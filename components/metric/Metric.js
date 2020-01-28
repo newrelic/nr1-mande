@@ -1,5 +1,5 @@
 import React from 'react'
-import { Spinner, NrqlQuery } from 'nr1'
+import { Spinner, NrqlQuery, NerdGraphQuery } from 'nr1'
 import Compare from './Compare'
 import MetricValue from './MetricValue'
 
@@ -17,24 +17,32 @@ export default class Metric extends React.Component {
     const { accountId, metric, duration } = this.props
     const since = ` SINCE ${duration} MINUTES AGO`
     const compare = ` COMPARE WITH ${duration} MINUTES AGO`
-    const query = metric.query.nrql + since + compare
+    const nrql = metric.query.nrql + since + compare
 
-    const { data, error } = await NrqlQuery.query({
-      accountId: accountId,
-      query: query,
-      formatType: 'raw',
+    const query = `{
+        actor {
+          account(id: ${accountId}) {
+            nrql(query: "${nrql}") {
+              results
+            }
+          }
+        }
+      }`
+    const { data, error } = await NerdGraphQuery.query({
+      query,
+      fetchPolicyType: NerdGraphQuery.FETCH_POLICY_TYPE.NO_CACHE,
     })
 
     if (error) {
       console.error(error)
     }
 
-    // console.debug('metrc query data', query, data)
+    // console.debug('metrc query data', nrql, data)
     if (data) {
-      let current = data.raw.current.results[0][metric.query.lookup]
-      let previous = data.raw.previous.results[0][metric.query.lookup]
+      let current = data.actor.account.nrql.results[0][metric.query.lookup]
+      let previous = data.actor.account.nrql.results[1][metric.query.lookup]
 
-      if (metric.query.lookup === 'percentiles') {
+      if (metric.query.lookup === 'percentile') {
         current = Object.values(current)[0]
         previous = Object.values(previous)[0]
       }
@@ -66,6 +74,8 @@ export default class Metric extends React.Component {
         change: change(),
         loading: false,
       })
+
+      console.debug('metric.getData starting state', this.state)
     }
   }
 
@@ -77,10 +87,19 @@ export default class Metric extends React.Component {
   async componentDidMount() {
     console.debug('metric componentDidMount')
     await this.getData()
+
+    this.interval = setInterval(async () => {
+      this.setState({ loading: true })
+      await this.getData()
+    }, 25000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   render() {
-    console.debug('Metric render')
+    console.debug('metric.render')
 
     const { metric } = this.props
     const { loading, change, difference, current } = this.state

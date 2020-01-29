@@ -1,9 +1,9 @@
 import React from 'react'
-import { Spinner, NrqlQuery, NerdGraphQuery } from 'nr1'
+import { Spinner, Icon, NerdGraphQuery } from 'nr1'
 import Compare from './Compare'
 import MetricValue from './MetricValue'
 
-export default class Metric extends React.Component {
+export class Metric extends React.Component {
   state = {
     current: null,
     previous: null,
@@ -122,5 +122,21 @@ export default class Metric extends React.Component {
     )
 
     return <div className="metric-chart">{metricContent}</div>
+  }
+}
+
+export class BlankMetric extends React.Component {
+  render() {
+    return (
+      <div className="metric-chart">
+        <p className="name">...</p>
+        <Icon
+          className="blank"
+          type={Icon.TYPE.INTERFACE__OPERATIONS__CONFIGURE}
+          sizeType={Icon.SIZE_TYPE.LARGE}
+          color="797878"
+        />
+      </div>
+    )
   }
 }

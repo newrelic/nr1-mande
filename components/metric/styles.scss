@@ -34,7 +34,11 @@
     max-height: 100%;
     background-color: white;
 
-    
+    > .blank {
+      color: #797878;
+      padding-top: 18px;
+    }
+
     > .name {
       display: block;
       font-size: 14px;
@@ -54,7 +58,7 @@
       text-align: center;
       font-size: 12px;
       width: fit-content;
-      margin: 6px auto 0;
+      margin: 11px auto 0;
       padding: 5px;
       border-radius: 3px;
 

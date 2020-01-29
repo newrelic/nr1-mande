@@ -143,42 +143,18 @@ const mandeContainer = props => {
     {
       title: 'CDN',
       navigateTo: '',
-      metrics: [
-        {
-          title: '...',
-          query: '',
-        },
-      ],
     },
     {
       title: 'Origin/Packaging',
       navigateTo: '',
-      metrics: [
-        {
-          title: '...',
-          query: '',
-        },
-      ],
     },
     {
       title: 'Ingest/Encode',
       navigateTo: '',
-      metrics: [
-        {
-          title: '...',
-          query: '',
-        },
-      ],
     },
     {
       title: 'Content/Source',
       navigateTo: '',
-      metrics: [
-        {
-          title: '...',
-          query: '',
-        },
-      ],
     },
   ]
 

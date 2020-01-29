@@ -1,34 +1,44 @@
 import React from 'react'
-import { BillboardChart, Stack, StackItem, Link } from 'nr1'
-import Metric from './Metric'
+import { Stack, StackItem, Link } from 'nr1'
+import { Metric, BlankMetric } from './Metric'
 
 const metricStack = props => {
   const { config } = props
   const since = ` SINCE ${props.duration} MINUTES AGO`
   const compare = ` COMPARE WITH ${props.duration} MINUTES AGO`
 
-  const metrics = config.metrics
-    .map(metric => {
-      return [...Array(config.metrics)].map((_, idx) => {
-        // return <metric key={metric.title + idx} title={metric.title} value={metric.value} />
-        return (
-          <React.Fragment key={metric.title + idx}>
-            {metric.query && (
-              <StackItem className="metric">
-                <Metric
-                  accountId={props.accountId}
-                  metric={metric}
-                  duration={props.duration}
-                />
-              </StackItem>
-            )}
-          </React.Fragment>
-        )
+  let metrics =
+    config.metrics &&
+    config.metrics
+      .map(metric => {
+        return [...Array(config.metrics)].map((_, idx) => {
+          return (
+            <React.Fragment key={metric.title + idx}>
+              {metric.query && (
+                <StackItem className="metric">
+                  <Metric
+                    accountId={props.accountId}
+                    metric={metric}
+                    duration={props.duration}
+                  />
+                </StackItem>
+              )}
+            </React.Fragment>
+          )
+        })
       })
-    })
-    .reduce((arr, val) => {
-      return arr.concat(val)
-    }, [])
+      .reduce((arr, val) => {
+        return arr.concat(val)
+      }, [])
+
+  if (!metrics)
+    metrics = (
+      <React.Fragment>
+        <StackItem className="metric">
+          <BlankMetric />
+        </StackItem>
+      </React.Fragment>
+    )
 
   return (
     <React.Fragment>

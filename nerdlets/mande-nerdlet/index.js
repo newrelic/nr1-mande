@@ -2,44 +2,63 @@ import React from 'react'
 
 import { PlatformStateContext, NerdGraphQuery, Stack, StackItem } from 'nr1'
 
-import AccountPicker from '../../components/account-picker'
 import MandeContainer from './MandeContainer'
+import DimensionContainer from './DimensionContainer'
 
 export default class Mande extends React.Component {
   static contextType = PlatformStateContext
 
   state = {
-    accounts: [],
-    account: { name: 'Choose an account' },
     accountId: null,
+    threshold: 'All',
   }
 
-  async componentDidMount() {
-    const query = `
-      {
-        actor {
-          accounts {
-            name
-            id
-          }
-        }
-      }
-    `
-    const { data } = await NerdGraphQuery.query({ query: query })
+  dimensionConfigs = [
+    {
+      name: 'Accounts',
+      mandatory: true,
+      data: async () => {
+        const { data } = await this.query(`{
+            actor {
+              accounts {
+                name
+                id
+              }
+            }
+          }`)
+        const { accounts } = data.actor
+        return accounts
+      },
+      handler: account => {
+        this.setState({ accountId: account.id })
+      },
+    },
+    {
+      name: 'Level',
+      mandatory: true,
+      data() {
+        return [
+          { id: 1, name: 'All' },
+          { id: 2, name: 'Warning' },
+          { id: 3, name: 'Critical' },
+        ]
+      },
+      handler: level => {
+        this.setState({ threshold: level.name })
+      },
+    },
+  ]
 
-    const { accounts } = data.actor
-
-    const account = accounts.length > 0 && accounts[0]
-    this.setState({ accounts, account, accountId: account.id })
-  }
-
-  handleChangeAccount = account => {
-    const accountId = account.id
-    this.setState({ accountId })
+  query = async graphql => {
+    return await NerdGraphQuery.query({ query: graphql })
   }
 
   render() {
-    const { accounts, account, accountId } = this.state
+    console.info('mande-nerdlet.index.render')
+
+    const { accountId, threshold } = this.state
+
+    console.info('mande-nerdlet.index', accountId, threshold)
     const {
       timeRange: { duration },
     } = this.context
@@ -47,29 +66,7 @@ export default class Mande extends React.Component {
 
     return (
       <React.Fragment>
-        <Stack
-          fullWidth={true}
-          directionType={Stack.DIRECTION_TYPE.VERTICAL}
-          gapType={Stack.GAP_TYPE.SMALL}
-          className="options-bar-parent"
-        >
-          <StackItem grow>
-            <Stack
-              directionType={Stack.DIRECTION_TYPE.HORIZONTAL_TYPE}
-              verticalType={Stack.VERTICAL_TYPE.CENTER}
-              className="options-bar"
-              fullWidth
-            >
-              <StackItem>
-                <AccountPicker
-                  accounts={accounts}
-                  account={account}
-                  setAccount={this.handleChangeAccount}
-                ></AccountPicker>
-              </StackItem>
-            </Stack>
-          </StackItem>
-        </Stack>
+        <DimensionContainer configs={this.dimensionConfigs}/>
         {accountId && (
           <Stack
             fullWidth={true}
@@ -81,6 +78,7 @@ export default class Mande extends React.Component {
             <StackItem grow>
               <MandeContainer
                 accountId={accountId}
+                threshold={threshold}
                 duration={durationInMinutes}
               />
             </StackItem>

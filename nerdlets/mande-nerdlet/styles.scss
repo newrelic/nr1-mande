@@ -378,7 +378,7 @@ h4 {
 }
 
 [class*='wnd-StackItem'] div.options-bar {
-  justify-content: space-between;
+  // justify-content: space-between;
   margin-bottom: 24px;
   box-sizing: border-box;
   padding: 0 16px 0;
@@ -388,6 +388,7 @@ h4 {
 
   & > [class*='StackItem'] {
     padding: 4px 0 4px;
+    margin-left: 20px;
   }
 }
 

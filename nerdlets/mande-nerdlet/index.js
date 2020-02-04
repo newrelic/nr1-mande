@@ -57,8 +57,6 @@ export default class Mande extends React.Component {
     console.info('mande-nerdlet.index.render')
 
     const { accountId, threshold } = this.state
-
-    console.info('mande-nerdlet.index', accountId, threshold)
     const {
       timeRange: { duration },
     } = this.context

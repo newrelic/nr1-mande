@@ -16,10 +16,11 @@ const compare = props => {
     },
   }
 
-  const classes = ['compareTo', props.change]
-  if (props.change !== 'noChange') {
+  const changeClass = props.change()
+  const classes = ['compareTo', changeClass]
+  if (changeClass !== 'noChange') {
     const invert = props.invert ? props.invert : false
-    const status = statusClasses.getStatus(props.change, invert)
+    const status = statusClasses.getStatus(changeClass, invert)
     classes.push(status)
   }
 

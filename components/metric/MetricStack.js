@@ -3,9 +3,7 @@ import { Stack, StackItem, Link } from 'nr1'
 import { Metric, BlankMetric } from './Metric'
 
 const metricStack = props => {
-  const { config } = props
-  const since = ` SINCE ${props.duration} MINUTES AGO`
-  const compare = ` COMPARE WITH ${props.duration} MINUTES AGO`
+  const { config, accountId, duration, threshold } = props
 
   let metrics =
     config.metrics &&
@@ -15,13 +13,12 @@ const metricStack = props => {
           return (
             <React.Fragment key={metric.title + idx}>
               {metric.query && (
-                <StackItem className="metric">
-                  <Metric
-                    accountId={props.accountId}
-                    metric={metric}
-                    duration={props.duration}
-                  />
-                </StackItem>
+                <Metric
+                  accountId={accountId}
+                  metric={metric}
+                  duration={duration}
+                  threshold={threshold}
+                />
               )}
             </React.Fragment>
           )
@@ -31,7 +28,7 @@ const metricStack = props => {
         return arr.concat(val)
       }, [])
 
-  if (!metrics)
+  if (!metrics && threshold === 'All')
     metrics = (
       <React.Fragment>
         <StackItem className="metric">

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Spinner, Icon, NerdGraphQuery } from 'nr1'
+import { Spinner, Icon, NerdGraphQuery, StackItem } from 'nr1'
 import Compare from './Compare'
 import MetricValue from './MetricValue'
 
@@ -14,7 +14,7 @@ export class Metric extends React.Component {
 
   // ============== HANDLERS/METHODS ===============
   getData = async () => {
-    const { accountId, metric, duration } = this.props
+    const { accountId, metric, duration, threshold } = this.props
     const since = ` SINCE ${duration} MINUTES AGO`
     const compare = ` COMPARE WITH ${duration} MINUTES AGO`
     const nrql = metric.query.nrql + since + compare
@@ -61,26 +61,40 @@ export class Metric extends React.Component {
         rounded = this.roundToTwoDigits((difference / previous) * 100)
       }
 
-      const change = () => {
-        if (current > previous) return 'increase'
-        else if (current < previous) return 'decrease'
-        else return 'noChange'
-      }
-
       this.setState({
         current,
         previous,
         difference: rounded,
-        change: change(),
+        change() {
+          if (current > previous) return 'increase'
+          else if (current < previous) return 'decrease'
+          else return 'noChange'
+        },
         loading: false,
       })
-
-      console.debug('metric.getData starting state', this.state)
     }
   }
 
   roundToTwoDigits = value => {
     return Math.round(value * 100) / 100
+  }
+
+  isVisible = () => {
+    const { threshold, metric } = this.props
+    const { current } = this.state
+
+    if (threshold === 'All') return true
+    if (!metric.threshold) return false
+    if (threshold === 'Warning') {
+      if (metric.threshold.type === 'below')
+        return current <= metric.threshold.warning
+      else return current >= metric.threshold.warning
+    }
+    if (threshold === 'Critical') {
+      if (metric.threshold.type === 'below')
+        return current <= metric.threshold.critical
+      else return current >= metric.threshold.critical
+    }
   }
 
   // ============== LIFECYCLE METHODS ================
@@ -91,7 +105,7 @@ export class Metric extends React.Component {
     this.interval = setInterval(async () => {
       this.setState({ loading: true })
       await this.getData()
-    }, 25000)
+    }, 30000)
   }
 
   componentWillUnmount() {
@@ -99,10 +113,13 @@ export class Metric extends React.Component {
   }
 
   render() {
-    console.debug('metric.render')
+    // console.debug('metric.render')
 
     const { metric } = this.props
     const { loading, change, difference, current } = this.state
+
+    // check if we should show this component
+    if (!this.isVisible()) return null
 
     let metricContent = loading ? (
       <Spinner fillContainer />
@@ -121,7 +138,11 @@ export class Metric extends React.Component {
       </React.Fragment>
     )
 
-    return <div className="metric-chart">{metricContent}</div>
+    return (
+      <StackItem className="metric">
+        <div className="metric-chart">{metricContent}</div>
+      </StackItem>
+    )
   }
 }
 

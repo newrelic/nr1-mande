@@ -28,8 +28,8 @@ const mandeContainer = props => {
         {
           title: 'Stream Joins',
           threshold: {
-            critical: 10,
-            warning: 50,
+            critical: 40,
+            warning: 43,
             type: 'below',
           },
           invertCompareTo: 'true',
@@ -78,6 +78,10 @@ const mandeContainer = props => {
         },
         {
           title: 'Non 5xx Error Rate',
+          threshold: {
+            critical: 5.5,
+            warning: 4.9,
+          },
           query: {
             nrql: `SELECT percentage(count(*), where httpResponseCode like '4%') as 'result' FROM Transaction`,
             lookup: 'result',
@@ -98,6 +102,10 @@ const mandeContainer = props => {
       metrics: [
         {
           title: 'Player Ready',
+          threshold: {
+            critical: 10,
+            warning: 5,
+          },
           query: {
             nrql: `SELECT percentile(timeSinceLoad, 50) as 'percentile' FROM PageAction`,
             lookup: 'percentile',
@@ -119,6 +127,10 @@ const mandeContainer = props => {
         },
         {
           title: 'Time to First Frame',
+          threshold: {
+            critical: 5,
+            warning: 3,
+          },
           query: {
             nrql: `SELECT percentile(timeSinceRequested/1000, 50) as 'percentile' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START'`,
             lookup: 'percentile',
@@ -159,7 +171,7 @@ const mandeContainer = props => {
   ]
 
   // convert metricStacks into components
-  const { accountId } = props
+  const { accountId, threshold, duration } = props
   const metricStacks = metricConfigs
     .map(config => {
       return [...Array(config)].map((_, idx) => {
@@ -168,7 +180,8 @@ const mandeContainer = props => {
             key={config.title + idx}
             config={config}
             accountId={accountId}
-            duration={props.duration}
+            threshold={threshold}
+            duration={duration}
           />
         )
       })

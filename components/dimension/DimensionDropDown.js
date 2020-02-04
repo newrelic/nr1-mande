@@ -23,17 +23,15 @@ export default class DimensionDropDown extends React.Component {
     this.setState({ values, loading: false, selected })
   }
 
-  onSelectItem = event => {
-    const { target } = event
+  onSelectItem = value => {
     const { config } = this.props
-    const { values } = this.state
-    const value = values.filter(val => val.name === target.value)
     config.handler(value)
+    this.setState({ selected: value })
   }
 
   onOpen = () => {
     console.debug('DimensionDropDown.onOpen')
-    this.getValues() // refresh the data displayed
+    // refresh the data displayed?
   }
 
   onSearch = () => {
@@ -50,7 +48,7 @@ export default class DimensionDropDown extends React.Component {
     const { selected } = this.state
 
     const items = this.state.values.map(val => (
-      <DropdownItem key={val.id} onClick={this.onSelectItem}>
+      <DropdownItem key={val.id} onClick={() => this.onSelectItem(val)}>
         {val.name}
       </DropdownItem>
     ))

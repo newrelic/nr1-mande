@@ -4,11 +4,11 @@ const metricValue = props => {
   const getThresholdClass = (threshold, value) => {
     if (!threshold) return ''
     if (threshold.type === 'below') {
-      if (value >= threshold.warning) return ''
+      if (value > threshold.warning) return ''
       if (value <= threshold.critical) return 'redLight'
       return 'yellowLight'
     } else {
-      if (value <= threshold.warning) return ''
+      if (value < threshold.warning) return ''
       if (value >= threshold.critical) return 'redLight'
       return 'yellowLight'
     }

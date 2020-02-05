@@ -3,40 +3,6 @@ import { Stack, StackItem, NerdGraphQuery } from 'nr1'
 import DimensionDropDown from '../../components/dimension/DimensionDropDown'
 
 const dimensionContainer = props => {
-  // const dimensionConfigs = [
-  //   {
-  //     name: 'Accounts',
-  //     mandatory: true,
-  //     async getData() {
-  //       const { data } = await query(`{
-  //           actor {
-  //             accounts {
-  //               name
-  //               id
-  //             }
-  //           }
-  //         }`)
-  //       const { accounts } = data.actor
-  //       return accounts
-  //     },
-  //   },
-  //   {
-  //     name: 'Level',
-  //     mandatory: true,
-  //     getData() {
-  //       return [
-  //         { id: 1, name: 'All' },
-  //         { id: 2, name: 'Warning' },
-  //         { id: 3, name: 'Critical' },
-  //       ]
-  //     },
-  //   },
-  // ]
-
-  // const query = async graphql => {
-  //   return await NerdGraphQuery.query({ query: graphql })
-  // }
-
   const { configs } = props
   const dimensions = configs
     .map(config => {

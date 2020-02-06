@@ -54,6 +54,7 @@ export class Metric extends React.Component {
         previous
       )
 
+      current = this.roundToTwoDigits(current)
       const difference = Math.abs(previous - current)
       let rounded = difference
 
@@ -97,6 +98,37 @@ export class Metric extends React.Component {
     }
   }
 
+  getMinified = () => {
+    const { metric } = this.props
+    const { current } = this.state
+    return (
+      <React.Fragment>
+        <MetricValue
+          minify={true}
+          threshold={metric.threshold}
+          value={current}
+        />
+      </React.Fragment>
+    )
+  }
+
+  getMaximized = () => {
+    const { metric } = this.props
+    const { change, difference, current } = this.state
+
+    return (
+      <React.Fragment>
+        <p className="name">{metric.title}</p>
+        <MetricValue threshold={metric.threshold} value={current} />
+        <Compare
+          invert={metric.invertCompareTo}
+          change={change}
+          difference={difference}
+        />
+      </React.Fragment>
+    )
+  }
+
   // ============== LIFECYCLE METHODS ================
   async componentDidMount() {
     console.debug('metric componentDidMount')
@@ -115,31 +147,22 @@ export class Metric extends React.Component {
   render() {
     // console.debug('metric.render')
 
-    const { metric } = this.props
-    const { loading, change, difference, current } = this.state
+    const { minify } = this.props
+    const { loading } = this.state
 
-    // check if we should show this component
+    // apply threshold level filtering, if applicable
     if (!this.isVisible()) return null
 
     let metricContent = loading ? (
       <Spinner fillContainer />
+    ) : minify ? (
+      this.getMinified()
     ) : (
-      <React.Fragment>
-        <p className="name">{metric.title}</p>
-        <MetricValue
-          threshold={metric.threshold}
-          value={this.roundToTwoDigits(current)}
-        />
-        <Compare
-          invert={metric.invertCompareTo}
-          change={change}
-          difference={difference}
-        />
-      </React.Fragment>
-    )
+          this.getMaximized()
+        )
 
     return (
-      <StackItem className="metric">
+      <StackItem className={!minify ? 'metric' : 'metric minified'}>
         <div className="metric-chart">{metricContent}</div>
       </StackItem>
     )
@@ -148,15 +171,20 @@ export class Metric extends React.Component {
 
 export class BlankMetric extends React.Component {
   render() {
+    const { minified } = this.props
     return (
-      <div className="metric-chart">
-        <p className="name">...</p>
-        <Icon
-          className="blank"
-          type={Icon.TYPE.INTERFACE__OPERATIONS__CONFIGURE}
-          sizeType={Icon.SIZE_TYPE.LARGE}
-          color="797878"
-        />
+      <div className="metric-chart blank">
+        {!minified && (
+          <React.Fragment>
+            <p className="name">...</p>
+            <Icon
+              className="icon"
+              type={Icon.TYPE.INTERFACE__OPERATIONS__CONFIGURE}
+              sizeType={Icon.SIZE_TYPE.LARGE}
+              color="797878"
+            />
+          </React.Fragment>
+        )}
       </div>
     )
   }

@@ -4,6 +4,7 @@ import { Metric, BlankMetric } from './Metric'
 
 const metricStack = props => {
   const { config, accountId, duration, threshold } = props
+  const minify = true
 
   let metrics =
     config.metrics &&
@@ -18,6 +19,7 @@ const metricStack = props => {
                   metric={metric}
                   duration={duration}
                   threshold={threshold}
+                  minify={minify}
                 />
               )}
             </React.Fragment>
@@ -31,8 +33,8 @@ const metricStack = props => {
   if (!metrics && threshold === 'All')
     metrics = (
       <React.Fragment>
-        <StackItem className="metric">
-          <BlankMetric />
+        <StackItem className={minify ? 'metric minified' : 'metric'}>
+          <BlankMetric minified={minify} />
         </StackItem>
       </React.Fragment>
     )
@@ -52,7 +54,12 @@ const metricStack = props => {
           )}
           {!config.navigateTo && config.title}
         </StackItem>
-        {metrics}
+        {minify && (
+          <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL}>
+            {metrics}
+          </Stack>
+        )}
+        {!minify && metrics}
       </Stack>
     </React.Fragment>
   )

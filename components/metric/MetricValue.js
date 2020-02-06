@@ -14,12 +14,12 @@ const metricValue = props => {
     }
   }
 
-  const { threshold, value } = props
+  const { threshold, value, minify } = props
   const classes = ['value', getThresholdClass(threshold, value)]
 
   return (
     <React.Fragment>
-      <p className={classes.join(' ')}>{value}</p>
+      <p className={classes.join(' ')}>{!minify && value}</p>
     </React.Fragment>
   )
 }

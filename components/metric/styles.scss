@@ -25,6 +25,34 @@
     padding: 5px;
   }
 
+  &.minified {
+    width: 10px;
+    height: 10px;
+
+    > .metric-chart {
+      > .value {
+        height: 10px;
+        width: 10px;
+        border: none;
+        background-color: #11a600;
+
+      }
+      [class*='yellowLight'] {
+        background-color: #f1cf50;
+      }
+
+      [class*='redLight'] {
+        background-color: #bf0016;
+      }
+
+      &.blank {
+        height: 10px;
+        width: 10px;
+        background-color: #797878;
+      }
+    }
+  }
+
   > .metric-chart {
     height: 135px;
     margin: 0 5px auto;
@@ -34,7 +62,7 @@
     max-height: 100%;
     background-color: white;
 
-    > .blank {
+    > .icon {
       color: #797878;
       padding-top: 18px;
     }

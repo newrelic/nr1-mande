@@ -158,8 +158,8 @@ export class Metric extends React.Component {
     ) : minify ? (
       this.getMinified()
     ) : (
-          this.getMaximized()
-        )
+      this.getMaximized()
+    )
 
     return (
       <StackItem className={!minify ? 'metric' : 'metric minified'}>

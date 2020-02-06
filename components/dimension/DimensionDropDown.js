@@ -14,7 +14,7 @@ export default class DimensionDropDown extends React.Component {
     const { config } = this.props
     let { selected } = this.state
     const values = await config.data()
-    if (config.mandatory && !selected) {
+    if (config.mandatory && !selected && values) {
       // Todo: this obviously needs to be updated to handle changes to the selected or if a refreshed list no longer has the selected
       selected = values[0]
       config.handler(selected)

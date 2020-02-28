@@ -3,41 +3,53 @@ import { Stack, StackItem, Link } from 'nr1'
 import { Metric, BlankMetric } from './Metric'
 
 const metricStack = props => {
-  const { config, accountId, duration, threshold, minify, selectMetric } = props
+  const {
+    config,
+    accountId,
+    duration,
+    threshold,
+    selected,
+    selectMetric,
+  } = props
 
-  let metrics =
-    config.metrics &&
-    config.metrics
-      .map(metric => {
-        return [...Array(config.metrics)].map((_, idx) => {
-          return (
-            <React.Fragment key={metric.title + idx}>
-              {metric.query && (
-                <Metric
-                  accountId={accountId}
-                  metric={metric}
-                  duration={duration}
-                  threshold={threshold}
-                  minify={minify}
-                  click={selectMetric}
-                />
-              )}
-            </React.Fragment>
-          )
+  let minify = selected !== null && !selected
+  let metrics = null
+
+  if (!selected) {
+    metrics =
+      config.metrics &&
+      config.metrics
+        .map(metric => {
+          return [...Array(config.metrics)].map((_, idx) => {
+            return (
+              <React.Fragment key={metric.title + idx}>
+                {metric.query && (
+                  <Metric
+                    accountId={accountId}
+                    metric={metric}
+                    duration={duration}
+                    threshold={threshold}
+                    minify={minify}
+                    click={selectMetric}
+                  />
+                )}
+              </React.Fragment>
+            )
+          })
         })
-      })
-      .reduce((arr, val) => {
-        return arr.concat(val)
-      }, [])
+        .reduce((arr, val) => {
+          return arr.concat(val)
+        }, [])
 
-  if (!metrics && threshold === 'All')
-    metrics = (
-      <React.Fragment>
-        <StackItem className={minify ? 'metric minified' : 'metric'}>
-          <BlankMetric minified={minify} />
-        </StackItem>
-      </React.Fragment>
-    )
+    if (!metrics && threshold === 'All')
+      metrics = (
+        <React.Fragment>
+          <StackItem className={minify ? 'metric minified' : 'metric'}>
+            <BlankMetric minified={minify} />
+          </StackItem>
+        </React.Fragment>
+      )
+  }
 
   return (
     <React.Fragment>
@@ -46,7 +58,9 @@ const metricStack = props => {
         gapType={Stack.GAP_TYPE.MEDIUM}
         className="metricStack"
       >
-        <StackItem className="metric title">
+        <StackItem
+          className={selected ? 'metric title selectedStack' : 'metric title'}
+        >
           {config.navigateTo && (
             <span>
               <Link to={config.navigateTo}>{config.title}</Link>

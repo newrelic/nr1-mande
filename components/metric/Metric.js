@@ -147,7 +147,7 @@ export class Metric extends React.Component {
   render() {
     // console.debug('metric.render')
 
-    const { minify } = this.props
+    const { minify, click, metric } = this.props
     const { loading } = this.state
 
     // apply threshold level filtering, if applicable
@@ -163,7 +163,9 @@ export class Metric extends React.Component {
 
     return (
       <StackItem className={!minify ? 'metric' : 'metric minified'}>
-        <div className="metric-chart">{metricContent}</div>
+        <div onClick={() => click(metric.title)} className="metric-chart">
+          {metricContent}
+        </div>
       </StackItem>
     )
   }

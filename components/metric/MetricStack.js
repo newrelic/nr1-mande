@@ -3,8 +3,7 @@ import { Stack, StackItem, Link } from 'nr1'
 import { Metric, BlankMetric } from './Metric'
 
 const metricStack = props => {
-  const { config, accountId, duration, threshold } = props
-  const minify = true
+  const { config, accountId, duration, threshold, minify, selectMetric } = props
 
   let metrics =
     config.metrics &&
@@ -20,6 +19,7 @@ const metricStack = props => {
                   duration={duration}
                   threshold={threshold}
                   minify={minify}
+                  click={selectMetric}
                 />
               )}
             </React.Fragment>
@@ -50,16 +50,30 @@ const metricStack = props => {
           {config.navigateTo && (
             <span>
               <Link to={config.navigateTo}>{config.title}</Link>
+              {/* <Link onClick={}>{config.title}</Link> */}
             </span>
           )}
           {!config.navigateTo && config.title}
         </StackItem>
         {minify && (
           <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL}>
-            {metrics}
+            {!metrics ? (
+              <StackItem>
+                <div></div>
+              </StackItem>
+            ) : (
+              metrics
+            )}
           </Stack>
         )}
-        {!minify && metrics}
+        {!minify &&
+          (!metrics ? (
+            <StackItem>
+              <div></div>
+            </StackItem>
+          ) : (
+            metrics
+          ))}
       </Stack>
     </React.Fragment>
   )

@@ -2,13 +2,18 @@ import React from 'react'
 import { Stack, navigation } from 'nr1'
 import MetricStack from '../../components/metric/MetricStack'
 
-const mandeContainer = props => {
+export default class MandeContainer extends React.Component {
+  state = {
+    selectedMetric: null,
+    selectedStack: null,
+  }
+
   /** NAVIGATION CONFIGURATION ******************* */
-  const getNavigation = target => {
+  getNavigation = target => {
     return navigation.getReplaceNerdletLocation(target)
   }
 
-  const videoQosNerdlet = () => {
+  videoQosNerdlet = () => {
     return {
       id: 'video-qos-nerdlet',
       urlStateOptions: '',
@@ -16,7 +21,7 @@ const mandeContainer = props => {
   }
 
   /** INITIALIZE METRIC DEFINITIONS ***************** */
-  const metricConfigs = [
+  metricConfigs = [
     {
       title: 'Users',
       navigateTo: '',
@@ -36,7 +41,7 @@ const mandeContainer = props => {
           query: {
             nrql: `SELECT count(*)  as 'result' FROM PageAction, MobileVideo, RokuVideo  WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')`,
             lookup: 'result',
-          }
+          },
         },
         {
           title: 'Total View Time',
@@ -98,7 +103,7 @@ const mandeContainer = props => {
     },
     {
       title: 'Video',
-      navigateTo: getNavigation(videoQosNerdlet()),
+      navigateTo: this.getNavigation(this.videoQosNerdlet()),
       metrics: [
         {
           title: 'Player Ready',
@@ -170,36 +175,57 @@ const mandeContainer = props => {
     },
   ]
 
-  // convert metricStacks into components
-  const { accountId, threshold, duration } = props
-  const metricStacks = metricConfigs
-    .map(config => {
-      return [...Array(config)].map((_, idx) => {
-        return (
-          <MetricStack
-            key={config.title + idx}
-            config={config}
-            accountId={accountId}
-            threshold={threshold}
-            duration={duration}
-          />
-        )
-      })
+  onSelectMetric = selected => {
+    const stack = this.metricConfigs.filter(config => {
+      const metricFound =
+        config.metrics &&
+        config.metrics.filter(metric => metric.title === selected)
+
+      if (metricFound && metricFound.length > 0) return config
     })
-    .reduce((arr, val) => {
-      return arr.concat(val)
-    }, [])
 
-  console.info('MandeContainer render')
-  return (
-    <Stack
-      fullWidth={true}
-      directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
-      horizontalType={Stack.HORIZONTAL_TYPE.FILL_EVENLY}
-    >
-      {metricStacks}
-    </Stack>
-  )
+    this.setState({ selectedMetric: selected, selectedStack: stack[0] })
+  }
+
+  render() {
+    const { accountId, threshold, duration } = this.props
+    const { selectedStack } = this.state
+
+    const minify = config => {
+      if (!selectedStack) return false
+      else return selectedStack.title === config.title ? false : true
+    }
+
+    // convert metricConfigs into components
+    const metricStacks = this.metricConfigs
+      .map(config => {
+        return [...Array(config)].map((_, idx) => {
+          return (
+            <MetricStack
+              key={config.title + idx}
+              config={config}
+              accountId={accountId}
+              threshold={threshold}
+              duration={duration}
+              minify={minify(config)}
+              selectMetric={this.onSelectMetric}
+            />
+          )
+        })
+      })
+      .reduce((arr, val) => {
+        return arr.concat(val)
+      }, [])
+
+    console.info('MandeContainer render')
+    return (
+      <Stack
+        fullWidth={true}
+        directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+        horizontalType={Stack.HORIZONTAL_TYPE.FILL_EVENLY}
+      >
+        {metricStacks}
+      </Stack>
+    )
+  }
 }
-
-export default mandeContainer

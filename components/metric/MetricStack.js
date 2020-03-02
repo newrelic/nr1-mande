@@ -44,7 +44,9 @@ const metricStack = props => {
     if (!metrics && threshold === 'All')
       metrics = (
         <React.Fragment>
-          <StackItem className={minify ? 'metric minified' : 'metric'}>
+          <StackItem
+            className={minify ? 'metric minified' : 'metric maximized'}
+          >
             <BlankMetric minified={minify} />
           </StackItem>
         </React.Fragment>

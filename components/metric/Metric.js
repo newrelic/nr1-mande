@@ -162,7 +162,7 @@ export class Metric extends React.Component {
     )
 
     return (
-      <StackItem className={!minify ? 'metric' : 'metric minified'}>
+      <StackItem className={!minify ? 'metric maximized' : 'metric minified'}>
         <div onClick={() => click(metric.title)} className="metric-chart">
           {metricContent}
         </div>

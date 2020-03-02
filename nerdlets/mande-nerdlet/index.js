@@ -233,7 +233,7 @@ export default class Mande extends React.Component {
     const durationInMinutes = duration / 1000 / 60
 
     return (
-      <React.Fragment>
+      <div className="container">
         <DimensionContainer configs={this.dimensionConfigs} />
         {accountId && (
           <Stack
@@ -260,7 +260,7 @@ export default class Mande extends React.Component {
             )}
           </Stack>
         )}
-      </React.Fragment>
+      </div>
     )
   }
 }

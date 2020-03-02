@@ -385,7 +385,7 @@ h4 {
   background-color: #edeeee;
   border-top: 1px solid #e3e4e4;
   border-bottom: 1px solid #e3e4e4;
-
+  
   & > [class*='StackItem'] {
     padding: 4px 0 4px;
     margin-left: 20px;
@@ -398,6 +398,11 @@ h4 {
 
 .detail-panel {
   border: 1px solid #ddd;
-  margin-top: 10px;
+  margin: 10px 10px auto;
   padding: 5px 5px;
+  width: 98%;
+}
+
+.container {
+  min-width: 1440px;
 }

@@ -10,33 +10,13 @@
 
 .metricStack {
   width: 100%;
-  min-width: 150px;
+  min-width: 175px;
+  max-width: 298px;
   margin: 0px 10px auto;
-
-  @media (min-width: 1500px) {
-    max-width: 175px;
-  }
-
-  @media (min-width: 1750px) {
-    max-width: 200px;
-  }
-
-  @media (min-width: 2000px) {
-    max-width: 240px;
-  }
-
-  @media (min-width: 2300px) {
-    max-width: 275px;
-  }
-
-  @media (min-width: 2500px) {
-    max-width: 298px;
-  }
-
 }
 
 .metric {
-  width: 100%;
+  width: 97%;
   margin: 8px 0px auto;
   text-align: center;
 
@@ -45,53 +25,16 @@
     border: 1px solid #ddd;
     font: 400 13px/19px "Open Sans", sans-serif;
     padding: 5px;
+    text-align: center;
   }
 
   &.selectedStack {
-    width: 100%;
-    font-weight: 700;
-    position: relative;
+    height: 20px;
+    font-weight: 600;
+    font-size: 16px;
     box-shadow: none;
-    border-bottom: 0px;
     background-color: #edeeee;
   }
-  
-  &.selectedStack:after {
-    content: "";
-    position: absolute;
-    bottom: -25px;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-left: 86px solid transparent;
-    border-right: 86px solid transparent;
-    border-top: 25px solid #edeeee;
-
-    @media (min-width: 1500px) {
-      border-left: 91px solid transparent;
-      border-right: 91px solid transparent;
-    }
-
-    @media (min-width: 1750px) {
-      border-left: 105px solid transparent;
-      border-right: 105px solid transparent;
-    }
-  
-    @media (min-width: 2000px) {
-      border-left: 125px solid transparent;
-      border-right: 125px solid transparent;
-    }
-  
-    @media (min-width: 2300px) {
-      border-left: 142px solid transparent;
-      border-right: 142px solid transparent;
-    }
-
-    @media (min-width: 2500px) {
-      border-left: 152px solid transparent;
-      border-right: 152px solid transparent;
-    }
-  }    
 
   &.minified {
     width: 10px;

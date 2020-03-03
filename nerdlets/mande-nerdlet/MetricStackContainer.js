@@ -10,6 +10,7 @@ const metricStackContainer = props => {
     metricConfigs,
     selectedStack,
     selectMetric,
+    toggleDetails,
   } = props
 
   // convert metricConfigs into components
@@ -25,6 +26,7 @@ const metricStackContainer = props => {
             duration={duration}
             selected={selectedStack && selectedStack.title === config.title}
             selectMetric={selectMetric}
+            toggleDetails={toggleDetails}
           />
         )
       })

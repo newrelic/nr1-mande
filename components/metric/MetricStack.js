@@ -10,6 +10,7 @@ const metricStack = props => {
     threshold,
     selected,
     selectMetric,
+    toggleDetails,
   } = props
 
   let minify = selected !== null && !selected
@@ -63,13 +64,7 @@ const metricStack = props => {
         <StackItem
           className={selected ? 'metric title selectedStack' : 'metric title'}
         >
-          {config.navigateTo && (
-            <span>
-              <Link to={config.navigateTo}>{config.title}</Link>
-              {/* <Link onClick={}>{config.title}</Link> */}
-            </span>
-          )}
-          {!config.navigateTo && config.title}
+          <div onClick={() => toggleDetails(config.title)}>{config.title}</div>
         </StackItem>
         {minify && (
           <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL}>

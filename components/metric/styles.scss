@@ -1,3 +1,17 @@
+@mixin selectedAfter {
+  &:after {
+    margin-left: 5px;
+    font-size: 10px;
+    text-decoration: underline;
+    content: "Close";
+    color: rgb(0, 121, 191);
+  }
+
+  &:hover:after {
+    cursor: pointer;
+  }
+}
+
 .metricStack {
   width: 100%;
   min-width: 175px;
@@ -16,7 +30,7 @@
     font: 400 13px/19px "Open Sans", sans-serif;
     padding: 5px;
     text-align: center;
-    
+
     &:hover {
       cursor: pointer;
     }
@@ -30,13 +44,7 @@
 
     > .title-content {
       width: 100%;
-      &:after {
-        margin-left: 5px;
-        font-size: 10px;
-        text-decoration: underline;
-        content: "Close";
-        color: rgb(0, 121, 191);;
-      }  
+      @include selectedAfter;      
     }
   }
 
@@ -68,7 +76,6 @@
   }
 
   &.maximized {
-
     > .metric-chart {
       height: 135px;
       margin: 0 5px auto;
@@ -83,17 +90,11 @@
 
         > .name {
           font-weight: 600;
-
-          &:after {
-            margin-left: 5px;
-            font-size: 10px;
-            text-decoration: underline;
-            content: "Close";
-            color: rgb(0, 121, 191);;
-          }
+          color: #000e0e;
+          @include selectedAfter;
         }
       }
-  
+
       > .icon {
         color: #797878;
         padding-top: 18px;

@@ -5,7 +5,7 @@ import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
 momentDurationFormatSetup(moment)
 
-const metricDetail = props => {
+const videoOverview = props => {
   const { accountId, duration } = props
 
   const since = ` SINCE ${duration} MINUTES AGO`
@@ -77,4 +77,4 @@ const metricDetail = props => {
   )
 }
 
-export default metricDetail
+export default videoOverview

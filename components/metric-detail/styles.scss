@@ -1,16 +1,47 @@
-.detail-chart {
-  width: 100%;
-  height: 100%;
-  
-  &.pie-chart {
-    > [class*="vz--component"] {
-      padding-top: 5px;
-    }  
+.detail-grid {
+  [class*="wnd-Grid"] {
+    margin-left: 5px;
   }
-}
 
-.chart-container {
-  padding: 5px 0px auto;
-  width: 100%;
-  height: 500px;
+  [class*="wnd-GridItem"] {
+    margin-left: 0px;
+  }
+
+  .chart-container {
+    width: 100%;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);
+
+    [class*="component--loaded"] {
+      background-color: transparent;
+    }
+
+    > .chart-title {
+      font-size: 13px;
+      font-weight: 400;
+      box-sizing: border-box;
+      padding: 8px 16px;
+
+      > .chart-subtitle {
+        color: #8e9494;
+        font-size: 12px;
+        padding-top: 2px;
+      }
+    }
+
+    .detail-chart {
+      height: 380px;
+      box-sizing: border-box;
+      padding: 16px;
+    
+      & > [class*="Chart"] {
+        height: 100%;
+        width: 100%;
+      }
+    
+    }
+  }
 }

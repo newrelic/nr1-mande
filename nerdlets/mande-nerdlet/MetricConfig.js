@@ -1,4 +1,5 @@
-import VideoDetail from '../../components/metric-detail/VideoDetail'
+import VideoOverview from '../../components/metric-detail/VideoOverview'
+import MetricDetail from '../../components/metric-detail/MetricDetail'
 
 export default [
   {
@@ -100,7 +101,7 @@ export default [
     navigateTo: '',
     detailView: props => {
       return (
-        <VideoDetail accountId={props.accountId} duration={props.duration} />
+        <VideoOverview accountId={props.accountId} duration={props.duration} />
       )
     },
     metrics: [
@@ -138,6 +139,9 @@ export default [
         query: {
           nrql: `SELECT percentile(timeSinceRequested/1000, 50) as 'percentile' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START'`,
           lookup: 'percentile',
+        },
+        detailView: props => {
+          return <MetricDetail />
         },
       },
       {

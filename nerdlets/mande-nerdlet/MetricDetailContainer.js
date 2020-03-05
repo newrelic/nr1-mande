@@ -13,11 +13,16 @@ const metricDetailContainer = props => {
     toggleMetric,
   } = props
 
+  let selectedDetail = null
+
   const metrics =
     stack.metrics &&
     stack.metrics
       .map(metric => {
         return [...Array(stack.metrics)].map((_, idx) => {
+          const selected = activeMetric === metric.title
+          if (selected) selectedDetail = metric.detailView
+
           return (
             <React.Fragment key={metric.title + idx}>
               {metric.query && (
@@ -26,7 +31,7 @@ const metricDetailContainer = props => {
                   metric={metric}
                   duration={duration}
                   threshold={threshold}
-                  selected={activeMetric === metric.title}
+                  selected={selected}
                   click={toggleMetric}
                 />
               )}
@@ -38,6 +43,12 @@ const metricDetailContainer = props => {
         return arr.concat(val)
       }, [])
 
+  const detailView = () => {
+    if (selectedDetail) return selectedDetail(props)
+    if (stack.detailView) return stack.detailView(props)
+    return <div />
+  }
+  
   return (
     <Stack className="detail-container">
       <StackItem grow className="detail-filter">
@@ -52,8 +63,9 @@ const metricDetailContainer = props => {
           <Stack fullWidth={true}>{metrics}</Stack>
         </StackItem>
         <StackItem className="detail-main">
-          {stack.detailView && stack.detailView(props)}
-          {!stack.detailView && <div />}
+          {detailView()}
+          {/* {stack.detailView && stack.detailView(props)}
+          {!stack.detailView && <div />} */}
         </StackItem>
       </Stack>
     </Stack>

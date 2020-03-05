@@ -9,7 +9,7 @@ const metricStack = props => {
     duration,
     threshold,
     selected,
-    selectMetric,
+    toggleMetric,
     toggleDetails,
   } = props
 
@@ -31,7 +31,7 @@ const metricStack = props => {
                     duration={duration}
                     threshold={threshold}
                     minify={minify}
-                    click={selectMetric}
+                    click={toggleMetric}
                   />
                 )}
               </React.Fragment>
@@ -64,7 +64,12 @@ const metricStack = props => {
         <StackItem
           className={selected ? 'metric title selectedStack' : 'metric title'}
         >
-          <div onClick={() => toggleDetails(config.title)} className="title-content">{config.title}</div>
+          <div
+            onClick={() => toggleDetails(config.title)}
+            className="title-content"
+          >
+            {config.title}
+          </div>
         </StackItem>
         {minify && (
           <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL}>

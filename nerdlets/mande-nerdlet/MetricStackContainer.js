@@ -9,7 +9,7 @@ const metricStackContainer = props => {
     duration,
     metricConfigs,
     selectedStack,
-    selectMetric,
+    toggleMetric,
     toggleDetails,
   } = props
 
@@ -25,7 +25,7 @@ const metricStackContainer = props => {
             threshold={threshold}
             duration={duration}
             selected={selectedStack && selectedStack.title === config.title}
-            selectMetric={selectMetric}
+            toggleMetric={toggleMetric}
             toggleDetails={toggleDetails}
           />
         )

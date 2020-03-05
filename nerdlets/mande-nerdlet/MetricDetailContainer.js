@@ -4,7 +4,14 @@ import { Stack, StackItem } from 'nr1'
 import { Metric } from '../../components/metric/Metric'
 
 const metricDetailContainer = props => {
-  const { stack, accountId, duration, threshold } = props
+  const {
+    stack,
+    accountId,
+    duration,
+    threshold,
+    activeMetric,
+    toggleMetric,
+  } = props
 
   const metrics =
     stack.metrics &&
@@ -19,6 +26,8 @@ const metricDetailContainer = props => {
                   metric={metric}
                   duration={duration}
                   threshold={threshold}
+                  selected={activeMetric === metric.title}
+                  click={toggleMetric}
                 />
               )}
             </React.Fragment>

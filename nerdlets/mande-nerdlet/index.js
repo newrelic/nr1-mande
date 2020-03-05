@@ -58,16 +58,22 @@ export default class Mande extends React.Component {
     return await NerdGraphQuery.query({ query: graphql })
   }
 
-  onSelectMetric = selected => {
-    const stack = metricConfigs.filter(config => {
-      const metricFound =
-        config.metrics &&
-        config.metrics.filter(metric => metric.title === selected)
+  onToggleMetric = selected => {
+    const currentMetric = this.state.selectedMetric
 
-      if (metricFound && metricFound.length > 0) return config
-    })
+    if (currentMetric && currentMetric === selected)
+      this.setState({ selectedMetric: null })
+    else {
+      const stack = metricConfigs.filter(config => {
+        const metricFound =
+          config.metrics &&
+          config.metrics.filter(metric => metric.title === selected)
 
-    this.setState({ selectedMetric: selected, selectedStack: stack[0] })
+        if (metricFound && metricFound.length > 0) return config
+      })
+
+      this.setState({ selectedMetric: selected, selectedStack: stack[0] })
+    }
   }
 
   onToggleDetailView = stackTitle => {
@@ -84,7 +90,7 @@ export default class Mande extends React.Component {
   render() {
     console.info('mande-nerdlet.index.render')
 
-    const { accountId, threshold, selectedStack } = this.state
+    const { accountId, threshold, selectedMetric, selectedStack } = this.state
     const {
       timeRange: { duration },
     } = this.context
@@ -108,7 +114,7 @@ export default class Mande extends React.Component {
                 duration={durationInMinutes}
                 metricConfigs={metricConfigs}
                 selectedStack={selectedStack}
-                selectMetric={this.onSelectMetric}
+                toggleMetric={this.onToggleMetric}
                 toggleDetails={this.onToggleDetailView}
               />
             </StackItem>
@@ -118,6 +124,8 @@ export default class Mande extends React.Component {
                   accountId={accountId}
                   duration={durationInMinutes}
                   threshold={threshold}
+                  activeMetric={selectedMetric}
+                  toggleMetric={this.onToggleMetric}
                   stack={selectedStack}
                 />
               </StackItem>

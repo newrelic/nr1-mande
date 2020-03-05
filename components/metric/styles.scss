@@ -68,6 +68,7 @@
   }
 
   &.maximized {
+
     > .metric-chart {
       height: 135px;
       margin: 0 5px auto;
@@ -77,6 +78,22 @@
       max-height: 100%;
       background-color: white;
 
+      &.selected {
+        background-color: #edeeee;
+
+        > .name {
+          font-weight: 600;
+
+          &:after {
+            margin-left: 5px;
+            font-size: 10px;
+            text-decoration: underline;
+            content: "Close";
+            color: rgb(0, 121, 191);;
+          }
+        }
+      }
+  
       > .icon {
         color: #797878;
         padding-top: 18px;

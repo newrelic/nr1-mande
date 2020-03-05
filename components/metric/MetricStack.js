@@ -64,7 +64,7 @@ const metricStack = props => {
         <StackItem
           className={selected ? 'metric title selectedStack' : 'metric title'}
         >
-          <div onClick={() => toggleDetails(config.title)}>{config.title}</div>
+          <div onClick={() => toggleDetails(config.title)} className="title-content">{config.title}</div>
         </StackItem>
         {minify && (
           <Stack directionType={Stack.DIRECTION_TYPE.HORIZONTAL}>

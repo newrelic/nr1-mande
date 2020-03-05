@@ -16,6 +16,10 @@
     font: 400 13px/19px "Open Sans", sans-serif;
     padding: 5px;
     text-align: center;
+    
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   &.selectedStack {
@@ -23,6 +27,17 @@
     font-weight: 600;
     box-shadow: none;
     background-color: #edeeee;
+
+    > .title-content {
+      width: 100%;
+      &:after {
+        margin-left: 5px;
+        font-size: 10px;
+        text-decoration: underline;
+        content: "Close";
+        color: rgb(0, 121, 191);;
+      }  
+    }
   }
 
   &.minified {
@@ -35,13 +50,12 @@
         height: 10px;
         border: none;
         background-color: #11a600;
-
       }
-      [class*='yellowLight'] {
+      [class*="yellowLight"] {
         background-color: #f1cf50;
       }
 
-      [class*='redLight'] {
+      [class*="redLight"] {
         background-color: #bf0016;
       }
 
@@ -62,26 +76,26 @@
       max-width: 100%;
       max-height: 100%;
       background-color: white;
-  
+
       > .icon {
         color: #797878;
         padding-top: 18px;
       }
-  
+
       > .name {
         display: block;
         font-size: 13px;
         color: #797878;
         text-align: center;
         white-space: normal;
-        margin: 1em 0 .5em 0;
+        margin: 1em 0 0.5em 0;
       }
-  
+
       > .value {
         font-size: 42px;
         line-height: 1em;
       }
-  
+
       > .compareTo {
         display: inline-block;
         text-align: center;
@@ -90,7 +104,7 @@
         margin: 11px auto 0;
         padding: 5px;
         border-radius: 3px;
-  
+
         &:before {
           height: 11px;
           width: 11px;
@@ -99,41 +113,39 @@
           position: relative;
         }
       }
-      
+
       > .increase {
         &:before {
-          content: '\2197';
+          content: "\2197";
         }
       }
-  
+
       > .decrease {
         &:before {
-          content: '\2198';
+          content: "\2198";
         }
       }
-  
+
       > .noChange {
         color: #797878;
         background-color: #f4f0f0;
-        
+
         &:before {
-          content: '\2194';
+          content: "\2194";
         }
       }
-   
+
       > .good {
         color: #11a600;
-        background-color: #f2fcf3;  
+        background-color: #f2fcf3;
       }
-  
+
       > .bad {
         color: #bf0016;
         background-color: #fcf2f3;
       }
-  
     }
   }
-
 }
 
 .redLight {
@@ -147,4 +159,3 @@
 .greenLight {
   color: #11a600;
 }
-

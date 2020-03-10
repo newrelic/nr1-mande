@@ -7,6 +7,10 @@
     color: rgb(0, 121, 191);
   }
 
+  @media (max-width: 1440px) and (max-height: 766px) {
+    font-size: 11px;
+  }
+
   &:hover:after {
     cursor: pointer;
   }

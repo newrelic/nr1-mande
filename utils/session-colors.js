@@ -15,8 +15,9 @@ export default class SessionColors {
   static EXTERNAL_LABEL = 'External Calls';
 
   static getColor = (eventType, event) => {
+    console.info('In SessionColors.getColor')
     console.debug([eventType, event]);
-    if (eventType == 'PageAction') {
+    if (eventType && eventType.includes('PageAction')) {
       switch (event.actionName) {
         case 'CONTENT_REQUEST':
         case 'DOWNLOAD':
@@ -44,8 +45,10 @@ export default class SessionColors {
   };
 
   static getLabel = (eventType, event) => {
+    console.info('In SessionColors.getLabel')
+
     console.debug([eventType, event]);
-    if (eventType == 'PageAction') {
+    if (eventType && eventType.includes('PageAction')) {
       switch (event.actionName) {
         case 'CONTENT_REQUEST':
         case 'DOWNLOAD':

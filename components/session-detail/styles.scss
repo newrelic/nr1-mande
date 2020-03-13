@@ -1,0 +1,87 @@
+.sessionStack {
+  width: 100%;
+}
+
+.sessionStackItem {
+  width: 100%;
+  min-height: 186px;
+}
+
+.sessionSectionBase {
+  .chart-container {
+    width: 100%;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    background-color: #fff;
+    // border-radius: 2px;
+
+    [class*="component--loaded"] {
+      background-color: transparent;
+    }
+
+    > .chart-title {
+      font-size: 12px;
+      font-weight: 600;
+      box-sizing: border-box;
+      padding: 16px 0px 6px 0px;
+      text-transform: uppercase;
+      color: rgb(70, 78, 78);
+
+      > .chart-subtitle {
+        color: #8e9494;
+        font-size: 12px;
+        padding-top: 2px;
+      }
+    }
+
+    > .chart-billboard-value {
+      width: 100%;
+      font-size: 50px;
+      font-weight: 400;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .session-detail-grid-item {
+      padding-bottom: 4px;
+    }
+
+    .session-detail-label {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .session-detail-divider {
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 2px;
+    }
+
+    .session-detail-value {
+      margin-left: 2px;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .detail-chart {
+      height: 380px;
+      box-sizing: border-box;
+      padding: 16px;
+
+      &.small {
+        width: 50%;
+        height: 100px;
+        padding: 0px;
+      }
+
+      &.large {
+        height: 500px;
+      }
+
+      & > [class*="Chart"] {
+        height: 100%;
+        width: 100%;
+      }
+    }
+  }
+}

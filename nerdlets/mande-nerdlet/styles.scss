@@ -1,76 +1,77 @@
 @import "../../components/metric/styles";
 @import "../../components/event-stream/styles";
 @import "../../components/metric-detail/styles";
+@import "../../components/session-detail/styles";
 
 // ==============================================================
 // Mande General Styles
 // ==============================================================
-[class*="billboard-metric"] {
-  font-size: 42px;
-  color: #2a3434;
-  display: block;
-  text-align: center;
-}
+// [class*="billboard-metric"] {
+//   font-size: 42px;
+//   color: #2a3434;
+//   display: block;
+//   text-align: center;
+// }
 
-[class*="billboard-name"] {
-  font-size: 14px;
-  text-align: center;
-}
+// [class*="billboard-name"] {
+//   font-size: 14px;
+//   text-align: center;
+// }
 
-[class*="billboard-element__inner"] {
-  padding: 0;
+// [class*="billboard-element__inner"] {
+//   padding: 0;
 
-  & > div {
-    display: flex;
-    flex-direction: column;
-  }
-}
+//   & > div {
+//     display: flex;
+//     flex-direction: column;
+//   }
+// }
 
-[class*="billboard-relative"] {
-  order: 3;
-  text-align: center;
-  font-size: 12px;
-  width: min-content;
-  margin: 6px auto 0;
-  padding: 7px 5px 8px;
-  border-radius: 3px;
+// [class*="billboard-relative"] {
+//   order: 3;
+//   text-align: center;
+//   font-size: 12px;
+//   width: min-content;
+//   margin: 6px auto 0;
+//   padding: 7px 5px 8px;
+//   border-radius: 3px;
 
-  &:before {
-    height: 11px;
-    width: 11px;
-    margin-right: 6px;
-    border: none;
-    position: relative;
-  }
-}
+//   &:before {
+//     height: 11px;
+//     width: 11px;
+//     margin-right: 6px;
+//     border: none;
+//     position: relative;
+//   }
+// }
 
-[class*="billboard-relative--increase"] {
-  color: #bf0016;
-  background-color: #fcf2f3;
+// [class*="billboard-relative--increase"] {
+//   color: #bf0016;
+//   background-color: #fcf2f3;
 
-  &:before {
-    top: 2px;
-    background-image: url("../assets/icon-arrow-red.svg");
-  }
-}
+//   &:before {
+//     top: 2px;
+//     background-image: url("../assets/icon-arrow-red.svg");
+//   }
+// }
 
-[class*="billboard-relative--decrease"] {
-  color: #11a600;
-  background-color: #f2fcf3;
+// [class*="billboard-relative--decrease"] {
+//   color: #11a600;
+//   background-color: #f2fcf3;
 
-  &:before {
-    background-image: url("../assets/icon-arrow-green.svg");
-  }
-}
+//   &:before {
+//     background-image: url("../assets/icon-arrow-green.svg");
+//   }
+// }
 
-[class*="billboard-name"] {
-  order: 1;
-}
+// [class*="billboard-name"] {
+//   order: 1;
+// }
 
-[class*="billboard-metric"] {
-  order: 2;
-  margin: 4px 0;
-}
+// [class*="billboard-metric"] {
+//   order: 2;
+//   margin: 4px 0;
+// }
 
 .kpiCharts {
   display: flex;

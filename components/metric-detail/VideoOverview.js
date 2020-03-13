@@ -1,20 +1,14 @@
 import React from 'react'
 
 import { AreaChart, PieChart, Grid, GridItem } from 'nr1'
-import moment from 'moment'
-import momentDurationFormatSetup from 'moment-duration-format'
-momentDurationFormatSetup(moment)
+import { dateFormatter } from '../../utils/date-formatter'
 
 const videoOverview = props => {
   const { accountId, duration } = props
 
   const since = ` SINCE ${duration} MINUTES AGO`
   const compare = ` COMPARE WITH ${duration} MINUTES AGO`
-  const formattedDuration = moment.duration(duration, 'minutes').format(() => {
-    if (duration > 1400) return 'd [days]'
-    if (duration > 60) return 'h [hours]'
-    else return 'm [minutes]'
-  })
+  const formattedDuration = dateFormatter(duration)
 
   const timingsNrql =
     `SELECT filter(average(timeSinceLoad), WHERE actionName = 'CONTENT_REQUEST') as 'Time to Content Request', 

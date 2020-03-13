@@ -33,15 +33,25 @@
     }
 
     .detail-chart {
-      height: 380px;
       box-sizing: border-box;
       padding: 16px;
     
+      &.small {
+        height: 200px;
+      }
+
+      &.medium {
+        height: 380px;
+      }
+
+      &.large {
+        height: 500px;
+      }
+
       & > [class*="Chart"] {
         height: 100%;
         width: 100%;
       }
-    
     }
   }
 }

@@ -1,35 +1,35 @@
-import React, { Component } from 'react';
-import { Stack, StackItem, Spinner, BlockText, NrqlQuery } from 'nr1';
-import Gauge from '../gauge';
-import SessionColors from '../gauge/colors';
+import React, { Component } from 'react'
+import { Stack, StackItem, Spinner, BlockText, NrqlQuery } from 'nr1'
+import Gauge from '../gauge'
+import SessionColors from '../gauge/colors'
 
 export default class Timeline extends Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   _buildGauge(eventType, data) {
-    const eventStream = [];
-    let prevEvent = null;
+    const eventStream = []
+    let prevEvent = null
     data[0].data.forEach(result => {
       if (!prevEvent) {
-        prevEvent = result;
+        prevEvent = result
       }
-      const value = result.timestamp - prevEvent.timestamp;
+      const value = result.timestamp - prevEvent.timestamp
       eventStream.push({
         label: SessionColors.getLabel(eventType, prevEvent),
         value: value > 0 ? value : 1,
         color: SessionColors.getColor(eventType, prevEvent),
         timeSinceLoad: result.timeSinceLoad,
-      });
-      prevEvent = result;
-    });
-    return eventStream;
+      })
+      prevEvent = result
+    })
+    return eventStream
   }
 
   render() {
-    const { accountId, session, eventType, durationInMinutes } = this.props;
-    const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 since ${durationInMinutes} minutes ago`;
+    const { accountId, session, eventType, durationInMinutes } = this.props
+    const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 since ${durationInMinutes} minutes ago`
     return (
       <div>
         <Stack
@@ -40,11 +40,11 @@ export default class Timeline extends Component {
             {session ? (
               <NrqlQuery accountId={accountId} query={query}>
                 {({ data, error, loading }) => {
-                  if (loading) return <Spinner fillContainer />;
-                  if (error) return <BlockText>{error.message}</BlockText>;
+                  if (loading) return <Spinner fillContainer />
+                  if (error) return <BlockText>{error.message}</BlockText>
 
-                  const stream = this._buildGauge(eventType, data);
-                  return <Gauge data={stream} height={25} showLegend={true} />;
+                  const stream = this._buildGauge(eventType, data)
+                  return <Gauge data={stream} height={25} showLegend={true} />
                 }}
               </NrqlQuery>
             ) : (
@@ -69,6 +69,6 @@ export default class Timeline extends Component {
           </StackItem>
         </Stack>
       </div>
-    );
+    )
   }
 }

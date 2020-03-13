@@ -15,7 +15,7 @@ export default class SessionColors {
   static EXTERNAL_LABEL = 'External Calls';
 
   static getColor = (eventType, event) => {
-    if (eventType == 'PageAction') {
+    if (eventType && eventType.includes('PageAction')) {
       switch (event.actionName) {
         case 'CONTENT_REQUEST':
         case 'DOWNLOAD':
@@ -42,7 +42,7 @@ export default class SessionColors {
     }
   };
   static getLabel = (eventType, event) => {
-    if (eventType == 'PageAction') {
+    if (eventType && eventType.includes('PageAction')) {
       switch (event.actionName) {
         case 'CONTENT_REQUEST':
         case 'DOWNLOAD':

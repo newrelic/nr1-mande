@@ -53,9 +53,7 @@ const sessionDetail = props => {
   }
 
   const buildKpiStackItem = (results, metric) => {
-    console.log('kpi data', results)
     let value = results[0].data[0][metric.query.lookup]
-    console.log('kpi value', value)
     return (
       <div className="chart-billboard-value">
         {Math.round(value * 100) / 100}

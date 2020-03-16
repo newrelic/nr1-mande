@@ -49,6 +49,7 @@
     font-weight: 600;
     box-shadow: none;
     background-color: #edeeee;
+    border: 1px solid rgb(156, 154, 154);
 
     > .title-content {
       width: 100%;
@@ -67,6 +68,7 @@
         border: none;
         background-color: #11a600;
       }
+
       [class*="yellowLight"] {
         background-color: #f1cf50;
       }
@@ -101,6 +103,7 @@
       }
       &.selected {
         background-color: #edeeee;
+        border: 1px solid rgb(156, 154, 154);
 
         > .name {
           font-weight: 600;

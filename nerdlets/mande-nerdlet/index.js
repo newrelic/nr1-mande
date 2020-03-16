@@ -83,7 +83,7 @@ export default class Mande extends React.Component {
       this.setState({ selectedMetric: null, selectedStack: null })
     } else {
       const stack = metricConfigs.filter(config => config.title === stackTitle)
-      this.setState({ selectedStack: stack[0] })
+      this.setState({ selectedMetric: null, selectedStack: stack[0] })
     }
   }
 

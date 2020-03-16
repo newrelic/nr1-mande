@@ -1,6 +1,7 @@
 import React from 'react'
 import { chunk } from 'lodash'
 import { Grid, GridItem, Stack, StackItem, NrqlQuery, Spinner } from 'nr1'
+import MetricValue from '../metric/MetricValue'
 
 const sessionDetail = props => {
   const { accountId, session, stack } = props
@@ -55,9 +56,10 @@ const sessionDetail = props => {
   const buildKpiStackItem = (results, metric) => {
     let value = results[0].data[0][metric.query.lookup]
     return (
-      <div className="chart-billboard-value">
-        {Math.round(value * 100) / 100}
-      </div>
+      <MetricValue
+        threshold={metric.threshold}
+        value={Math.round(value * 100) / 100}
+      />
     )
   }
 

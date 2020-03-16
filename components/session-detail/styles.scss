@@ -27,6 +27,10 @@
       text-transform: uppercase;
       color: rgb(70, 78, 78);
 
+      @media (min-width: 2000px) {
+        font-size: 14px;
+      }
+
       > .chart-subtitle {
         color: #8e9494;
         font-size: 12px;
@@ -40,26 +44,33 @@
       font-weight: 400;
       margin-top: 20px;
       text-align: center;
+
+      @media (min-width: 2000px) {
+        font-size: 55px;
+      }
+
     }
 
     .session-detail-grid-item {
       padding-bottom: 4px;
+      font-size: 12px;
+
+      @media (min-width: 2000px) {
+        font-size: 14px;
+      }
     }
 
     .session-detail-label {
-      font-size: 12px;
       font-weight: 600;
     }
 
     .session-detail-divider {
-      font-size: 12px;
       font-weight: 600;
       margin-right: 2px;
     }
 
     .session-detail-value {
       margin-left: 2px;
-      font-size: 12px;
       font-weight: 400;
     }
 

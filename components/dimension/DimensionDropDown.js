@@ -8,15 +8,17 @@ export default class DimensionDropDown extends React.Component {
     selected: null,
   }
 
-  getValues = async () => {
+  initializeValues = async history => {
     this.setState({ loading: true })
 
     const { config } = this.props
-    let { selected } = this.state
+    let selected = null
+
     const values = await config.data()
-    if (config.mandatory && !selected && values) {
-      // Todo: this obviously needs to be updated to handle changes to the selected or if a refreshed list no longer has the selected
-      selected = values[0]
+
+    if (values) {
+      if (history) selected = values.filter(value => value.id === history)[0]
+      if (config.mandatory && !selected) selected = values[0]
       config.handler(selected)
     }
 
@@ -24,6 +26,7 @@ export default class DimensionDropDown extends React.Component {
   }
 
   onSelectItem = value => {
+    console.log('onSelectItem', value)
     const { config } = this.props
     config.handler(value)
     this.setState({ selected: value })
@@ -40,13 +43,33 @@ export default class DimensionDropDown extends React.Component {
   }
 
   async componentDidMount() {
-    await this.getValues()
+    console.debug('dimensionDropDown.componentDidMount')
+    const { config, history } = this.props
+    let selectedValue = null
+
+    if (history) {
+      for (let dimension of history) {
+        if (dimension.name === config.name) {
+          selectedValue = dimension.value
+          break
+        }
+      }
+    }
+
+    await this.initializeValues(selectedValue)
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.selected === nextState.selected) return false
+    else return true
   }
 
   render() {
     const { config } = this.props
     const { selected } = this.state
 
+    console.debug(`dimensionDropDown.render (${config.name})`)
+    
     const items = this.state.values.map(val => (
       <DropdownItem key={val.id} onClick={() => this.onSelectItem(val)}>
         {val.name}

@@ -42,7 +42,7 @@ const metricStack = props => {
           return arr.concat(val)
         }, [])
 
-    if (!metrics && threshold === 'All')
+    if (!metrics && threshold === 1)
       metrics = (
         <React.Fragment>
           <StackItem

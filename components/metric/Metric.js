@@ -84,14 +84,14 @@ export class Metric extends React.Component {
     const { threshold, metric } = this.props
     const { current } = this.state
 
-    if (threshold === 'All') return true
+    if (threshold === 1) return true
     if (!metric.threshold) return false
-    if (threshold === 'Warning') {
+    if (threshold === 2) {
       if (metric.threshold.type === 'below')
         return current <= metric.threshold.warning
       else return current >= metric.threshold.warning
     }
-    if (threshold === 'Critical') {
+    if (threshold === 3) {
       if (metric.threshold.type === 'below')
         return current <= metric.threshold.critical
       else return current >= metric.threshold.critical
@@ -145,10 +145,10 @@ export class Metric extends React.Component {
   }
 
   render() {
-    // console.debug('metric.render')
-
     const { minify, click, metric, selected } = this.props
     const { loading } = this.state
+
+    console.debug(`metric.render ${metric.title} ${loading ? 'loading' : ''}`)
 
     // apply threshold level filtering, if applicable
     if (!this.isVisible()) return null

@@ -23,7 +23,7 @@ const videoDetail = props => {
     {
       name: 'openSession',
       handler: ({ data, metadata }) => {
-        console.log('data and metadata on click', data, metadata)
+        console.debug('data and metadata on click', data, metadata)
 
         navigation.openStackedNerdlet({
           id: 'video-session',

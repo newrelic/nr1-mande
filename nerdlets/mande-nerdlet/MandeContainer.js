@@ -5,7 +5,8 @@ import { NerdGraphQuery, Stack, StackItem, nerdlet } from 'nr1'
 import DimensionContainer from './DimensionContainer'
 import MetricStackContainer from './MetricStackContainer'
 import MetricDetailContainer from './MetricDetailContainer'
-import metricConfigs from './MetricConfig'
+// import metricConfigs from './MetricConfig'
+import metricConfigs from '../../config/MetricConfig'
 
 export default class MandeContainer extends React.Component {
   state = {

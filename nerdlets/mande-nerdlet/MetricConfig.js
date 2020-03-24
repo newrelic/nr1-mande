@@ -95,18 +95,63 @@ export default [
   },
   {
     title: 'Video',
-    overview: props => {
+    eventTypes: [
+      {
+        event: 'PageAction',
+        eventSelector: { attribute: 'Delivery Type', value: 'Web' },
+        attributes: [
+          'appName',
+          'playerVersion',
+          'playerName',
+          'isAd',
+          'contentIsLive',
+          'contentTitle',
+          'contentSrc',
+          'asnOrganization',
+          'city',
+          'countryCode',
+          'regionCode',
+          'userAgentName',
+          'userAgentOS',
+          'userAgentVersion',
+        ],
+      },
+      {
+        event: 'MobileVideo',
+        eventSelector: { attribute: 'Delivery Type', value: 'Mobile' },
+        attributes: [
+          'appName',
+          'playerVersion',
+          'playerName',
+          'isAd',
+          'contentIsLive',
+          'contentTitle',
+          'contentSrc',
+          'asnOrganization',
+          'city',
+          'countryCode',
+          'regionCode',
+          'device',
+          'deviceGroup',
+          'deviceType',
+          'osName',
+          'osVersion',
+        ],
+      },
+    ],
+    overview: (props, filters) => {
       return (
-        <VideoOverview accountId={props.accountId} duration={props.duration} />
+        <VideoOverview accountId={props.accountId} duration={props.duration} filters={filters} />
       )
     },
-    detailView: props => {
+    detailView: (props, filters) => {
       return (
         <VideoDetail
           accountId={props.accountId}
           duration={props.duration}
           stack={props.stack}
           activeMetric={props.activeMetric}
+          filters={filters}
         />
       )
     },
@@ -128,7 +173,7 @@ export default [
             columnEnd: 6,
             chartSize: 'small',
             chartType: 'scatter',
-            title: 'Time To First Frame (Average)',
+            title: 'Time To Player Ready (Average)',
             useSince: true,
           },
           {
@@ -162,12 +207,13 @@ export default [
             click: 'openSession',
           },
           {
-            nrql: `SELECT histogram(timeSinceLoad, width: 15, buckets: 50) FROM PageAction, MobileVideo, RokuVideo FACET hourOf(timestamp) SINCE 1 day ago`,
+            nrql: `SELECT histogram(timeSinceLoad, width: 15, buckets: 50) FROM PageAction, MobileVideo, RokuVideo FACET city`,
             columnStart: 7,
             columnEnd: 12,
             chartSize: 'large',
             chartType: 'heatmap',
             title: 'Average Time To Player Ready',
+            useSince: true,
           },
         ],
       },
@@ -201,7 +247,7 @@ export default [
         },
         detailConfig: [
           {
-            nrql: `SELECT average(timeSinceRequested) as 'Time To First Frame' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START' TIMESERIES MAX WHERE timeSinceRequested > 10000`,
+            nrql: `SELECT average(timeSinceRequested) as 'Time To First Frame' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START' TIMESERIES MAX `,
             columnStart: 1,
             columnEnd: 6,
             chartSize: 'small',

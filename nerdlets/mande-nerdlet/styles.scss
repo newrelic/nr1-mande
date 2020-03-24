@@ -1,6 +1,7 @@
 @import "../../components/metric/styles";
 @import "../../components/event-stream/styles";
 @import "../../components/metric-detail/styles";
+@import "../../components/metric-filter/styles";
 @import "../../components/session-detail/styles";
 
 // ==============================================================
@@ -436,10 +437,18 @@ h4 {
   }
 
   >.detail-filter {
+    width: 100%;
+    height: 100%;
     max-width: 12%;
-    min-height: 800px;
+    min-height: 945px;
+    padding: 0px 5px 0px 5px;
     background-color: white;
     border-right: 1px solid #d5d7d7;
+    overflow-y: auto;
+
+    @media screen and (min-height: 1000px) {
+      min-height: 1010px;
+    }
   }
 
   >.detail-content {

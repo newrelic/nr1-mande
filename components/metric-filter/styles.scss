@@ -1,0 +1,94 @@
+@mixin pointer {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.filter-stack {
+  width: 100%;
+  margin-bottom: 5px;
+
+  &.active {
+  }
+
+  &.inactive {
+    color: #797878;
+  }
+}
+
+.filter-title {
+  color: #000e0e;
+  margin-top: 15px;
+  font-size: 13px;
+  font-weight: 400;
+  box-sizing: border-box;
+  border-bottom: 1px solid #d5d7d7;
+}
+
+.filter-attribute {
+  margin-top: 10px;
+  width: 100%;
+  font-size: 11px;
+
+  @include pointer;
+
+  > .filter-attribute-titlebar {
+
+    > .filter-attribute-name {
+      display: inline-block;
+      width: 90%;
+      font-size: 12px;
+    }
+
+    &.expand {
+      // color: rgb(0, 121, 191);
+      color: rgb(18, 123, 189);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+  
+    @include pointer;
+  }
+
+  > .filter-attribute-item {
+
+    > .filter-attribute-value {
+      display: inline-block;
+      width: 90%;
+      // margin-top: 3px;
+
+      &.checked {
+        font-weight: 600;
+        color: #000e0e;
+      }
+
+      &.active {
+        color: #797878;
+        width: auto;
+
+        &:after {
+          content: 'X';
+          color: #000e0e;
+          padding-left: 5px;
+        }
+      }
+    }
+
+    > .filter-attribute-checkbox {
+      margin-top: 3px;
+      vertical-align: middle;
+
+      > .filter-attribute-checkbox-input {
+
+        > [class*="Checkbox-input"] {
+          width: 12px;
+          height: 12px;
+        }
+      }
+    }
+  }
+}
+
+.divider {
+  padding: 0px 2px;
+}

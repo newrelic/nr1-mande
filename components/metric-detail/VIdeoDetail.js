@@ -14,8 +14,7 @@ import {
 import { dateFormatter } from '../../utils/date-formatter'
 
 const videoDetail = props => {
-  const { accountId, duration, stack, activeMetric } = props
-
+  const { accountId, duration, stack, activeMetric, filters } = props
   const since = ` SINCE ${duration} MINUTES AGO`
   const compare = ` COMPARE WITH ${duration} MINUTES AGO`
   const formattedDuration = dateFormatter(duration)
@@ -48,6 +47,9 @@ const videoDetail = props => {
     let query = config.nrql
     if (config.useSince) query += since
     if (config.useCompare) query += compare
+    if (filters) query += filters
+
+    console.info('videoDetail.query', query)
     return query
   }
 

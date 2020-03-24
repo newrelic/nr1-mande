@@ -1,5 +1,6 @@
 import React from 'react'
 import { Spinner, Icon, NerdGraphQuery, StackItem } from 'nr1'
+import { includes } from 'lodash'
 import Compare from './Compare'
 import MetricValue from './MetricValue'
 
@@ -14,10 +15,13 @@ export class Metric extends React.Component {
 
   // ============== HANDLERS/METHODS ===============
   getData = async () => {
-    const { accountId, metric, duration, threshold } = this.props
+    const { accountId, metric, duration, filters } = this.props
+
     const since = ` SINCE ${duration} MINUTES AGO`
     const compare = ` COMPARE WITH ${duration} MINUTES AGO`
-    const nrql = metric.query.nrql + since + compare
+    let nrql = metric.query.nrql + since + compare
+
+    if (filters) nrql = nrql + filters
 
     const query = `{
         actor {
@@ -135,13 +139,23 @@ export class Metric extends React.Component {
     await this.getData()
 
     this.interval = setInterval(async () => {
-      this.setState({ loading: true })
+      if (!this.props.minify) this.setState({ loading: true })
       await this.getData()
     }, 30000)
   }
 
   componentWillUnmount() {
     clearInterval(this.interval)
+  }
+
+  componentDidUpdate(prevProps) {
+    const prevFilters = prevProps.filters
+    const currentFilters = this.props.filters
+    const prevDuration = prevProps.duration
+    const currentDuration = this.props.duration
+
+    if (prevFilters !== currentFilters || prevDuration != currentDuration)
+      this.getData()
   }
 
   render() {
@@ -154,7 +168,7 @@ export class Metric extends React.Component {
     if (!this.isVisible()) return null
 
     let metricContent = loading ? (
-      <Spinner fillContainer />
+      <Spinner type={Spinner.TYPE.DOT} fillContainer />
     ) : minify ? (
       this.getMinified()
     ) : (

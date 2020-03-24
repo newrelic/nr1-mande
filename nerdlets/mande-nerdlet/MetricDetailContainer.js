@@ -1,14 +1,43 @@
 import React from 'react'
-
+import { cloneDeep } from 'lodash'
 import { Stack, StackItem } from 'nr1'
 import { Metric } from '../../components/metric/Metric'
-import { render } from 'react-dom'
+import FilterStack from '../../components/metric-filter/FilterStack'
+import filterFactory from '../../components/metric-filter/FilterFactory'
 
 export default class MetricDetailContainer extends React.Component {
-  detailView = () => {
+  state = {
+    activeAttributes: [],
+  }
+
+  onAttributeToggle = (attribute, value, add) => {
+    let clonedActiveAttributes = []
+    if (this.state.activeAttributes)
+      clonedActiveAttributes = cloneDeep(this.state.activeAttributes)
+
+    if (add) {
+      clonedActiveAttributes.push({ attribute, value })
+      this.setState({ activeAttributes: clonedActiveAttributes })
+      return
+    }
+
+    let updatedActiveAttributes = []
+    if (!add) {
+      updatedActiveAttributes = clonedActiveAttributes.filter(
+        active => !(active.attribute === attribute && active.value === value)
+      )
+      this.setState({ activeAttributes: updatedActiveAttributes })
+    }
+  }
+
+  onEventSelectorToggle = eventSelector => {
+    console.log('toggled eventSelector')
+  }
+
+  detailView = (filters) => {
     const { stack, activeMetric } = this.props
-    if (activeMetric && stack.detailView) return stack.detailView(this.props)
-    if (stack.overview) return stack.overview(this.props)
+    if (activeMetric && stack.detailView) return stack.detailView(this.props, filters)
+    if (stack.overview) return stack.overview(this.props, filters)
     return <div />
   }
 
@@ -21,6 +50,9 @@ export default class MetricDetailContainer extends React.Component {
       activeMetric,
       toggleMetric,
     } = this.props
+    const { activeAttributes } = this.state
+
+    const filters = filterFactory(activeAttributes)
 
     const metrics =
       stack.metrics &&
@@ -37,6 +69,7 @@ export default class MetricDetailContainer extends React.Component {
                     threshold={threshold}
                     selected={activeMetric === metric.title}
                     click={toggleMetric}
+                    filters={filters}
                   />
                 )}
               </React.Fragment>
@@ -47,11 +80,29 @@ export default class MetricDetailContainer extends React.Component {
           return arr.concat(val)
         }, [])
 
+    console.info('metricDetailContainer.render')
+
     return (
       <Stack className="detail-container">
-        <StackItem grow className="detail-filter">
-          <p className="stackItem-title">FILTER PLACEHOLDER</p>
-        </StackItem>
+        <Stack
+          grow
+          directionType={Stack.DIRECTION_TYPE.VERTICAL}
+          className="detail-filter"
+        >
+          <FilterStack
+            active={true}
+            activeAttributes={this.state.activeAttributes}
+            attributeToggle={this.onAttributeToggle}
+          />
+          <FilterStack
+            active={false}
+            accountId={accountId}
+            duration={duration}
+            stack={stack}
+            activeAttributes={this.state.activeAttributes}
+            attributeToggle={this.onAttributeToggle}
+          />
+        </Stack>
         <Stack
           directionType={Stack.DIRECTION_TYPE.VERTICAL}
           grow
@@ -60,7 +111,7 @@ export default class MetricDetailContainer extends React.Component {
           <StackItem className="detail-kpis">
             <Stack fullWidth={true}>{metrics}</Stack>
           </StackItem>
-          <StackItem className="detail-main">{this.detailView()}</StackItem>
+          <StackItem className="detail-main">{this.detailView(filters)}</StackItem>
         </Stack>
       </Stack>
     )

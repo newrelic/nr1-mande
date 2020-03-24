@@ -4,7 +4,7 @@ import { AreaChart, PieChart, Grid, GridItem } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
 
 const videoOverview = props => {
-  const { accountId, duration } = props
+  const { accountId, duration, filters } = props
 
   const since = ` SINCE ${duration} MINUTES AGO`
   const compare = ` COMPARE WITH ${duration} MINUTES AGO`
@@ -44,33 +44,38 @@ const videoOverview = props => {
     )
   }
 
+  const addFilters = baseQuery => {
+    if (filters) baseQuery += filters
+    return baseQuery
+  }
+
   return (
     <div className="detail-grid">
       <Grid>
         {addChart(
           6,
           'Content Request vs Player Ready vs Video Start (Average in Seconds)',
-          <AreaChart accountId={accountId} query={timingsNrql} />
+          <AreaChart accountId={accountId} query={addFilters(timingsNrql)} />
         )}
         {addChart(
           6,
           'Total Requests vs Total Starts',
-          <AreaChart accountId={accountId} query={countsNrql} />
+          <AreaChart accountId={accountId} query={addFilters(countsNrql)} />
         )}
         {addChart(
           4,
           'Video Errors and Failures Before Start',
-          <AreaChart accountId={accountId} query={videoErrorsNrql} />
+          <AreaChart accountId={accountId} query={addFilters(videoErrorsNrql)} />
         )}
         {addChart(
           4,
           'Rebuffer Ratio',
-          <AreaChart accountId={accountId} query={rebufferNrql} />
+          <AreaChart accountId={accountId} query={addFilters(rebufferNrql)} />
         )}
         {addChart(
           4,
           'Interruption Ratio',
-          <AreaChart accountId={accountId} query={interruptionNrql} />
+          <AreaChart accountId={accountId} query={addFilters(interruptionNrql)} />
         )}
       </Grid>
     </div>

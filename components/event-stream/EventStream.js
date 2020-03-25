@@ -102,7 +102,7 @@ export default class EventStream extends React.Component {
     const { accountId, session, eventType, durationInMinutes } = this.props
     const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 since ${durationInMinutes} minutes ago`
 
-    // console.info('eventstream query', accountId, query)
+    console.info('eventstream session', session)
 
     return (
       <div className="eventStreamSectionBase sessionSectionBase">

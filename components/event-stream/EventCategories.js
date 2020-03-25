@@ -9,7 +9,7 @@ export default class EventCategories {
   };
   static HEARTBEAT = {
     class: '',
-    icon: null,
+    icon: Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__V_ALTERNATE,
     label: 'Heartbeat',
     color: '#222222',
   };
@@ -27,25 +27,24 @@ export default class EventCategories {
   };
   static BUFFER = {
     class: '',
-    icon: null,
+    icon: Icon.TYPE.INTERFACE__OPERATIONS__REFRESH,
     label: 'Buffer',
     color: '#22222',
   };
   static GENERAL = {
     class: 'timeline-item-type-general',
-    icon: null,
+    icon: Icon.TYPE.INTERFACE__INFO__INFO,
     label: 'General',
     color: '#22222',
   };
   static EXTERNAL = {
     class: '',
-    icon: null,
+    icon: Icon.TYPE.INTERFACE__ARROW__ARROW_RIGHT__V_ALTERNATE,
     label: 'External Calls',
     color: '#22222',
   };
 
   static setCategory(eventType, event) {
-    
     if (eventType && eventType.includes('PageAction')) {
       if (!event) return EventCategories.GENERAL;
       switch (event.actionName) {

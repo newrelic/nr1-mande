@@ -89,8 +89,12 @@ export default class MandeContainer extends React.Component {
     console.debug('mandecontainer.componentDidMount')
     const { selectedMetric, selectedStack } = this.props.nerdletUrlState
 
+    console.info('metricConfigs length', metricConfigs.length)
     if (selectedMetric) this.onToggleMetric(selectedMetric)
-    if (!selectedMetric && selectedStack) this.onToggleDetailView(selectedStack)
+    if ((!selectedMetric && selectedStack) || metricConfigs.length === 1) {
+      if (selectedStack) this.onToggleDetailView(selectedStack)
+      else this.onToggleDetailView(metricConfigs[0].title)
+    }
   }
 
   componentDidUpdate() {
@@ -129,17 +133,19 @@ export default class MandeContainer extends React.Component {
             gapType={Stack.GAP_TYPE.SMALL}
             className="main-panel"
           >
-            <StackItem grow>
-              <MetricStackContainer
-                accountId={accountId}
-                threshold={threshold}
-                duration={durationInMinutes}
-                metricConfigs={metricConfigs}
-                selectedStack={selectedStack}
-                toggleMetric={this.onToggleMetric}
-                toggleDetails={this.onToggleDetailView}
-              />
-            </StackItem>
+            {metricConfigs.length > 1 && (
+              <StackItem grow>
+                <MetricStackContainer
+                  accountId={accountId}
+                  threshold={threshold}
+                  duration={durationInMinutes}
+                  metricConfigs={metricConfigs}
+                  selectedStack={selectedStack}
+                  toggleMetric={this.onToggleMetric}
+                  toggleDetails={this.onToggleDetailView}
+                />
+              </StackItem>
+            )}
             {selectedStack && (
               <StackItem grow>
                 <MetricDetailContainer

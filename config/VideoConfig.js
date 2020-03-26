@@ -132,7 +132,7 @@ export default {
     {
       title: 'Video Start Failure',
       query: {
-        nrql: `SELECT count(*) AS 'result' FROM PageAction, MobileVideo, RokuVideo  WHERE actionName = 'CONTEN_ERROR' and contentPlayhead = 0`,
+        nrql: `SELECT count(*) AS 'result' FROM PageAction, MobileVideo, RokuVideo  WHERE actionName = 'CONTENT_ERROR' and contentPlayhead = 0`,
         lookup: 'result',
       },
     },
@@ -146,6 +146,38 @@ export default {
         nrql: `SELECT filter(count(*), WHERE actionName = 'CONTENT_ERROR') / filter(count(*), WHERE actionName = 'CONTENT_REQUEST') AS 'result' FROM PageAction, MobileVideo, RokuVideo`,
         lookup: 'result',
       },
+      detailConfig: [
+        {
+          nrql: `SELECT filter(count(*), WHERE actionName = 'CONTENT_ERROR') / filter(count(*), WHERE actionName = 'CONTENT_REQUEST') AS 'Video Error Rate' FROM PageAction, MobileVideo, RokuVideo TIMESERIES MAX `,
+          columnStart: 1,
+          columnEnd: 10,
+          chartSize: 'small',
+          chartType: 'line',
+          title: 'Video Error Rate',
+          useSince: true,
+          useCompare: true,
+        },
+        {
+          nrql: `SELECT count(session) as 'Viewers' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_ERROR'`,
+          columnStart: 11,
+          columnEnd: 12,
+          chartSize: 'small',
+          chartType: 'billboard',
+          title: '# of Viewers',
+          useSince: true,
+          useCompare: true,
+        },
+        {
+          nrql: `SELECT average(timeSinceLoad) as 'Sessions' FROM PageAction, MobileVideo, RokuVideo FACET session WHERE actionName = 'CONTENT_ERROR'`,
+          columnStart: 1,
+          columnEnd: 12,
+          chartSize: 'large',
+          chartType: 'bar',
+          title: 'Sessions with Errors (Average Time To Player Ready)',
+          useSince: true,
+          click: 'openSession',
+        },
+      ],
     },
     {
       title: 'Time to First Frame',

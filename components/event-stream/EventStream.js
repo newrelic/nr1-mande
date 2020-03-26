@@ -1,7 +1,7 @@
 import React from 'react'
 import { NrqlQuery, Spinner, Button, Icon, Stack, StackItem } from 'nr1'
 import Moment from 'react-moment'
-import EventCategories from './EventCategories'
+import videoGroup from '../../utils/video-group-format'
 
 export default class EventStream extends React.Component {
   constructor(props) {
@@ -47,7 +47,7 @@ export default class EventStream extends React.Component {
     const sessionEvents = []
 
     data[0].data.forEach((event, i) => {
-      const sessionCategory = EventCategories.setCategory(pageAction, event)
+      const sessionCategory = videoGroup(event.actionName)
       const date = new Date(event.timestamp)
       let open =
         this.state.expandedTimelineItem == i ? 'timeline-item-expanded' : ''
@@ -58,7 +58,7 @@ export default class EventStream extends React.Component {
           key={i}
           data-timeline-item-id={i}
           onClick={this.handleTimelineItemClick}
-          className={`timeline-item ${sessionCategory.class} ${open}`}
+          className={`timeline-item ${sessionCategory.eventDisplay.class} ${open}`}
         >
           <div className="timeline-item-timestamp">
             <span className="timeline-timestamp-date">
@@ -74,8 +74,8 @@ export default class EventStream extends React.Component {
               <div className="timeline-item-symbol">
                 <Icon
                   className="timeline-item-symbol-icon"
-                  type={sessionCategory.icon}
-                  color={sessionCategory.color}
+                  type={sessionCategory.eventDisplay.icon}
+                  color={sessionCategory.eventDisplay.color}
                 ></Icon>
               </div>
               <div className="timeline-item-title">{event.actionName}</div>

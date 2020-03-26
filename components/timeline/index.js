@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Stack, StackItem, Spinner, BlockText, NrqlQuery } from 'nr1'
 import Gauge from '../gauge'
-import SessionColors from '../gauge/colors'
+import videoGroup from '../../utils/video-group-format'
 
 export default class Timeline extends Component {
   constructor(props) {
@@ -9,6 +9,8 @@ export default class Timeline extends Component {
   }
 
   _buildGauge(eventType, data) {
+    console.debug('guage.buildGuage eventType data', eventType, data)
+
     const eventStream = []
     let prevEvent = null
     data[0].data.forEach(result => {
@@ -16,10 +18,12 @@ export default class Timeline extends Component {
         prevEvent = result
       }
       const value = result.timestamp - prevEvent.timestamp
+      const sessionGroup = videoGroup(prevEvent.actionName)
+
       eventStream.push({
-        label: SessionColors.getLabel(eventType, prevEvent),
+        label: sessionGroup.timelineDisplay.label,
         value: value > 0 ? value : 1,
-        color: SessionColors.getColor(eventType, prevEvent),
+        color: sessionGroup.timelineDisplay.color,
         timeSinceLoad: result.timeSinceLoad,
       })
       prevEvent = result

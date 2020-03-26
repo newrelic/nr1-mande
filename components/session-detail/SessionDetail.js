@@ -4,11 +4,13 @@ import { Grid, GridItem, Stack, StackItem, NrqlQuery, Spinner } from 'nr1'
 import MetricValue from '../metric/MetricValue'
 
 const sessionDetail = props => {
-  const { accountId, session, stack } = props
+  const { accountId, session, stack, duration } = props
+  const since = ` SINCE ${duration} MINUTES AGO`
 
   const composeNrqlQuery = (query, dataHandler, handlerParams) => {
+    const nrql = query + since
     return (
-      <NrqlQuery accountId={accountId} query={query}>
+      <NrqlQuery accountId={accountId} query={nrql}>
         {({ data, error, loading }) => {
           if (loading) return <Spinner fillContainer />
           if (error) return <BlockText>{error.message}</BlockText>

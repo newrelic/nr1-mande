@@ -16,6 +16,12 @@
   }
 }
 
+@mixin pointer {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 .metricStack {
   width: 100%;
   min-width: 175px;
@@ -39,9 +45,7 @@
     padding: 5px;
     text-align: center;
 
-    &:hover {
-      cursor: pointer;
-    }
+    @include pointer;
   }
 
   &.selectedStack {
@@ -62,6 +66,8 @@
     height: 10px;
 
     > .metric-chart {
+      color: #222222;
+
       > .value {
         width: 10px;
         height: 10px;
@@ -82,10 +88,7 @@
         width: 10px;
         background-color: #797878;
       }
-
-      &:hover {
-        cursor: pointer;
-      }
+      @include pointer;
     }
   }
 
@@ -98,9 +101,13 @@
       max-width: 100%;
       max-height: 100%;
       background-color: white;
+      
+      @include pointer;
+
       @media (max-width: 1440px) and (max-height: 766px) {
         height: 100px;
       }
+
       &.selected {
         background-color: #edeeee;
         border: 1px solid rgb(156, 154, 154);

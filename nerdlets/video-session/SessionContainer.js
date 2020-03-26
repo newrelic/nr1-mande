@@ -23,7 +23,12 @@ const sessionContainer = props => {
         </header>
       </GridItem>
       <GridItem columnSpan={4} className="sessionColumn">
-        <SessionDetail accountId={accountId} session={session} stack={stack} />
+        <SessionDetail
+          accountId={accountId}
+          session={session}
+          stack={stack}
+          duration={durationInMinutes}
+        />
       </GridItem>
       <GridItem columnSpan={8}>
         <Timeline

@@ -23,34 +23,28 @@ const sessionDetail = props => {
   }
 
   const buildSessionDetailGrid = data => {
-    const gridItems = data
-      .map(dataItem => {
-        return [...Array(dataItem)].map((_, idx) => {
-          let key = dataItem.metadata.name.replace(/\s+/g, '')
-          key = key.charAt(0).toLowerCase() + key.slice(1)
+    const gridItems = data.map((dataItem, idx) => {
+      let key = dataItem.metadata.name.replace(/\s+/g, '')
+      key = key.charAt(0).toLowerCase() + key.slice(1)
 
-          return (
-            <GridItem
-              columnSpan={6}
-              className="session-detail-grid-item"
-              key={key + idx}
-            >
-              <div className="session-detail-item">
-                <span className="session-detail-label">
-                  {dataItem.metadata.name}
-                </span>
-                <span className="session-detail-divider">:</span>
-                <span className="session-detail-value">
-                  {dataItem.data[0][key]}
-                </span>
-              </div>
-            </GridItem>
-          )
-        })
-      })
-      .reduce((arr, val) => {
-        return arr.concat(val)
-      }, [])
+      return (
+        <GridItem
+          columnSpan={6}
+          className="session-detail-grid-item"
+          key={key + idx}
+        >
+          <div className="session-detail-item">
+            <span className="session-detail-label">
+              {dataItem.metadata.name}
+            </span>
+            <span className="session-detail-divider">:</span>
+            <span className="session-detail-value">
+              {dataItem.data[0][key]}
+            </span>
+          </div>
+        </GridItem>
+      )
+    })
 
     return <Grid className="session-detail-grid">{gridItems}</Grid>
   }
@@ -106,6 +100,14 @@ const sessionDetail = props => {
                   </StackItem>
                 )
               })}
+              {chunk.length === 1 && (
+                <StackItem
+                  grow
+                  className="sessionStackItem sessionSectionBase  blank"
+                >
+                  <div />
+                </StackItem>
+              )}
             </Stack>
           )
         })}

@@ -8,6 +8,11 @@
 }
 
 .sessionSectionBase {
+  &.blank {
+    visibility: hidden;
+  }
+
+
   .chart-container {
     width: 100%;
     margin-bottom: 8px;

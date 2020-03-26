@@ -49,7 +49,7 @@ const videoDetail = props => {
     if (config.useCompare) query += compare
     if (filters) query += filters
 
-    console.info('videoDetail.query', query)
+    console.debug('videoDetail.query', query)
     return query
   }
 

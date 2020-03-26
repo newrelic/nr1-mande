@@ -23,6 +23,8 @@ export class Metric extends React.Component {
 
     if (filters) nrql = nrql + filters
 
+    console.debug('metric.getData() query', nrql)
+
     const query = `{
         actor {
           account(id: ${accountId}) {
@@ -51,7 +53,7 @@ export class Metric extends React.Component {
         previous = Object.values(previous)[0]
       }
 
-      console.info(
+      console.debug(
         'metric.getData() current previous',
         this.props.metric.title,
         current,

@@ -53,7 +53,19 @@
 }
 
 .timeline-item-type-buffer .timeline-item-symbol:after {
-  background-color: #fcf2f3;
+  background-color: #fce8c2;
+}
+
+.timeline-item-type-rendition .timeline-item-symbol:after {
+  background-color: #d0f0ff;
+}
+
+.timeline-item-type-heartbeat .timeline-item-symbol:after {
+  background-color: #e8dfed;
+}
+
+.timeline-item-type-external .timeline-item-symbol:after {
+  background-color: #a5d1af;
 }
 
 .timeline-item-type-general .timeline-item-symbol-icon {

@@ -34,7 +34,7 @@ export default class MetricDetailContainer extends React.Component {
     console.log('toggled eventSelector')
   }
 
-  detailView = (filters) => {
+  detailView = filters => {
     const { stack, activeMetric } = this.props
     if (activeMetric && stack.detailView) return stack.detailView(this.props, filters)
     if (stack.overview) return stack.overview(this.props, filters)
@@ -79,8 +79,6 @@ export default class MetricDetailContainer extends React.Component {
         .reduce((arr, val) => {
           return arr.concat(val)
         }, [])
-
-    console.info('metricDetailContainer.render')
 
     return (
       <Stack className="detail-container">

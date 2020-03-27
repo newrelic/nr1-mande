@@ -1,7 +1,6 @@
 @import "../../components/metric/styles";
 @import "../../components/metric-detail/styles";
 @import "../../components/metric-filter/styles";
-@import "../../components/session-detail/styles";
 
 // ==============================================================
 // Mande General Styles
@@ -332,9 +331,16 @@ h4 {
     border-right: 1px solid #d5d7d7;
     overflow-y: auto;
 
-    @media screen and (min-height: 1000px) {
+    @media screen and (max-height: 1000px) {
       min-height: 1010px;
+      max-height: 1010px;
     }
+
+    @media screen and (max-height: 1300px) {
+      min-height: 1045px;
+      max-height: 1045px;
+    }
+
   }
 
   >.detail-content {

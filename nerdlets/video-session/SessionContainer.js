@@ -1,8 +1,7 @@
 import React from 'react'
 import { Grid, GridItem, HeadingText } from 'nr1'
-import EventStream from '../../components/event-stream/EventStream'
-import Timeline from '../../components/timeline'
 import SessionDetail from '../../components/session-detail/SessionDetail'
+import TimelineDetail from '../../components/timeline/TimelineDetail'
 
 const sessionContainer = props => {
   const {
@@ -31,19 +30,10 @@ const sessionContainer = props => {
         />
       </GridItem>
       <GridItem columnSpan={8}>
-        <Timeline
+        <TimelineDetail
           accountId={accountId}
           session={session}
-          eventType="PageAction, MobileVideo, RokuVideo"
           durationInMinutes={durationInMinutes}
-          className="sessionColumn"
-        />
-        <EventStream
-          accountId={accountId}
-          session={session}
-          eventType="PageAction, MobileVideo, RokuVideo "
-          durationInMinutes={durationInMinutes}
-          className="sessionColumn"
         />
       </GridItem>
     </Grid>

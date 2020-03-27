@@ -1,32 +1,26 @@
 import React from 'react'
 import { NrqlQuery, Spinner, Button, Icon, Stack, StackItem } from 'nr1'
 import Moment from 'react-moment'
-import videoGroup from '../../utils/video-group-format'
+import videoGroup from './VideoGroup'
 
 export default class EventStream extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      expandedTimelineItem: null,
-    }
-    this.handleTimelineItemClick = this.handleTimelineItemClick.bind(this)
+  state = {
+    expandedTimelineItem: null,
   }
 
-  handleTimelineItemClick(e) {
+  handleTimelineItemClick = e => {
     e.preventDefault()
+    const { expandedTimelineItem } = this.state
+
     let timelineItemId = e.currentTarget.getAttribute('data-timeline-item-id')
-    if (timelineItemId == this.state.expandedTimelineItem) {
-      this.setState(state => ({
-        expandedTimelineItem: null,
-      }))
+    if (timelineItemId == expandedTimelineItem) {
+      this.setState({ expandedTimelineItem: null })
     } else {
-      this.setState(state => ({
-        expandedTimelineItem: timelineItemId,
-      }))
+      this.setState({ expandedTimelineItem: timelineItemId })
     }
   }
 
-  _buildStreamTimeline(event) {
+  buildStreamTimeline = event => {
     let timeline = Object.keys(event)
     timeline = timeline.sort()
     let data = []
@@ -43,15 +37,16 @@ export default class EventStream extends React.Component {
     })
     return data
   }
-  _buildStream(pageAction, data) {
+
+  buildStream = data => {
     const sessionEvents = []
 
-    data[0].data.forEach((event, i) => {
+    data.forEach((event, i) => {
       const sessionCategory = videoGroup(event.actionName)
       const date = new Date(event.timestamp)
       let open =
         this.state.expandedTimelineItem == i ? 'timeline-item-expanded' : ''
-      const streamTimeline = this._buildStreamTimeline(event)
+      const streamTimeline = this.buildStreamTimeline(event)
 
       sessionEvents.push(
         <div
@@ -99,40 +94,34 @@ export default class EventStream extends React.Component {
   }
 
   render() {
-    const { accountId, session, eventType, durationInMinutes } = this.props
-    const query = `SELECT * from ${eventType} WHERE session = '${session}' ORDER BY timestamp ASC LIMIT 1000 since ${durationInMinutes} minutes ago`
+    const { data, loading } = this.props
 
-    console.info('eventstream session', session)
+    console.debug('eventstream data', data)
+
+    const stream = this.buildStream(data)
+
+    const eventContent = loading ? (
+      <Spinner />
+    ) : !loading && stream.length > 0 ? (
+      <div className="timeline-container">{stream}</div>
+    ) : (
+      <Stack
+        fullWidth
+        fullHeight
+        className="emptyState eventStreamEmptyState"
+        directionType={Stack.DIRECTION_TYPE.VERTICAL}
+        horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
+        verticalType={Stack.VERTICAL_TYPE.CENTER}
+      >
+        <StackItem>
+          <p className="emptyStateHeader">Could not load Event Stream.</p>
+        </StackItem>
+      </Stack>
+    )
 
     return (
       <div className="eventStreamSectionBase sessionSectionBase">
-        {session ? (
-          <NrqlQuery accountId={accountId} query={query}>
-            {({ data, error, loading }) => {
-              if (loading) return <Spinner />
-              if (error) return 'ERROR'
-
-              const stream = this._buildStream(eventType, data)
-              return <div className="timeline-container">{stream}</div>
-            }}
-          </NrqlQuery>
-        ) : (
-          <Stack
-            fullWidth
-            fullHeight
-            className="emptyState eventStreamEmptyState"
-            directionType={Stack.DIRECTION_TYPE.VERTICAL}
-            horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
-            verticalType={Stack.VERTICAL_TYPE.CENTER}
-          >
-            <StackItem>
-              <p className="emptyStateHeader">Session not found.</p>
-            </StackItem>
-            <StackItem>
-              <p className="emptyStateDescription">Session not found.</p>
-            </StackItem>
-          </Stack>
-        )}
+        {eventContent}
       </div>
     )
   }

@@ -34,7 +34,7 @@ const groups = [
       color: '#cea3e6',
       label: 'Heartbeat',
     },
-    actionNames: ['CONTENT_HEARTBEAT'],
+    actionNames: ['CONTENT_HEARTBEAT','AD_HEARTBEAT'],
   },
   {
     name: 'ADS',

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import _ from 'lodash';
-import { Dropdown, DropdownItem, Stack, StackItem } from 'nr1';
+import _ from 'lodash'
+import { Dropdown, DropdownItem, Stack, StackItem } from 'nr1'
 
-import GaugeDataLegendItem from './GaugeDataLegendItem';
-import GaugeDataValue from './GaugeDataValue';
+import GaugeDataLegendItem from './GaugeDataLegendItem'
+import GaugeDataValue from './GaugeDataValue'
 
 export default class Gauge extends Component {
   static propTypes = {
@@ -32,65 +32,65 @@ export default class Gauge extends Component {
      * That is the question.
      */
     showLegend: PropTypes.bool,
-  };
+  }
 
   static defaultProps = {
     height: 15,
     hue: 193,
     showLegend: true,
-  };
+  }
 
   proportionateValues = data => {
-    const { height } = this.props;
+    const { height } = this.props
     const totalValue = data.reduce((acc, { value }) => {
-      acc += value;
-      return acc;
-    }, 0);
+      acc += value
+      return acc
+    }, 0)
 
     return data.map(({ value, label, color }, index) => {
-      const displayColor = color || this.generateColor(index, data.length);
-      const proportionateValue = (value * 100) / totalValue;
-      return { value: proportionateValue, label, color: displayColor, height };
-    });
-  };
+      const displayColor = color || this.generateColor(index, data.length)
+      const proportionateValue = (value * 100) / totalValue
+      return { value: proportionateValue, label, color: displayColor, height }
+    })
+  }
 
   generateColor = (size, scale) => {
-    const { hue } = this.props;
-    const defaultSaturation = 70;
-    const defaultMinLightness = 25;
-    const lightnessRange = 70;
+    const { hue } = this.props
+    const defaultSaturation = 70
+    const defaultMinLightness = 25
+    const lightnessRange = 70
 
-    const lightnessScale = Math.round(lightnessRange / scale);
-    const appliedLightness = defaultMinLightness + size * lightnessScale;
-    return `hsl(${hue},${defaultSaturation}%,${appliedLightness}%)`;
-  };
+    const lightnessScale = Math.round(lightnessRange / scale)
+    const appliedLightness = defaultMinLightness + size * lightnessScale
+    return `hsl(${hue},${defaultSaturation}%,${appliedLightness}%)`
+  }
 
   renderTimeAxis(data) {
-    const numberOfAxisValues = 12;
-    const desiredAxisItems = [...Array(numberOfAxisValues).keys()];
+    const numberOfAxisValues = 12
+    const desiredAxisItems = [...Array(numberOfAxisValues).keys()]
 
-    const timeValues = data.map(d => d.timeSinceLoad);
-    const maxTime = Math.ceil(timeValues[timeValues.length - 1]);
-    const intervalSize = maxTime / numberOfAxisValues;
+    const timeValues = data.map(d => d.timeSinceLoad)
+    const maxTime = Math.ceil(timeValues[timeValues.length - 1])
+    const intervalSize = maxTime / numberOfAxisValues
 
-    const timeAxisValues = desiredAxisItems.map(a => (a + 1) * intervalSize);
-    return timeAxisValues;
+    const timeAxisValues = desiredAxisItems.map(a => (a + 1) * intervalSize)
+    return timeAxisValues
   }
 
   render() {
-    const { data, height, showLegend } = this.props;
-    const displayData = this.proportionateValues(data, height);
+    const { data, height, showLegend } = this.props
+    const displayData = this.proportionateValues(data, height)
 
-    // Jump through some hoops to get unique legend items
-    const legend = {};
+    // get unique legend items
+    const legend = {}
     displayData.map(d => {
-      legend[d.label] = d.color;
-    });
+      legend[d.label] = d.color
+    })
     const legendItems = Object.entries(legend).map(([label, color]) => {
-      return { label, color };
-    });
+      return { label, color }
+    })
 
-    const timeAxisValues = this.renderTimeAxis(data);
+    const timeAxisValues = this.renderTimeAxis(data)
 
     return (
       <div className="Gauge">
@@ -135,7 +135,7 @@ export default class Gauge extends Component {
               <StackItem className="gaugeTimelineItem" shrink key={v}>
                 {v}
               </StackItem>
-            );
+            )
           })}
         </Stack>
 
@@ -145,6 +145,6 @@ export default class Gauge extends Component {
           </div>
         )}
       </div>
-    );
+    )
   }
 }

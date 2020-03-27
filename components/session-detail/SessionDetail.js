@@ -2,13 +2,14 @@ import React from 'react'
 import { chunk } from 'lodash'
 import { Grid, GridItem, Stack, StackItem, NrqlQuery, Spinner } from 'nr1'
 import MetricValue from '../metric/MetricValue'
+import { render } from 'react-dom'
 
-const sessionDetail = props => {
-  const { accountId, session, stack, duration } = props
-  const since = ` SINCE ${duration} MINUTES AGO`
+export default class SessionDetail extends React.PureComponent {
 
-  const composeNrqlQuery = (query, dataHandler, handlerParams) => {
-    const nrql = query + since
+  composeNrqlQuery = (query, dataHandler, handlerParams) => {
+    const { accountId, duration } = this.props
+    const nrql = query + ` SINCE ${duration} MINUTES AGO`
+
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
         {({ data, error, loading }) => {
@@ -22,7 +23,7 @@ const sessionDetail = props => {
     )
   }
 
-  const buildSessionDetailGrid = data => {
+  buildSessionDetailGrid = data => {
     const gridItems = data.map((dataItem, idx) => {
       let key = dataItem.metadata.name.replace(/\s+/g, '')
       key = key.charAt(0).toLowerCase() + key.slice(1)
@@ -49,7 +50,7 @@ const sessionDetail = props => {
     return <Grid className="session-detail-grid">{gridItems}</Grid>
   }
 
-  const buildKpiStackItem = (results, metric) => {
+  buildKpiStackItem = (results, metric) => {
     let value = results[0].data[0][metric.query.lookup]
     return (
       <MetricValue
@@ -59,60 +60,61 @@ const sessionDetail = props => {
     )
   }
 
-  // convert our stack metric list into arrays of 2 each
-  const chunkedMetrics = chunk(stack.metrics, 2)
-  return (
-    <Stack
-      className="sessionStack"
-      directionType={Stack.DIRECTION_TYPE.VERTICAL}
-    >
-      <Stack fullWidth={true} fullHeight={true}>
-        <StackItem grow className="sessionStackItem sessionSectionBase">
-          <div className="chart-container">
-            <div className="chart-title">Session Details</div>
-            {composeNrqlQuery(
-              `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM PageAction, MobileVideo, RokuVideo WHERE session='${session}'`,
-              buildSessionDetailGrid
-            )}
-          </div>
-        </StackItem>
-      </Stack>
+  render() {
+    const { session, stack } = this.props
 
-      {chunkedMetrics &&
-        chunkedMetrics.map((chunk, idx) => {
-          return (
-            <Stack fullWidth={true} fullHeight={true} key={idx}>
-              {chunk.map((metric, idx) => {
-                return (
+    const chunkedMetrics = chunk(stack.metrics, 2)
+    return (
+      <Stack
+        className="sessionStack"
+        directionType={Stack.DIRECTION_TYPE.VERTICAL}
+      >
+        <Stack fullWidth={true} fullHeight={true}>
+          <StackItem grow className="sessionStackItem sessionSectionBase">
+            <div className="chart-container">
+              <div className="chart-title">Session Details</div>
+              {this.composeNrqlQuery(
+                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM PageAction, MobileVideo, RokuVideo WHERE session='${session}'`,
+                this.buildSessionDetailGrid
+              )}
+            </div>
+          </StackItem>
+        </Stack>
+
+        {chunkedMetrics &&
+          chunkedMetrics.map((chunk, idx) => {
+            return (
+              <Stack fullWidth={true} fullHeight={true} key={idx}>
+                {chunk.map((metric, idx) => {
+                  return (
+                    <StackItem
+                      grow
+                      key={metric.title + idx}
+                      className="sessionStackItem sessionSectionBase"
+                    >
+                      <div className="chart-container">
+                        <div className="chart-title">{metric.title}</div>
+                        {this.composeNrqlQuery(
+                          metric.query.nrql + ` WHERE session='${session}'`,
+                          this.buildKpiStackItem,
+                          metric
+                        )}
+                      </div>
+                    </StackItem>
+                  )
+                })}
+                {chunk.length === 1 && (
                   <StackItem
                     grow
-                    key={metric.title + idx}
-                    className="sessionStackItem sessionSectionBase"
+                    className="sessionStackItem sessionSectionBase  blank"
                   >
-                    <div className="chart-container">
-                      <div className="chart-title">{metric.title}</div>
-                      {composeNrqlQuery(
-                        metric.query.nrql + ` WHERE session='${session}'`,
-                        buildKpiStackItem,
-                        metric
-                      )}
-                    </div>
+                    <div />
                   </StackItem>
-                )
-              })}
-              {chunk.length === 1 && (
-                <StackItem
-                  grow
-                  className="sessionStackItem sessionSectionBase  blank"
-                >
-                  <div />
-                </StackItem>
-              )}
-            </Stack>
-          )
-        })}
-    </Stack>
-  )
+                )}
+              </Stack>
+            )
+          })}
+      </Stack>
+    )
+  }
 }
-
-export default sessionDetail

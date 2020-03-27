@@ -37,13 +37,6 @@ export default class TimelineDetail extends React.Component {
 
     return (
       <React.Fragment>
-        {/* <Timeline
-          accountId={accountId}
-          session={session}
-          eventType={eventType}
-          durationInMinutes={durationInMinutes}
-          className={className}
-        /> */}
         <Timeline data={sessionData} loading={loading} />
         <EventStream data={sessionData} loading={loading} />
       </React.Fragment>

@@ -8,7 +8,7 @@ import MetricDetailContainer from './MetricDetailContainer'
 // import metricConfigs from './MetricConfig'
 import metricConfigs from '../../config/MetricConfig'
 
-export default class MandeContainer extends React.Component {
+export default class MandeContainer extends React.PureComponent {
   state = {
     accountId: null,
     threshold: 1,
@@ -86,14 +86,12 @@ export default class MandeContainer extends React.Component {
   }
 
   componentDidMount() {
-    console.debug('mandecontainer.componentDidMount')
     const { selectedMetric, selectedStack } = this.props.nerdletUrlState
 
-    console.info('metricConfigs length', metricConfigs.length)
     if (selectedMetric) this.onToggleMetric(selectedMetric)
-    if ((!selectedMetric && selectedStack) || metricConfigs.length === 1) {
+    if (!selectedMetric) {
       if (selectedStack) this.onToggleDetailView(selectedStack)
-      else this.onToggleDetailView(metricConfigs[0].title)
+      else if (metricConfigs.length === 1) this.onToggleDetailView(metricConfigs[0].title)
     }
   }
 

@@ -78,18 +78,8 @@ export default class Gauge extends Component {
   }
 
   render() {
-    const { data, height, showLegend } = this.props
+    const { data, height, showLegend, legend, legendClick } = this.props
     const displayData = this.proportionateValues(data, height)
-
-    // get unique legend items
-    const legend = {}
-    displayData.map(d => {
-      legend[d.label] = d.color
-    })
-    const legendItems = Object.entries(legend).map(([label, color]) => {
-      return { label, color }
-    })
-
     const timeAxisValues = this.renderTimeAxis(data)
 
     return (
@@ -101,20 +91,6 @@ export default class Gauge extends Component {
         >
           <StackItem grow>
             <h4>Session breakdown</h4>
-          </StackItem>
-          <StackItem>
-            <Dropdown
-              className="gaugeFilterDropdown"
-              label="Filter by"
-              title="Select a filter"
-            >
-              <DropdownItem value="" selected>
-                None
-              </DropdownItem>
-              <DropdownItem value="NonQualityEvents">
-                Non-quality events
-              </DropdownItem>
-            </Dropdown>
           </StackItem>
         </Stack>
 
@@ -141,7 +117,16 @@ export default class Gauge extends Component {
 
         {showLegend && (
           <div className="Gauge-legend">
-            {legendItems.map(GaugeDataLegendItem)}
+            {legend.length > 0 &&
+              legend.map((item, idx) => {
+                return (
+                  <GaugeDataLegendItem
+                    key={idx + item.group.name}
+                    legend={item}
+                    click={legendClick}
+                  />
+                )
+              })}
           </div>
         )}
       </div>

@@ -41,6 +41,11 @@
         height: 10px;
         margin-top: 3px;
         margin-right: 4px;
+
+        &.hidden {
+          margin-top: 1px;
+          border: 1px solid black;
+        }
       }
     }
   }

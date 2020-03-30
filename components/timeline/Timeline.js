@@ -29,16 +29,20 @@ export default class Timeline extends Component {
   }
 
   render() {
-    const { data, loading } = this.props
-
-    console.debug('timeline data', data)
+    const { data, loading, legend, legendClick } = this.props
 
     const stream = this.buildGauge(data)
 
     const gaugeContent = loading ? (
       <Spinner />
     ) : !loading && stream.length > 0 ? (
-      <Gauge data={stream} height={25} showLegend={true} />
+      <Gauge
+        data={stream}
+        height={25}
+        showLegend={true}
+        legend={legend}
+        legendClick={legendClick}
+      />
     ) : (
       <Stack
         fullWidth

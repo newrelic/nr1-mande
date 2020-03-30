@@ -10,6 +10,8 @@ export default class SessionDetail extends React.PureComponent {
     const { accountId, duration } = this.props
     const nrql = query + ` SINCE ${duration} MINUTES AGO`
 
+    console.debug('sessionDetail sessionDetails query', nrql)
+
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
         {({ data, error, loading }) => {

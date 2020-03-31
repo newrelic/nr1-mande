@@ -2,7 +2,7 @@
   "private": true,
   "name": "nr1-mande",
   "description": "Nerdpack for the Media and Entertainment vertical, built against the internal Video Demo account.",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "scripts": {
     "start": "nr1 nerdpack:serve",
     "test": "exit 0",

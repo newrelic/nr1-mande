@@ -101,3 +101,9 @@
     margin: 0px auto 3px;
   }
 }
+
+.Gauge-legend-item {
+  &:hover {
+    cursor: pointer
+  }
+}

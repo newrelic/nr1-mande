@@ -42,7 +42,33 @@ export default class TimelineDetail extends React.Component {
   }
 
   onClickLegend = legendItem => {
-    console.info('onClickLegend', legendItem)
+    const legend = [...this.state.legend]
+
+    let hiddenCount = 0
+
+    legend.forEach(item => {
+      if (item.group.name !== legendItem.group.name && !item.visible)
+        hiddenCount++
+    })
+
+    if (legendItem.visible && hiddenCount === 0) {
+      legend.forEach(item => {
+        if (item.group.name !== legendItem.group.name) item.visible = false
+      })
+    } else if (legendItem.visible && hiddenCount === legend.length - 1) {
+      legend.forEach(item => {
+        if (item.group.name !== legendItem.group.name) item.visible = true
+      })
+    } else {
+      for (let item of legend) {
+        if (item.group.name === legendItem.group.name) {
+          item.visible = !legendItem.visible
+          break
+        }
+      }
+    }
+
+    this.setState({ legend })
   }
 
   async componentDidMount() {

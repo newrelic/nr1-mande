@@ -10,9 +10,15 @@ const GaugeDataValue = props => {
   const labelClass =
     generateClassName(displayData.label) || `${displayData.value}`
   const displayValue = getDisplayValue(displayData.value)
-  const backgroundColor = displayData.visible ? displayData.color : 'white'
-  const border = displayData.visible ? 'none' : '.5px solid #464e4e'
-  const borderLeft = displayData.visible || index !== 0 ? 'none' : border
+
+  let backgroundColor = displayData.color
+  let border = 'none'
+  let borderLeft = 'none'
+  if (!displayData.visible) {
+    backgroundColor = 'white'
+    border = '.5px solid #ddd'
+    borderLeft = index !== 0 ? 'none' : border
+  }
 
   return (
     <div

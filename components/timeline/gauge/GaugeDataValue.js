@@ -1,34 +1,33 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { generateClassName, getDisplayValue } from './display-helpers';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { generateClassName, getDisplayValue } from './display-helpers'
 
-const GaugeDataValue = ({ value, label, color, height }, index, data) => {
+const GaugeDataValue = props => {
+  const { displayData, data, index } = props
   // Arbitrary proportion to ensure large gauges have the correct overlap
-  const overlapProportion = height / 3;
-  const arrayLength = data.length;
-  const labelClass = generateClassName(label) || `${value}`;
-  const displayValue = getDisplayValue(value);
+  // const overlapProportion = height / 3;
+  const arrayLength = data.length
+  const labelClass = generateClassName(displayData.label) || `${displayData.value}`
+  const displayValue = getDisplayValue(displayData.value)
 
-  if (!displayValue) return;
+  if (!displayValue) return
 
   return (
     <div
-      key={index + ' - ' + labelClass}
       className={`gaugeItem Gauge-series-${labelClass}`}
       style={{
         width: `${displayValue}%`,
-        backgroundColor: color,
+        backgroundColor: displayData.color,
         zIndex: arrayLength - index,
       }}
     />
-  );
-};
+  )
+}
 
 GaugeDataValue.propTypes = {
-  value: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  label: PropTypes.string,
-  color: PropTypes.string,
-};
+  displayData: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
+  index: PropTypes.number.isRequired,
+}
 
-export default GaugeDataValue;
+export default GaugeDataValue

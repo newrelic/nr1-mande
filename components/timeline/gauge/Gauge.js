@@ -95,7 +95,17 @@ export default class Gauge extends Component {
         </Stack>
 
         <div className="Gauge-gauge" style={{ height: height }}>
-          {displayData.map(GaugeDataValue)}
+          {displayData &&
+            displayData.map((display, idx) => {
+              return (
+                <GaugeDataValue
+                  key={idx + display.label}
+                  index={idx}
+                  displayData={display}
+                  data={data}
+                />
+              )
+            })}
         </div>
 
         <Stack

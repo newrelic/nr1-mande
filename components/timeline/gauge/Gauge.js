@@ -40,8 +40,8 @@ export default class Gauge extends Component {
     showLegend: true,
   }
 
-  proportionateValues = data => {
-    const { height } = this.props
+  proportionateValues = () => {
+    const { data, legend, height } = this.props
     const totalValue = data.reduce((acc, { value }) => {
       acc += value
       return acc
@@ -50,7 +50,21 @@ export default class Gauge extends Component {
     return data.map(({ value, label, color }, index) => {
       const displayColor = color || this.generateColor(index, data.length)
       const proportionateValue = (value * 100) / totalValue
-      return { value: proportionateValue, label, color: displayColor, height }
+
+      let visible = true
+      for (let legendItem of legend) {
+        if (legendItem.group.timelineDisplay.label === label) {
+          visible = legendItem.visible
+          break
+        }
+      }
+      return {
+        value: proportionateValue,
+        label,
+        color: displayColor,
+        height,
+        visible,
+      }
     })
   }
 
@@ -79,7 +93,7 @@ export default class Gauge extends Component {
 
   render() {
     const { data, height, showLegend, legend, legendClick } = this.props
-    const displayData = this.proportionateValues(data, height)
+    const displayData = this.proportionateValues()
     const timeAxisValues = this.renderTimeAxis(data)
 
     return (

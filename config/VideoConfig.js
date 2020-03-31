@@ -109,7 +109,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `SELECT average(timeSinceLoad) as 'Time To Player Ready (Average)' FROM PageAction, MobileVideo, RokuVideo `,
+          nrql: `SELECT average(timeSinceLoad) as 'Time To Player Ready (Average)' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'PLAYER_READY' `,
           facets: `session`,
           columnStart: 1,
           columnEnd: 6,

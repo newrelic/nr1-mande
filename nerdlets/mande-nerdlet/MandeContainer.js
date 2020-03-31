@@ -117,6 +117,8 @@ export default class MandeContainer extends React.PureComponent {
     const { accountId, threshold, selectedMetric, selectedStack } = this.state
     const durationInMinutes = duration / 1000 / 60
 
+    console.debug('mandeContainer.props.launcherUrlState', this.props.launcherUrlState)
+
     return (
       <div className="container">
         <DimensionContainer

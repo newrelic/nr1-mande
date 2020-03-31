@@ -48,6 +48,7 @@ const videoDetail = props => {
     if (config.useSince) query += since
     if (config.useCompare) query += compare
     if (filters) query += filters
+    if (config.facets) query += ` FACET ${config.facets}`
 
     console.debug('videoDetail.query', query)
     return query

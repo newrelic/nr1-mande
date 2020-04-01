@@ -55,7 +55,7 @@
     > .filter-attribute-value {
       display: inline-block;
       width: 90%;
-      // margin-top: 3px;
+      margin-left: 5px;
 
       &.checked {
         font-weight: 600;
@@ -76,11 +76,12 @@
 
     > .filter-attribute-checkbox {
       margin-top: 3px;
-      vertical-align: middle;
+      vertical-align: top;
 
       > .filter-attribute-checkbox-input {
 
         > [class*="Checkbox-input"] {
+          margin-top: 1px;
           width: 12px;
           height: 12px;
         }

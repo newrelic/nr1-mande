@@ -13,6 +13,13 @@ export default class AttributeValue extends React.PureComponent {
 
     return (
       <div className="filter-attribute-item">
+        <span className="filter-attribute-checkbox">
+          <Checkbox
+            checked={selected}
+            className="filter-attribute-checkbox-input"
+            onChange={this.onCheckboxChange}
+          />
+        </span>
         <span
           onClick={this.onCheckboxChange}
           className={
@@ -22,13 +29,6 @@ export default class AttributeValue extends React.PureComponent {
           }
         >
           {value}
-        </span>
-        <span className="filter-attribute-checkbox">
-          <Checkbox
-            checked={selected}
-            className="filter-attribute-checkbox-input"
-            onChange={this.onCheckboxChange}
-          />
         </span>
       </div>
     )

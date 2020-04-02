@@ -1,24 +1,39 @@
 import React from 'react'
 import { startCase, uniq } from 'lodash'
 import { StackItem } from 'nr1'
-import FilterAttribute from './FilterAttribute'
+import FilterCategory from './FilterCategory'
 
 export default class FilterStack extends React.Component {
   state = {
     loading: true,
-    attributes: [],
-    eventTypes: 'PageAction, MobileVideo',
+    categories: new Map(),
+    eventTypes: 'PageAction, MobileVideo, RokuVideo',
   }
 
-  getAttributes = () => {
+  getCategories = () => {
     const { stack } = this.props
-    let attributes = []
+    let categories = new Map()
 
     stack.eventTypes.forEach(eventType => {
-      attributes = [...attributes, ...eventType.attributes]
+      eventType.attributes.forEach(attribute => {
+        const category = attribute[1]
+        const name = attribute[0]
+
+        if (categories.get(category)) {
+          categories.get(category).push(name)
+        } else {
+          categories.set(category, [name])
+        }
+      })
+
+      for (let [key, value] of categories) {
+        console.info('filterStack.getCategories value', value)
+        const attributes = uniq(value).sort()
+        categories.set(key, attributes)
+      }
     })
 
-    return uniq(attributes).sort()
+    return categories
   }
 
   getEventSelectors = () => {
@@ -72,7 +87,7 @@ export default class FilterStack extends React.Component {
   }
 
   getAvailable() {
-    const { attributes, eventTypes } = this.state
+    const { categories, eventTypes } = this.state
     const {
       accountId,
       duration,
@@ -80,21 +95,42 @@ export default class FilterStack extends React.Component {
       activeAttributes,
     } = this.props
 
-    const filterItems =
-      attributes &&
-      attributes.map((attribute, idx) => {
-        return (
-          <FilterAttribute
-            key={attribute + idx}
+    let filterItems = [] 
+    categories.forEach((value, key) => {
+      // console.info('filterStack.getAvailable key value', key, value)
+      if (value && value.length > 0) {
+        filterItems.push(
+          <FilterCategory
+            key={key}
             accountId={accountId}
-            attribute={attribute}
+            title={key}
+            attributes={value}
             duration={duration}
             eventTypes={eventTypes}
             attributeToggle={attributeToggle}
             activeAttributes={activeAttributes}
           />
         )
-      })
+      }
+    })
+
+    // console.info('filterStack.getAvailable filterItems', filterItems)
+    // for (let category of categories) {
+    //   category.attributes &&
+    //     category.attributes.map((attribute, idx) => {
+    //       return (
+    //         <FilterAttribute
+    //           key={attribute + idx}
+    //           accountId={accountId}
+    //           attribute={attribute}
+    //           duration={duration}
+    //           eventTypes={eventTypes}
+    //           attributeToggle={attributeToggle}
+    //           activeAttributes={activeAttributes}
+    //         />
+    //       )
+    //     })
+    // }
 
     return (
       <StackItem className="filter-stack inactive">
@@ -107,8 +143,8 @@ export default class FilterStack extends React.Component {
   componentDidMount() {
     const { active } = this.props
     if (!active) {
-      const attributes = this.getAttributes()
-      this.setState({ attributes })
+      const categories = this.getCategories()
+      this.setState({ categories })
     }
   }
 

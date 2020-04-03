@@ -5,7 +5,6 @@ import { NerdGraphQuery, Stack, StackItem, nerdlet } from 'nr1'
 import DimensionContainer from './DimensionContainer'
 import MetricStackContainer from './MetricStackContainer'
 import MetricDetailContainer from './MetricDetailContainer'
-// import metricConfigs from './MetricConfig'
 import metricConfigs from '../../config/MetricConfig'
 
 export default class MandeContainer extends React.PureComponent {
@@ -91,7 +90,7 @@ export default class MandeContainer extends React.PureComponent {
     if (selectedMetric) this.onToggleMetric(selectedMetric)
     if (!selectedMetric) {
       if (selectedStack) this.onToggleDetailView(selectedStack)
-      else if (metricConfigs.length === 1) this.onToggleDetailView(metricConfigs[0].title)
+      else this.onToggleDetailView('Video') //if (metricConfigs.length === 1)
     }
   }
 
@@ -117,7 +116,10 @@ export default class MandeContainer extends React.PureComponent {
     const { accountId, threshold, selectedMetric, selectedStack } = this.state
     const durationInMinutes = duration / 1000 / 60
 
-    console.debug('mandeContainer.props.launcherUrlState', this.props.launcherUrlState)
+    console.debug(
+      'mandeContainer.props.launcherUrlState',
+      this.props.launcherUrlState
+    )
 
     return (
       <div className="container">
@@ -133,19 +135,17 @@ export default class MandeContainer extends React.PureComponent {
             gapType={Stack.GAP_TYPE.SMALL}
             className="main-panel"
           >
-            {metricConfigs.length > 1 && (
-              <StackItem grow>
-                <MetricStackContainer
-                  accountId={accountId}
-                  threshold={threshold}
-                  duration={durationInMinutes}
-                  metricConfigs={metricConfigs}
-                  selectedStack={selectedStack}
-                  toggleMetric={this.onToggleMetric}
-                  toggleDetails={this.onToggleDetailView}
-                />
-              </StackItem>
-            )}
+            <StackItem grow>
+              <MetricStackContainer
+                accountId={accountId}
+                threshold={threshold}
+                duration={durationInMinutes}
+                metricConfigs={metricConfigs}
+                selectedStack={selectedStack}
+                toggleMetric={this.onToggleMetric}
+                toggleDetails={this.onToggleDetailView}
+              />
+            </StackItem>
             {selectedStack && (
               <StackItem grow>
                 <MetricDetailContainer

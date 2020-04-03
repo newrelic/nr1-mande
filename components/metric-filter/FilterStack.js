@@ -14,24 +14,25 @@ export default class FilterStack extends React.Component {
     const { stack } = this.props
     let categories = new Map()
 
-    stack.eventTypes.forEach(eventType => {
-      eventType.attributes.forEach(attribute => {
-        const category = attribute[1]
-        const name = attribute[0]
+    stack.eventTypes &&
+      stack.eventTypes.forEach(eventType => {
+        eventType.attributes.forEach(attribute => {
+          const category = attribute[1]
+          const name = attribute[0]
 
-        if (categories.get(category)) {
-          categories.get(category).push(name)
-        } else {
-          categories.set(category, [name])
+          if (categories.get(category)) {
+            categories.get(category).push(name)
+          } else {
+            categories.set(category, [name])
+          }
+        })
+
+        for (let [key, value] of categories) {
+          console.info('filterStack.getCategories value', value)
+          const attributes = uniq(value).sort()
+          categories.set(key, attributes)
         }
       })
-
-      for (let [key, value] of categories) {
-        console.info('filterStack.getCategories value', value)
-        const attributes = uniq(value).sort()
-        categories.set(key, attributes)
-      }
-    })
 
     return categories
   }
@@ -95,7 +96,7 @@ export default class FilterStack extends React.Component {
       activeAttributes,
     } = this.props
 
-    let filterItems = [] 
+    let filterItems = []
     categories.forEach((value, key) => {
       // console.info('filterStack.getAvailable key value', key, value)
       if (value && value.length > 0) {

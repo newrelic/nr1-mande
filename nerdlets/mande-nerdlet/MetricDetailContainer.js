@@ -84,10 +84,13 @@ export default class MetricDetailContainer extends React.Component {
       <Stack className="detail-container">
         <Stack
           grow
+          fullHeight
           directionType={Stack.DIRECTION_TYPE.VERTICAL}
           className="detail-filter"
         >
           <FilterStack
+            grow
+            fullHeight
             active={true}
             activeAttributes={this.state.activeAttributes}
             attributeToggle={this.onAttributeToggle}

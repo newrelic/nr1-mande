@@ -283,6 +283,7 @@ h4 {
 
 .main-panel > [class*="StackItem"] {
   width: 100%;
+  height: 100%;
 }
 
 .detail-panel {
@@ -308,18 +309,10 @@ h4 {
 }
 
 .detail-container {
-  // width: 100%;
-  // height: 100%;
   border: 1px solid #ddd;
   margin: 10px 10px auto;
-  // padding: 5px 0px;
   width: 98.5%;
   height: 100%;
-
-  [class*="containing"] {
-    // margin-top: 5px;
-    border-top: 1px solid #d5d7d7;
-  }
 
   >.detail-filter {
     width: 100%;
@@ -331,14 +324,18 @@ h4 {
     border-right: 1px solid #d5d7d7;
     overflow-y: auto;
 
+    @media screen and (max-width: 1440px) {
+      max-width: 15%;
+    }
+
     @media screen and (max-height: 1000px) {
-      min-height: 1010px;
-      max-height: 1010px;
+      min-height: 1015px;
+      max-height: 1015px;
     }
 
     @media screen and (max-height: 1300px) {
-      min-height: 1045px;
-      max-height: 1045px;
+      min-height: 1050px;
+      max-height: 1050px;
     }
 
   }
@@ -349,17 +346,63 @@ h4 {
     height: 100%;
     max-width: 90%;
     padding: 0px 5px 0px 5px;
+    overflow-y: auto;
+
+    @media screen and (max-width: 1440px) {
+      max-width: 85%;
+    }
+
+    @media screen and (max-height: 1000px) {
+      min-height: 1010px;
+      max-height: 1010px;
+    }
+
+    @media screen and (max-height: 1300px) {
+      min-height: 1045px;
+      max-height: 1045px;
+    }    
 
     >.detail-kpis {
       width: 100%;
 
       [class*="metric"] {
         width: 95%;
-        min-width: 150px;
-        max-width: 400px;
+        min-width: 100px;
+        max-width: 300px;
 
         > .metric-chart {
           margin-bottom: 8px;
+
+          > .value {
+            @media (max-width: 1440px) and (max-height: 766px) {
+              font-size: 25px;
+            }
+          }
+
+          &.selected {
+            background-color: #edeeee;
+            border: 1px solid rgb(156, 154, 154);
+    
+            > .name {
+              font-weight: 600;
+              color: #000e0e;
+              @include selectedAfter;
+            }
+    
+            // > .value {
+            //   @media (max-width: 1440px) and (max-height: 766px) {
+            //     font-size: 20px;
+            //   }
+            // }
+
+            > .compareTo {
+              @media (max-width: 1440px) and (max-height: 766px) {
+                margin-top: 2px;
+                font-size: 8px;
+                padding: 2px;
+              }              
+            }
+          }
         }
       }
     }

@@ -76,7 +76,7 @@ export default class SessionDetail extends React.PureComponent {
             <div className="chart-container">
               <div className="chart-title">Session Details</div>
               {this.composeNrqlQuery(
-                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM PageAction, MobileVideo, RokuVideo WHERE session='${session}'`,
+                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM PageAction, MobileVideo, RokuVideo WHERE viewId='${session}'`,
                 this.buildSessionDetailGrid
               )}
             </div>
@@ -97,7 +97,7 @@ export default class SessionDetail extends React.PureComponent {
                       <div className="chart-container">
                         <div className="chart-title">{metric.title}</div>
                         {this.composeNrqlQuery(
-                          metric.query.nrql + ` WHERE session='${session}'`,
+                          metric.query.nrql + ` WHERE viewId='${session}'`,
                           this.buildKpiStackItem,
                           metric
                         )}

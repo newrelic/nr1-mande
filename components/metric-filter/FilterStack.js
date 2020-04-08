@@ -28,7 +28,6 @@ export default class FilterStack extends React.Component {
         })
 
         for (let [key, value] of categories) {
-          console.info('filterStack.getCategories value', value)
           const attributes = uniq(value).sort()
           categories.set(key, attributes)
         }

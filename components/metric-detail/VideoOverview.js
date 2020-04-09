@@ -10,8 +10,6 @@ const videoOverview = props => {
     filters,
   } = props
 
-  // const since = ` SINCE ${duration} MINUTES AGO`
-  // const compare = ` COMPARE WITH ${duration} MINUTES AGO`
   const formattedDuration = dateFormatter(timeRange)
 
   const timingsNrql =

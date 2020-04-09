@@ -20,6 +20,8 @@ const groups = [
       'CONTENT_PAUSE',
       'CONTENT_END',
       'CONTENT_RESUME',
+      'CONTENT_SEEK_START',
+      'CONTENT_SEEK_END',
     ],
   },
   {

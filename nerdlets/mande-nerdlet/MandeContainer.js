@@ -6,6 +6,7 @@ import DimensionContainer from './DimensionContainer'
 import MetricStackContainer from './MetricStackContainer'
 import MetricDetailContainer from './MetricDetailContainer'
 import metricConfigs from '../../config/MetricConfig'
+import { formatSinceAndCompare } from '../../utils/query-formatter'
 
 export default class MandeContainer extends React.PureComponent {
   state = {
@@ -108,13 +109,13 @@ export default class MandeContainer extends React.PureComponent {
 
   render() {
     console.debug('mandecontainer.render')
-    const {
-      timeRange: { duration },
-    } = this.props.launcherUrlState
+    const { timeRange } = this.props.launcherUrlState
     const { selectedDimensions } = this.props.nerdletUrlState
 
+    const duration = formatSinceAndCompare(timeRange)
+
     const { accountId, threshold, selectedMetric, selectedStack } = this.state
-    const durationInMinutes = duration / 1000 / 60
+    // const durationInMinutes = duration / 1000 / 60
 
     console.debug(
       'mandeContainer.props.launcherUrlState',
@@ -139,7 +140,7 @@ export default class MandeContainer extends React.PureComponent {
               <MetricStackContainer
                 accountId={accountId}
                 threshold={threshold}
-                duration={durationInMinutes}
+                duration={duration}
                 metricConfigs={metricConfigs}
                 selectedStack={selectedStack}
                 toggleMetric={this.onToggleMetric}
@@ -150,7 +151,7 @@ export default class MandeContainer extends React.PureComponent {
               <StackItem grow>
                 <MetricDetailContainer
                   accountId={accountId}
-                  duration={durationInMinutes}
+                  duration={duration}
                   threshold={threshold}
                   activeMetric={selectedMetric}
                   toggleMetric={this.onToggleMetric}

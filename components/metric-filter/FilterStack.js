@@ -97,7 +97,6 @@ export default class FilterStack extends React.Component {
 
     let filterItems = []
     categories.forEach((value, key) => {
-      // console.info('filterStack.getAvailable key value', key, value)
       if (value && value.length > 0) {
         filterItems.push(
           <FilterCategory
@@ -113,24 +112,6 @@ export default class FilterStack extends React.Component {
         )
       }
     })
-
-    // console.info('filterStack.getAvailable filterItems', filterItems)
-    // for (let category of categories) {
-    //   category.attributes &&
-    //     category.attributes.map((attribute, idx) => {
-    //       return (
-    //         <FilterAttribute
-    //           key={attribute + idx}
-    //           accountId={accountId}
-    //           attribute={attribute}
-    //           duration={duration}
-    //           eventTypes={eventTypes}
-    //           attributeToggle={attributeToggle}
-    //           activeAttributes={activeAttributes}
-    //         />
-    //       )
-    //     })
-    // }
 
     return (
       <StackItem className="filter-stack inactive">

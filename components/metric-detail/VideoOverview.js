@@ -4,11 +4,15 @@ import { AreaChart, LineChart, Grid, GridItem } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
 
 const videoOverview = props => {
-  const { accountId, duration, filters } = props
+  const {
+    accountId,
+    duration: { since, compare, timeRange },
+    filters,
+  } = props
 
-  const since = ` SINCE ${duration} MINUTES AGO`
-  const compare = ` COMPARE WITH ${duration} MINUTES AGO`
-  const formattedDuration = dateFormatter(duration)
+  // const since = ` SINCE ${duration} MINUTES AGO`
+  // const compare = ` COMPARE WITH ${duration} MINUTES AGO`
+  const formattedDuration = dateFormatter(timeRange)
 
   const timingsNrql =
     `SELECT filter(average(timeSinceLoad), WHERE actionName = 'CONTENT_REQUEST') as 'Time to Content Request', 
@@ -36,7 +40,7 @@ const videoOverview = props => {
         <div className="chart-container">
           <div className="chart-title">
             {title}
-            <div className="chart-subtitle">Since {formattedDuration} ago</div>
+            <div className="chart-subtitle">{formattedDuration}</div>
           </div>
           <div className="detail-chart medium">{chart}</div>
         </div>
@@ -65,7 +69,10 @@ const videoOverview = props => {
         {addChart(
           4,
           'Video Errors and Failures Before Start',
-          <AreaChart accountId={accountId} query={addFilters(videoErrorsNrql)} />
+          <AreaChart
+            accountId={accountId}
+            query={addFilters(videoErrorsNrql)}
+          />
         )}
         {addChart(
           4,
@@ -75,7 +82,10 @@ const videoOverview = props => {
         {addChart(
           4,
           'Interruption Ratio',
-          <AreaChart accountId={accountId} query={addFilters(interruptionNrql)} />
+          <AreaChart
+            accountId={accountId}
+            query={addFilters(interruptionNrql)}
+          />
         )}
       </Grid>
     </div>

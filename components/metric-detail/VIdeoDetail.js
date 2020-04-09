@@ -16,10 +16,15 @@ import {
 import { dateFormatter } from '../../utils/date-formatter'
 
 const videoDetail = props => {
-  const { accountId, duration, stack, activeMetric, filters } = props
-  const since = ` SINCE ${duration} MINUTES AGO`
-  const compare = ` COMPARE WITH ${duration} MINUTES AGO`
-  const formattedDuration = dateFormatter(duration)
+  const {
+    accountId,
+    duration: { since, compare, timeRange },
+    stack,
+    activeMetric,
+    filters,
+  } = props
+
+  const formattedDuration = dateFormatter(timeRange)
 
   const clicks = [
     {
@@ -41,7 +46,7 @@ const videoDetail = props => {
 
   const getClick = name => {
     const click = clicks.filter(c => c.name === name)[0]
-    if (!click) return () => { }
+    if (!click) return () => {}
     else return click.handler
   }
 
@@ -110,9 +115,7 @@ const videoDetail = props => {
                 <div className="chart-container">
                   <div className="chart-title">
                     {config.title}
-                    <div className="chart-subtitle">
-                      Since {formattedDuration} ago
-                    </div>
+                    <div className="chart-subtitle">{formattedDuration}</div>
                   </div>
                   <div className={'detail-chart ' + config.chartSize}>
                     {getChart(config)}

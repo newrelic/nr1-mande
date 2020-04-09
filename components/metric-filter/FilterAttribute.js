@@ -7,9 +7,14 @@ export default class FilterAttribute extends React.Component {
   state = { expanded: false, loading: true, values: [] }
 
   loadValues = async () => {
-    const { accountId, attribute, eventTypes, duration } = this.props
-    const query = `SELECT uniques(${attribute}) FROM ${eventTypes} SINCE ${duration} MINUTES AGO`
+    const {
+      accountId,
+      attribute,
+      eventTypes,
+      duration: { since },
+    } = this.props
 
+    const query = `SELECT uniques(${attribute}) FROM ${eventTypes} ${since}`
     const { data } = await NrqlQuery.query({ accountId, query })
 
     let values = [] // if we don't get any values back, state will reset to blank

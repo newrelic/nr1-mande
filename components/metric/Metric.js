@@ -15,10 +15,15 @@ export class Metric extends React.Component {
 
   // ============== HANDLERS/METHODS ===============
   getData = async () => {
-    const { accountId, metric, duration, filters } = this.props
+    const {
+      accountId,
+      metric,
+      duration: { since, compare },
+      filters,
+    } = this.props
 
-    const since = ` SINCE ${duration} MINUTES AGO`
-    const compare = ` COMPARE WITH ${duration} MINUTES AGO`
+    // const since = ` SINCE ${duration} MINUTES AGO`
+    // const compare = ` COMPARE WITH ${duration} MINUTES AGO`
     let nrql = metric.query.nrql + since + compare
 
     if (filters) nrql = nrql + filters

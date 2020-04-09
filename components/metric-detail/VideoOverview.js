@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { AreaChart, PieChart, Grid, GridItem } from 'nr1'
+import { AreaChart, LineChart, Grid, GridItem } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
 
 const videoOverview = props => {
@@ -60,7 +60,7 @@ const videoOverview = props => {
         {addChart(
           6,
           'Total Requests vs Total Starts',
-          <AreaChart accountId={accountId} query={addFilters(countsNrql)} />
+          <LineChart accountId={accountId} query={addFilters(countsNrql)} />
         )}
         {addChart(
           4,

@@ -9,6 +9,8 @@ import {
   BillboardChart,
   BarChart,
   HeatmapChart,
+  HistogramChart,
+  PieChart,
   navigation,
 } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
@@ -39,7 +41,7 @@ const videoDetail = props => {
 
   const getClick = name => {
     const click = clicks.filter(c => c.name === name)[0]
-    if (!click) return () => {}
+    if (!click) return () => { }
     else return click.handler
   }
 
@@ -70,6 +72,12 @@ const videoDetail = props => {
         return <BillboardChart accountId={accountId} query={getQuery(config)} />
       case 'heatmap':
         return <HeatmapChart accountId={accountId} query={getQuery(config)} />
+      case 'histogram':
+        return <HistogramChart accountId={accountId} query={getQuery(config)} />
+      case 'billboard':
+        return <BillboardChart accountId={accountId} query={getQuery(config)} />
+      case 'pie':
+        return <PieChart accountId={accountId} query={getQuery(config)} />
       case 'line':
         return <LineChart accountId={accountId} query={getQuery(config)} />
       case 'scatter':

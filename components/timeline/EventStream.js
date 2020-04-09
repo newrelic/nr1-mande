@@ -55,7 +55,7 @@ export default class EventStream extends React.Component {
         this.state.expandedTimelineItem == i ? 'timeline-item-expanded' : ''
       const streamTimeline = this.buildStreamTimeline(event)
 
-      legendItem.visible &&
+      legendItem && legendItem.visible &&
         sessionEvents.push(
           <div
             key={i}

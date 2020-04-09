@@ -2,6 +2,34 @@ import { Icon } from 'nr1'
 
 const groups = [
   {
+    name: 'PLAYER',
+    eventDisplay: {
+      class: 'timeline-item-type-player',
+      icon: Icon.TYPE.INTERFACE__CARET__CARET_RIGHT__V_ALTERNATE,
+      label: 'Player',
+      color: '#016911',
+    },
+    timelineDisplay: {
+      color: '#bdf2c6',
+      label: 'Player',
+    },
+    actionNames: ['PLAYER_READY'],
+  },
+  {
+    name: 'DOWNLOAD',
+    eventDisplay: {
+      class: 'timeline-item-type-download',
+      icon: Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__DOWNSTREAM_DEPLOYMENT,
+      label: 'Download',
+      color: '#01355c',
+    },
+    timelineDisplay: {
+      color: '#add7f7',
+      label: 'Download',
+    },
+    actionNames: ['DOWNLOAD'],
+  },
+  {
     name: 'CONTENT',
     eventDisplay: {
       class: 'timeline-item-type-content',
@@ -15,7 +43,6 @@ const groups = [
     },
     actionNames: [
       'CONTENT_REQUEST',
-      'DOWNLOAD',
       'CONTENT_START',
       'CONTENT_PAUSE',
       'CONTENT_END',
@@ -28,7 +55,7 @@ const groups = [
     name: 'HEARTBEAT',
     eventDisplay: {
       class: 'timeline-item-type-heartbeat',
-      icon: Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT__V_ALTERNATE,
+      icon: Icon.TYPE.INTERFACE__SIGN__CHECKMARK,
       label: 'Heartbeat',
       color: '#a752d5',
     },
@@ -57,12 +84,12 @@ const groups = [
     eventDisplay: {
       class: 'timeline-item-type-error',
       icon: Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__APPLICATION__S_ERROR,
-      label: 'Errors',
+      label: 'Error',
       color: '#bf0015',
     },
     timelineDisplay: {
       color: '#bf0015',
-      label: 'Errors',
+      label: 'Error',
     },
     actionNames: ['CONTENT_ERROR', 'ERROR'],
   },

@@ -70,6 +70,14 @@
   background-color: #a5d1af;
 }
 
+.timeline-item-type-player .timeline-item-symbol:after {
+  background-color: #bdf2c6;
+}
+
+.timeline-item-type-download .timeline-item-symbol:after {
+  background-color: #add7f7;
+}
+
 .timeline-item-type-general .timeline-item-symbol-icon {
   display: none;
 }

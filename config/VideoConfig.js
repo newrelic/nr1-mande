@@ -378,7 +378,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceBufferBegin/1000, 50) as 'Seconds', percentile(timeSinceBufferBegin/1000, 90) as 'seconds', percentile(timeSinceBufferBegin/1000, 95) as 'seconds', percentile(timeSinceBufferBegin/1000, 99) as 'seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead = 0 `,
+          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceBufferBegin/1000, 50) as 'seconds', percentile(timeSinceBufferBegin/1000, 90) as 'seconds', percentile(timeSinceBufferBegin/1000, 95) as 'seconds', percentile(timeSinceBufferBegin/1000, 99) as 'seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead = 0 `,
           columnStart: 1,
           columnEnd: 4,
           chartSize: 'medium',
@@ -387,7 +387,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceBufferBegin/1000, 50) as 'Seconds', percentile(timeSinceBufferBegin/1000, 90) as 's', percentile(timeSinceBufferBegin/1000, 95) as 's', percentile(timeSinceBufferBegin/1000, 99) as 's' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead = 0 TIMESERIES MAX `,
+          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceBufferBegin/1000, 50) as 'seconds', percentile(timeSinceBufferBegin/1000, 90) as 'seconds', percentile(timeSinceBufferBegin/1000, 95) as 'seconds', percentile(timeSinceBufferBegin/1000, 99) as 'seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead = 0 TIMESERIES MAX `,
           facets: '',
           columnStart: 5,
           columnEnd: 12,

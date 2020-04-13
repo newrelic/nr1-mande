@@ -22,8 +22,6 @@ export class Metric extends React.Component {
       filters,
     } = this.props
 
-    // const since = ` SINCE ${duration} MINUTES AGO`
-    // const compare = ` COMPARE WITH ${duration} MINUTES AGO`
     let nrql = metric.query.nrql + since + compare
 
     if (filters) nrql = nrql + filters

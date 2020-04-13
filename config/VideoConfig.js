@@ -59,16 +59,17 @@ export default {
       ],
     },
   ],
-  overview: (props, filters) => {
+  overview: (props, filters, facets) => {
     return (
       <VideoOverview
         accountId={props.accountId}
         duration={props.duration}
         filters={filters}
+        facets={facets}
       />
     )
   },
-  detailView: (props, filters) => {
+  detailView: (props, filters, facets) => {
     return (
       <VideoDetail
         accountId={props.accountId}
@@ -76,6 +77,7 @@ export default {
         stack={props.stack}
         activeMetric={props.activeMetric}
         filters={filters}
+        facets={facets}
       />
     )
   },
@@ -122,6 +124,7 @@ export default {
         },
         {
           nrql: `SELECT average(timeSinceLoad) as 'Time To Player Ready (Average)' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'PLAYER_READY' FACET viewId `,
+          noFacet: true,
           columnStart: 1,
           columnEnd: 6,
           chartSize: 'medium',
@@ -160,7 +163,6 @@ export default {
         },
         {
           nrql: `FROM PageAction SELECT filter(count(*), where actionName = 'CONTENT_ERROR' and contentPlayhead = 0) / filter(count(*), where actionName = 'CONTENT_REQUEST') * 100 as '%' TIMESERIES MAX `,
-          facets: 'deviceType',
           columnStart: 4,
           columnEnd: 12,
           chartSize: 'small',
@@ -170,6 +172,7 @@ export default {
         },
         {
           nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead = 0 facet viewId `,
+          noFacet: 'true',
           columnStart: 1,
           columnEnd: 6,
           chartSize: 'large',
@@ -222,6 +225,7 @@ export default {
         },
         {
           nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead > 0 facet viewId `,
+          noFacet: true,
           columnStart: 1,
           columnEnd: 6,
           chartSize: 'large',
@@ -331,6 +335,7 @@ export default {
         },
         {
           nrql: `SELECT average(timeSinceRequested/1000) as 'Time To First Frame (Average)' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START' FACET viewId`,
+          noFacet: true,
           columnStart: 1,
           columnEnd: 12,
           chartSize: 'medium',
@@ -369,6 +374,7 @@ export default {
         },
         {
           nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT sum(timeSinceBufferBegin)/1000 as 'Total Buffering' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0 FACET viewId `,
+          noFacet: true,
           columnStart: 8,
           columnEnd: 12,
           chartSize: 'medium',
@@ -415,7 +421,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT percentile(contentBitrate, 50)/1000000, percentile(contentBitrate, 90)/1000000, percentile(contentBitrate, 95)/1000000, percentile(contentBitrate, 99)/1000000 where contentBitrate is not null `,
+          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT percentile(contentBitrate, 50)/1000000, percentile(contentBitrate, 90)/1000000, percentile(contentBitrate, 95)/1000000, percentile(contentBitrate, 99)/1000000 where contentBitrate is not null TIMESERIES MAX `,
           columnStart: 5,
           columnEnd: 12,
           chartSize: 'medium',
@@ -425,6 +431,7 @@ export default {
         },
         {
           nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT percentile(contentBitrate, 50)/1000000 as '', percentile(contentBitrate, 90)/1000000 as '', percentile(contentBitrate, 95)/1000000 as '', percentile(contentBitrate, 99)/1000000 as '' where contentBitrate is not null  FACET eventType() `,
+          noFacet: true,
           columnStart: 1,
           columnEnd: 6,
           chartSize: 'medium',
@@ -434,6 +441,7 @@ export default {
         },
         {
           nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null facet viewId `,
+          noFacet: true,
           columnStart: 7,
           columnEnd: 12,
           chartSize: 'medium',
@@ -472,6 +480,7 @@ export default {
         },
         {
           nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT count(*) WHERE actionName = 'CONTENT_BUFFER_START' and contentPlayhead > 0 FACET viewId `,
+          noFacet: true,
           columnStart: 1,
           columnEnd: 12,
           chartSize: 'medium',
@@ -531,6 +540,7 @@ export default {
         },
         {
           nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT count(*) WHERE actionName = 'CONTENT_RENDITION_CHANGE' and contentPlayhead > 0 FACET viewId `,
+          noFacet: true,
           columnStart: 1,
           columnEnd: 12,
           chartSize: 'medium',

@@ -38,28 +38,56 @@
   width: 100%;
   font-size: 11px;
 
-  @include pointer;
+  .is-checked {
+    background-color: #797878;
+  }
 
   > .filter-attribute-titlebar {
 
-    > .filter-attribute-name {
+    > .filter-attribute-title {
       display: inline-block;
       width: 90%;
-      font-size: 12px;
+
+      > .filter-attribute-title-name {
+        display: inline-block;
+        font-size: 12px;
+        @include pointer;
+      }
+
+      > .filter-attribute-title-facet {
+        display: inline-block;
+        padding-left: 10px;
+        font-size: 10px;
+
+        > .filter-attribute-facet-checkbox {
+          margin-right: 3px;
+
+          > [class*="Checkbox-input"] {
+            margin-top: 1px;
+            width: 10px;
+            height: 10px;
+          }
+        }
+      }
+    }
+
+    > .filter-attribute-toggle {
+      @include pointer;
     }
 
     &.expand {
-      // color: rgb(0, 121, 191);
       color: rgb(18, 123, 189);
       font-weight: 600;
       margin-bottom: 2px;
+
+      .filter-attribute-title-facet {
+        color: #797878;
+      }
     }
-  
-    @include pointer;
+
   }
 
   > .filter-attribute-item {
-
     > .filter-attribute-value {
       display: inline-block;
       width: 90%;
@@ -75,7 +103,7 @@
         width: auto;
 
         &:after {
-          content: 'X';
+          content: "X";
           color: #000e0e;
           padding-left: 5px;
         }
@@ -87,7 +115,6 @@
       vertical-align: top;
 
       > .filter-attribute-checkbox-input {
-
         > [class*="Checkbox-input"] {
           margin-top: 1px;
           width: 12px;

@@ -1,6 +1,6 @@
 import React from 'react'
 import { startCase, map } from 'lodash'
-import { Icon, NrqlQuery, Spinner } from 'nr1'
+import { Icon, NrqlQuery, Spinner, Checkbox } from 'nr1'
 import AttributeValue from './AttributeValue'
 
 export default class FilterAttribute extends React.Component {
@@ -40,9 +40,14 @@ export default class FilterAttribute extends React.Component {
     return found.length > 0
   }
 
+  onCheckboxChange = () => {
+    const { attribute, faceted, facetToggle } = this.props
+    facetToggle(attribute, !faceted)
+  }
+
   render() {
     const { loading, expanded, values } = this.state
-    const { attribute, attributeToggle, activeAttributes } = this.props
+    const { attribute, attributeToggle, activeAttributes, faceted } = this.props
     const displayName = startCase(attribute)
 
     let valueItems = loading ? (
@@ -70,8 +75,21 @@ export default class FilterAttribute extends React.Component {
               : 'filter-attribute-titlebar'
           }
         >
-          <span className="filter-attribute-name" onClick={this.toggleValues}>
-            {displayName}
+          <span className="filter-attribute-title">
+            <span
+              className="filter-attribute-title-name"
+              onClick={this.toggleValues}
+            >
+              {displayName}
+            </span>
+            <span className="filter-attribute-title-facet">
+              <Checkbox
+                checked={faceted}
+                className="filter-attribute-facet-checkbox"
+                onChange={this.onCheckboxChange}
+              />
+              Facet
+            </span>
           </span>
           <span className="filter-attribute-toggle" onClick={this.toggleValues}>
             {!expanded && (

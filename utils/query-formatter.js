@@ -17,3 +17,55 @@ export const formatSinceAndCompare = timeRange => {
 
   return clauses
 }
+
+const singleFilter = (attribute, value) => {
+  return ` WHERE ${attribute} = '${value}' `
+}
+
+const multipleFilters = (attribute, values) => {
+  let statement = ` WHERE ${attribute} IN (`
+
+  for (let i = 1; i <= values.length; i++) {
+    statement = statement + `'${values[i-1]}'`
+    if (i < values.length) statement = statement + ','
+    if (i == values.length) statement = statement + ') '
+  }
+
+  return statement
+}
+
+export const formatFilters = filters => {
+  let attributeMap = new Map()
+  for (let filter of filters) {
+    const entries = attributeMap.get(filter.attribute)
+    if (entries) entries.push(filter.value)
+    else {
+      entries = [filter.value]
+      attributeMap.set(filter.attribute, entries)
+    }
+  }
+
+  const filterStatements = []
+  for (let [key, value] of attributeMap) {
+    if (value.length < 2) filterStatements.push(singleFilter(key, value[0]))
+    else filterStatements.push(multipleFilters(key, value))
+  }
+
+  console.debug(`filterNrql.filters ${JSON.stringify(filterStatements)}`)
+
+  return filterStatements.join(' ')
+}
+
+export const formatFacets = facets => {
+  let facetNrql = ''
+
+  facets.map((facet, idx) => {
+    if (idx !== facets.length - 1) {
+      facetNrql += facet + ','
+    } else {
+      facetNrql += facet
+    }
+  })
+
+  return facetNrql
+}

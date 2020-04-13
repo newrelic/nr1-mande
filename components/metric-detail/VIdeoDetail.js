@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { uniq } from 'lodash'
 import {
   Grid,
   GridItem,
@@ -14,6 +14,7 @@ import {
   navigation,
 } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
+import { formatFacets } from '../../utils/query-formatter'
 
 const videoDetail = props => {
   const {
@@ -22,6 +23,7 @@ const videoDetail = props => {
     stack,
     activeMetric,
     filters,
+    facets,
   } = props
 
   const formattedDuration = dateFormatter(timeRange)
@@ -55,10 +57,28 @@ const videoDetail = props => {
     if (config.useSince) query += since
     if (config.useCompare) query += compare
     if (filters) query += filters
-    if (config.facets) query += ` FACET ${config.facets}`
+
+    if (!config.noFacet) {
+      if (config.facets && facets) {
+        query += `FACET ${getDedupedFacets(config)}`
+      } else {
+        if (facets) query += `FACET ${facets}`
+        if (config.facets) query += `FACET ${config.facets}`
+      }
+    }
 
     console.debug('videoDetail.query', query)
     return query
+  }
+
+  const getDedupedFacets = config => {
+    let allFacets = []
+
+    if (config.facets) allFacets = config.facets.split(',')
+    if (facets) allFacets = allFacets.concat(facets.split(','))
+    const formattedFacets = formatFacets(uniq(allFacets))
+
+    return formattedFacets
   }
 
   const getChart = config => {

@@ -8,6 +8,7 @@ const videoOverview = props => {
     accountId,
     duration: { since, compare, timeRange },
     filters,
+    facets,
   } = props
 
   const formattedDuration = dateFormatter(timeRange)
@@ -46,8 +47,9 @@ const videoOverview = props => {
     )
   }
 
-  const addFilters = baseQuery => {
+  const addFiltersAndFacets = baseQuery => {
     if (filters) baseQuery += filters
+    if (facets) baseQuery += `FACET ${facets}`
     return baseQuery
   }
 
@@ -57,32 +59,41 @@ const videoOverview = props => {
         {addChart(
           6,
           'Content Request vs Player Ready vs Video Start (Average in Seconds)',
-          <AreaChart accountId={accountId} query={addFilters(timingsNrql)} />
+          <AreaChart
+            accountId={accountId}
+            query={addFiltersAndFacets(timingsNrql)}
+          />
         )}
         {addChart(
           6,
           'Total Requests vs Total Starts',
-          <LineChart accountId={accountId} query={addFilters(countsNrql)} />
+          <LineChart
+            accountId={accountId}
+            query={addFiltersAndFacets(countsNrql)}
+          />
         )}
         {addChart(
           4,
           'Video Errors and Failures Before Start',
           <AreaChart
             accountId={accountId}
-            query={addFilters(videoErrorsNrql)}
+            query={addFiltersAndFacets(videoErrorsNrql)}
           />
         )}
         {addChart(
           4,
           'Rebuffer Ratio',
-          <AreaChart accountId={accountId} query={addFilters(rebufferNrql)} />
+          <AreaChart
+            accountId={accountId}
+            query={addFiltersAndFacets(rebufferNrql)}
+          />
         )}
         {addChart(
           4,
           'Interruption Ratio',
           <AreaChart
             accountId={accountId}
-            query={addFilters(interruptionNrql)}
+            query={addFiltersAndFacets(interruptionNrql)}
           />
         )}
       </Grid>

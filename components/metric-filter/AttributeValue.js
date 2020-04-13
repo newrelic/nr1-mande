@@ -1,6 +1,5 @@
 import React from 'react'
 import { Checkbox } from 'nr1'
-import { render } from 'react-dom'
 
 export default class AttributeValue extends React.PureComponent {
   onCheckboxChange = () => {

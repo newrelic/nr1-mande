@@ -10,6 +10,8 @@ const filterCategory = props => {
     attributeToggle,
     activeAttributes,
     eventTypes,
+    facets,
+    facetToggle,
   } = props
 
   const filterAttributes =
@@ -24,6 +26,8 @@ const filterCategory = props => {
           eventTypes={eventTypes}
           attributeToggle={attributeToggle}
           activeAttributes={activeAttributes}
+          faceted={facets.includes(attribute)}
+          facetToggle={facetToggle}
         />
       )
     })

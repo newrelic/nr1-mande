@@ -3,11 +3,12 @@ import { cloneDeep } from 'lodash'
 import { Stack, StackItem } from 'nr1'
 import { Metric } from '../../components/metric/Metric'
 import FilterStack from '../../components/metric-filter/FilterStack'
-import filterFactory from '../../components/metric-filter/FilterFactory'
+import { formatFilters, formatFacets } from '../../utils/query-formatter'
 
 export default class MetricDetailContainer extends React.Component {
   state = {
     activeAttributes: [],
+    facets: [],
   }
 
   onAttributeToggle = (attribute, value, add) => {
@@ -30,14 +31,31 @@ export default class MetricDetailContainer extends React.Component {
     }
   }
 
+  onFacetToggle = (attribute, add) => {
+    const clonedFacets = [...this.state.facets]
+
+    if (add) {
+      clonedFacets.push(attribute)
+      this.setState({ facets: clonedFacets })
+      return
+    }
+
+    let updatedFacets = []
+    if (!add) {
+      updatedFacets = clonedFacets.filter(cloned => cloned !== attribute)
+      this.setState({ facets: updatedFacets })
+    }
+  }
+
   onEventSelectorToggle = eventSelector => {
     console.log('toggled eventSelector')
   }
 
-  detailView = filters => {
+  detailView = (filters, facetClause) => {
     const { stack, activeMetric } = this.props
-    if (activeMetric && stack.detailView) return stack.detailView(this.props, filters)
-    if (stack.overview) return stack.overview(this.props, filters)
+    if (activeMetric && stack.detailView)
+      return stack.detailView(this.props, filters, facetClause)
+    if (stack.overview) return stack.overview(this.props, filters, facetClause)
     return <div />
   }
 
@@ -50,9 +68,10 @@ export default class MetricDetailContainer extends React.Component {
       activeMetric,
       toggleMetric,
     } = this.props
-    const { activeAttributes } = this.state
+    const { activeAttributes, facets } = this.state
 
-    const filters = filterFactory(activeAttributes)
+    const filters = formatFilters(activeAttributes)
+    const facetClause = formatFacets(facets)
 
     const metrics =
       stack.metrics &&
@@ -92,7 +111,7 @@ export default class MetricDetailContainer extends React.Component {
             grow
             fullHeight
             active={true}
-            activeAttributes={this.state.activeAttributes}
+            activeAttributes={activeAttributes}
             attributeToggle={this.onAttributeToggle}
           />
           <FilterStack
@@ -100,8 +119,10 @@ export default class MetricDetailContainer extends React.Component {
             accountId={accountId}
             duration={duration}
             stack={stack}
-            activeAttributes={this.state.activeAttributes}
+            activeAttributes={activeAttributes}
             attributeToggle={this.onAttributeToggle}
+            facets={facets}
+            facetToggle={this.onFacetToggle}
           />
         </Stack>
         <Stack
@@ -112,7 +133,9 @@ export default class MetricDetailContainer extends React.Component {
           <StackItem className="detail-kpis">
             <Stack fullWidth={true}>{metrics}</Stack>
           </StackItem>
-          <StackItem className="detail-main">{this.detailView(filters)}</StackItem>
+          <StackItem className="detail-main">
+            {this.detailView(filters, facetClause)}
+          </StackItem>
         </Stack>
       </Stack>
     )

@@ -93,6 +93,8 @@ export default class FilterStack extends React.Component {
       duration,
       attributeToggle,
       activeAttributes,
+      facets,
+      facetToggle,
     } = this.props
 
     let filterItems = []
@@ -108,6 +110,8 @@ export default class FilterStack extends React.Component {
             eventTypes={eventTypes}
             attributeToggle={attributeToggle}
             activeAttributes={activeAttributes}
+            facets={facets}
+            facetToggle={facetToggle}
           />
         )
       }

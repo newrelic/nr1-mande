@@ -38,6 +38,10 @@
   width: 100%;
   font-size: 11px;
 
+  > .filter-attribute-empty {
+    color: #9e9d9d;
+  }
+
   .is-checked {
     background-color: #797878;
   }

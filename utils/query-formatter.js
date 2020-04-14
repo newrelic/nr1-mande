@@ -19,19 +19,23 @@ export const formatSinceAndCompare = timeRange => {
 }
 
 const singleFilter = (attribute, value) => {
-  return ` WHERE ${attribute} = '${value}' `
+  return ` WHERE ${attribute} = ${getFilterValue(value)} `
 }
 
 const multipleFilters = (attribute, values) => {
   let statement = ` WHERE ${attribute} IN (`
 
   for (let i = 1; i <= values.length; i++) {
-    statement = statement + `'${values[i-1]}'`
+    statement = statement + getFilterValue(values[i - 1])
     if (i < values.length) statement = statement + ','
     if (i == values.length) statement = statement + ') '
   }
 
   return statement
+}
+
+const getFilterValue = value => {
+  return isNaN(value) ? `'${value}'` : value
 }
 
 export const formatFilters = filters => {

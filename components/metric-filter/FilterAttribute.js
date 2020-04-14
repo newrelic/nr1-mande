@@ -26,7 +26,7 @@ export default class FilterAttribute extends React.Component {
   toggleValues = async () => {
     const { expanded } = this.state
     if (expanded) {
-      this.setState({ loading: true, expanded: false, values: [] })
+      this.setState({ loading: true, expanded: false })
     } else {
       const values = await this.loadValues()
       this.setState({ loading: false, expanded: true, values })
@@ -43,6 +43,25 @@ export default class FilterAttribute extends React.Component {
   onCheckboxChange = () => {
     const { attribute, faceted, facetToggle } = this.props
     facetToggle(attribute, !faceted)
+  }
+
+  async componentDidMount() {
+    this.setState({ loading: true })
+    const values = await this.loadValues()
+    this.setState({ loading: false, values })
+  }
+
+  async componentDidUpdate(prevProps) {
+    const {
+      duration: { since },
+    } = this.props
+    const prevSince = prevProps.duration.since
+
+    if (since !== prevSince) {
+      this.setState({ loading: true })
+      const values = await this.loadValues()
+      this.setState({ loading: false, values })
+    }
   }
 
   render() {
@@ -68,39 +87,52 @@ export default class FilterAttribute extends React.Component {
 
     return (
       <div className="filter-attribute">
-        <div
-          className={
-            expanded
-              ? 'filter-attribute-titlebar expand'
-              : 'filter-attribute-titlebar'
-          }
-        >
-          <span className="filter-attribute-title">
-            <span
-              className="filter-attribute-title-name"
-              onClick={this.toggleValues}
+        {values.length === 0 && (
+          <div className="filter-attribute-empty">
+            {displayName} (No values)
+          </div>
+        )}
+
+        {values.length > 0 && (
+          <React.Fragment>
+            <div
+              className={
+                expanded
+                  ? 'filter-attribute-titlebar expand'
+                  : 'filter-attribute-titlebar'
+              }
             >
-              {displayName}
-            </span>
-            <span className="filter-attribute-title-facet">
-              <Checkbox
-                checked={faceted}
-                className="filter-attribute-facet-checkbox"
-                onChange={this.onCheckboxChange}
-              />
-              Facet
-            </span>
-          </span>
-          <span className="filter-attribute-toggle" onClick={this.toggleValues}>
-            {!expanded && (
-              <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_BOTTOM} />
-            )}
-            {expanded && (
-              <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_TOP} />
-            )}
-          </span>
-        </div>
-        {expanded && valueItems}
+              <span className="filter-attribute-title">
+                <span
+                  className="filter-attribute-title-name"
+                  onClick={this.toggleValues}
+                >
+                  {displayName}
+                </span>
+                <span className="filter-attribute-title-facet">
+                  <Checkbox
+                    checked={faceted}
+                    className="filter-attribute-facet-checkbox"
+                    onChange={this.onCheckboxChange}
+                  />
+                  Facet
+                </span>
+              </span>
+              <span
+                className="filter-attribute-toggle"
+                onClick={this.toggleValues}
+              >
+                {!expanded && (
+                  <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_BOTTOM} />
+                )}
+                {expanded && (
+                  <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_TOP} />
+                )}
+              </span>
+            </div>
+            {expanded && valueItems}
+          </React.Fragment>
+        )}
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { AreaChart, LineChart, Grid, GridItem } from 'nr1'
+import { ChartGroup, AreaChart, LineChart, Grid, GridItem } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
 
 const videoOverview = props => {
@@ -56,46 +56,48 @@ const videoOverview = props => {
   return (
     <div className="detail-grid">
       <Grid>
-        {addChart(
-          6,
-          'Content Request vs Player Ready vs Video Start (Average in Seconds)',
-          <AreaChart
-            accountId={accountId}
-            query={addFiltersAndFacets(timingsNrql)}
-          />
-        )}
-        {addChart(
-          6,
-          'Total Requests vs Total Starts',
-          <LineChart
-            accountId={accountId}
-            query={addFiltersAndFacets(countsNrql)}
-          />
-        )}
-        {addChart(
-          4,
-          'Video Errors and Failures Before Start',
-          <AreaChart
-            accountId={accountId}
-            query={addFiltersAndFacets(videoErrorsNrql)}
-          />
-        )}
-        {addChart(
-          4,
-          'Rebuffer Ratio',
-          <AreaChart
-            accountId={accountId}
-            query={addFiltersAndFacets(rebufferNrql)}
-          />
-        )}
-        {addChart(
-          4,
-          'Interruption Ratio',
-          <AreaChart
-            accountId={accountId}
-            query={addFiltersAndFacets(interruptionNrql)}
-          />
-        )}
+        <ChartGroup>
+          {addChart(
+            6,
+            'Content Request vs Player Ready vs Video Start (Average in Seconds)',
+            <AreaChart
+              accountId={accountId}
+              query={addFiltersAndFacets(timingsNrql)}
+            />
+          )}
+          {addChart(
+            6,
+            'Total Requests vs Total Starts',
+            <LineChart
+              accountId={accountId}
+              query={addFiltersAndFacets(countsNrql)}
+            />
+          )}
+          {addChart(
+            4,
+            'Video Errors and Failures Before Start',
+            <AreaChart
+              accountId={accountId}
+              query={addFiltersAndFacets(videoErrorsNrql)}
+            />
+          )}
+          {addChart(
+            4,
+            'Rebuffer Ratio',
+            <AreaChart
+              accountId={accountId}
+              query={addFiltersAndFacets(rebufferNrql)}
+            />
+          )}
+          {addChart(
+            4,
+            'Interruption Ratio',
+            <AreaChart
+              accountId={accountId}
+              query={addFiltersAndFacets(interruptionNrql)}
+            />
+          )}
+        </ChartGroup>
       </Grid>
     </div>
   )

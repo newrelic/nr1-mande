@@ -3,6 +3,7 @@ import { uniq } from 'lodash'
 import {
   Grid,
   GridItem,
+  ChartGroup,
   AreaChart,
   ScatterChart,
   LineChart,
@@ -59,9 +60,8 @@ const videoDetail = props => {
     if (filters) query += filters
 
     if (!config.noFacet) {
-      if (config.facets && facets) {
-        query += `FACET ${getDedupedFacets(config)}`
-      } else {
+      if (config.facets && facets) query += `FACET ${getDedupedFacets(config)}`
+      else {
         if (facets) query += `FACET ${facets}`
         if (config.facets) query += `FACET ${config.facets}`
       }
@@ -94,6 +94,8 @@ const videoDetail = props => {
           />
         )
       case 'billboard':
+        // if (facets) return <PieChart accountId={accountId} query={getQuery(config)} />
+        // else
         return <BillboardChart accountId={accountId} query={getQuery(config)} />
       case 'heatmap':
         return <HeatmapChart accountId={accountId} query={getQuery(config)} />
@@ -122,31 +124,33 @@ const videoDetail = props => {
   const detailConfig = metric[0].detailConfig
 
   return (
-    <div className="detail-grid">
-      {detailConfig && (
-        <Grid>
-          {detailConfig.map((config, idx) => {
-            return (
-              <GridItem
-                key={config.title + idx}
-                columnStart={config.columnStart}
-                columnEnd={config.columnEnd}
-              >
-                <div className="chart-container">
-                  <div className="chart-title">
-                    {config.title}
-                    <div className="chart-subtitle">{formattedDuration}</div>
+    <ChartGroup>
+      <div className="detail-grid">
+        {detailConfig && (
+          <Grid>
+            {detailConfig.map((config, idx) => {
+              return (
+                <GridItem
+                  key={config.title + idx}
+                  columnStart={config.columnStart}
+                  columnEnd={config.columnEnd}
+                >
+                  <div className="chart-container">
+                    <div className="chart-title">
+                      {config.title}
+                      <div className="chart-subtitle">{formattedDuration}</div>
+                    </div>
+                    <div className={'detail-chart ' + config.chartSize}>
+                      {getChart(config)}
+                    </div>
                   </div>
-                  <div className={'detail-chart ' + config.chartSize}>
-                    {getChart(config)}
-                  </div>
-                </div>
-              </GridItem>
-            )
-          })}
-        </Grid>
-      )}
-    </div>
+                </GridItem>
+              )
+            })}
+          </Grid>
+        )}
+      </div>
+    </ChartGroup>
   )
 }
 

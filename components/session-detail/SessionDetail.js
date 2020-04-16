@@ -5,7 +5,6 @@ import MetricValue from '../metric/MetricValue'
 import { render } from 'react-dom'
 
 export default class SessionDetail extends React.PureComponent {
-
   composeNrqlQuery = (query, dataHandler, handlerParams) => {
     const { accountId, duration } = this.props
     const nrql = query + duration.since
@@ -62,6 +61,22 @@ export default class SessionDetail extends React.PureComponent {
     )
   }
 
+  buildBlankKpiStack = numBlanks => {
+    const blanks = []
+    for (let i = 0; i < numBlanks; i++) {
+      blanks.push(
+        <StackItem
+          grow
+          key={'blank' + i}
+          className="sessionStackItem sessionSectionBase  blank"
+        >
+          <div />
+        </StackItem>
+      )
+    }
+    return blanks
+  }
+
   render() {
     const { session, stack } = this.props
 
@@ -105,14 +120,7 @@ export default class SessionDetail extends React.PureComponent {
                     </StackItem>
                   )
                 })}
-                {chunk.length === 2 && (
-                  <StackItem
-                    grow
-                    className="sessionStackItem sessionSectionBase  blank"
-                  >
-                    <div />
-                  </StackItem>
-                )}
+                {chunk.length < 3 && this.buildBlankKpiStack(3 - chunk.length)}
               </Stack>
             )
           })}

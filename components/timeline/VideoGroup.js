@@ -77,7 +77,14 @@ const groups = [
       color: '#007e8a',
       label: 'Advertising',
     },
-    actionNames: ['AD_REQUEST', 'AD_START', 'AD_QUARTILE', 'AD_END'],
+    actionNames: [
+      'AD_REQUEST',
+      'AD_START',
+      'AD_QUARTILE',
+      'AD_END',
+      'AD_PAUSE',
+      'AD_RESUME',
+    ],
   },
   {
     name: 'ERROR',
@@ -91,7 +98,7 @@ const groups = [
       color: '#bf0015',
       label: 'Error',
     },
-    actionNames: ['CONTENT_ERROR', 'ERROR'],
+    actionNames: ['CONTENT_ERROR', 'ERROR', 'AD_ERROR'],
   },
   {
     name: 'BUFFER',

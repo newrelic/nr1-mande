@@ -19,23 +19,43 @@ export const formatSinceAndCompare = timeRange => {
 }
 
 const singleFilter = (attribute, value) => {
-  return ` WHERE ${attribute} = ${getFilterValue(value)} `
+  const isString = isStringValue(value)
+  return ` WHERE ${getAttribute(attribute, isString)} = ${getFilterValue(value, isString)} `
 }
 
 const multipleFilters = (attribute, values) => {
-  let statement = ` WHERE ${attribute} IN (`
+  const isString = isStringValue(values)
 
+  let valueStatements = ''
   for (let i = 1; i <= values.length; i++) {
-    statement = statement + getFilterValue(values[i - 1])
-    if (i < values.length) statement = statement + ','
-    if (i == values.length) statement = statement + ') '
+    valueStatements = valueStatements + getFilterValue(values[i - 1], isString)
+    if (i < values.length) valueStatements = valueStatements + ','
   }
 
-  return statement
+  return ` WHERE ${getAttribute(attribute, isString)} IN (${valueStatements})`
 }
 
-const getFilterValue = value => {
-  return isNaN(value) ? `'${value}'` : value
+const getAttribute = (attribute, isString) => {
+  return isString ? attribute : `numeric(${attribute})`
+}
+
+const getFilterValue = (value, isString) => {
+  return isString ? `'${value}'` : value
+}
+
+const isStringValue = el => {
+  let numeric = true
+  if (el.isArray) {
+    for (let value of el) {
+      if (isNaN(value)) {
+        numeric = false
+        break
+      }
+    }
+  } else {
+    numeric = isNaN(el)
+  }
+  return numeric
 }
 
 export const formatFilters = filters => {

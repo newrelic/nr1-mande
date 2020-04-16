@@ -37,7 +37,7 @@ export default class MandeContainer extends React.PureComponent {
       },
     },
     {
-      name: 'Level',
+      name: 'Threshold',
       mandatory: true,
       data() {
         return [

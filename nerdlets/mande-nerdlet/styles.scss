@@ -372,7 +372,10 @@ h4 {
 
         > .metric-chart {
           margin-bottom: 8px;
-
+          padding: 1px;
+          border: none;
+          box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);    
+  
           > .value {
             @media (max-width: 1440px) and (max-height: 766px) {
               font-size: 25px;
@@ -381,8 +384,8 @@ h4 {
 
           &.selected {
             background-color: #edeeee;
-            border: 1px solid rgb(156, 154, 154);
-    
+            box-shadow: none;
+
             > .name {
               font-weight: 600;
               color: #000e0e;
@@ -392,12 +395,6 @@ h4 {
                 font-size: 10px;
               }
             }
-    
-            // > .value {
-            //   @media (max-width: 1440px) and (max-height: 766px) {
-            //     font-size: 20px;
-            //   }
-            // }
 
             > .compareTo {
               @media (max-width: 1440px) and (max-height: 766px) {

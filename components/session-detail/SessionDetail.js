@@ -65,7 +65,7 @@ export default class SessionDetail extends React.PureComponent {
   render() {
     const { session, stack } = this.props
 
-    const chunkedMetrics = chunk(stack.metrics, 2)
+    const chunkedMetrics = chunk(stack.metrics, 3)
     return (
       <Stack
         className="sessionStack"
@@ -94,7 +94,7 @@ export default class SessionDetail extends React.PureComponent {
                       key={metric.title + idx}
                       className="sessionStackItem sessionSectionBase"
                     >
-                      <div className="chart-container">
+                      <div className="metric-chart">
                         <div className="chart-title">{metric.title}</div>
                         {this.composeNrqlQuery(
                           metric.query.nrql + ` WHERE viewId='${session}'`,
@@ -105,7 +105,7 @@ export default class SessionDetail extends React.PureComponent {
                     </StackItem>
                   )
                 })}
-                {chunk.length === 1 && (
+                {chunk.length === 2 && (
                   <StackItem
                     grow
                     className="sessionStackItem sessionSectionBase  blank"

@@ -4,7 +4,6 @@
 
 .sessionStackItem {
   width: 100%;
-  min-height: 186px;
 }
 
 .sessionSectionBase {
@@ -12,6 +11,28 @@
     visibility: hidden;
   }
 
+  .metric-chart {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 2px;
+    min-height: 110px;
+    
+    > .chart-title {
+      font-size: 14px;
+      font-weight: normal;
+      box-sizing: border-box;
+      text-align: center;
+      color: rgb(70, 78, 78);
+    }
+
+    > .value {
+      width: 100%;
+      font-size: 50px;
+      font-weight: 400;
+      text-align: center;
+    }
+  }
 
   .chart-container {
     width: 100%;
@@ -41,19 +62,6 @@
         font-size: 12px;
         padding-top: 2px;
       }
-    }
-
-    > .value {
-      width: 100%;
-      font-size: 50px;
-      font-weight: 400;
-      margin-top: 20px;
-      text-align: center;
-
-      @media (min-width: 2000px) {
-        font-size: 55px;
-      }
-
     }
 
     .session-detail-grid-item {

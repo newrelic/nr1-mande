@@ -104,7 +104,7 @@ export default class Gauge extends Component {
           verticalType={Stack.VERTICAL_TYPE.CENTER}
         >
           <StackItem grow>
-            <h4>Session breakdown</h4>
+            <h4>View breakdown</h4>
           </StackItem>
         </Stack>
 

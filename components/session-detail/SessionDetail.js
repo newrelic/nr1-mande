@@ -89,7 +89,7 @@ export default class SessionDetail extends React.PureComponent {
         <Stack fullWidth={true} fullHeight={true}>
           <StackItem grow className="sessionStackItem sessionSectionBase">
             <div className="chart-container">
-              <div className="chart-title">Session Details</div>
+              <div className="chart-title">View Details</div>
               {this.composeNrqlQuery(
                 `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM PageAction, MobileVideo, RokuVideo WHERE viewId='${session}'`,
                 this.buildSessionDetailGrid

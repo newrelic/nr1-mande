@@ -15,7 +15,7 @@ const sessionContainer = props => {
       <GridItem columnSpan={12}>
         <header className="header">
           <HeadingText type={HeadingText.TYPE.HEADING_3}>
-            Viewing Session {session}
+            View Id {session}
           </HeadingText>
         </header>
       </GridItem>

@@ -52,7 +52,7 @@ export default class Timeline extends Component {
         horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
       >
         <StackItem>
-          <p className="emptyStateHeader">Could not load session timeline</p>
+          <p className="emptyStateHeader">Could not load timeline</p>
         </StackItem>
       </Stack>
     )

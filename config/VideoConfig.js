@@ -11,7 +11,7 @@ export default {
         ['playerVersion', 'Player'],
         ['playerName', 'Player'],
         ['contentSrc', 'Content'],
-        ['countryCode', 'Content'],
+        ['countryCode', 'Geography'],
         ['contentIsLive', 'Content'],
         ['contentTitle', 'Content'],
       ],

@@ -47,10 +47,12 @@ const videoOverview = props => {
     )
   }
 
-  const addFiltersAndFacets = baseQuery => {
-    if (filters) baseQuery += filters
-    if (facets) baseQuery += `FACET ${facets}`
-    return baseQuery
+  const addFiltersAndFacets = query => {
+    if (filters) query += filters.single
+    if (facets) query += `FACET ${facets}`
+
+    // console.info('videoOverview.query', query)
+    return query
   }
 
   return (

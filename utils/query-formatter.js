@@ -20,27 +20,56 @@ export const formatSinceAndCompare = timeRange => {
 
 const singleFilter = (attribute, value) => {
   const isString = isStringValue(value)
-  return ` WHERE ${getAttribute(attribute, isString)} = ${getFilterValue(value, isString)} `
+  const prefix = `WHERE ${getAttribute(attribute, isString)} =`
+  const filters = {
+    single: `${prefix} ${getFilterValue(value, isString, 'single')} `,
+    double: `${prefix} ${getFilterValue(value, isString, 'double')} `,
+  }
+  return filters
 }
 
 const multipleFilters = (attribute, values) => {
   const isString = isStringValue(values)
 
-  let valueStatements = ''
+  let singleEscapedValues = ''
+  let doubleEscapedValues = ''
   for (let i = 1; i <= values.length; i++) {
-    valueStatements = valueStatements + getFilterValue(values[i - 1], isString)
-    if (i < values.length) valueStatements = valueStatements + ','
+    singleEscapedValues = singleEscapedValues + getFilterValue(values[i - 1], isString, 'single')
+    if (i < values.length) singleEscapedValues = singleEscapedValues + ','
+
+    doubleEscapedValues = doubleEscapedValues + getFilterValue(values[i - 1], isString, 'double')
+    if (i < values.length) doubleEscapedValues = doubleEscapedValues + ','
   }
 
-  return ` WHERE ${getAttribute(attribute, isString)} IN (${valueStatements})`
+  const prefix = ` WHERE ${getAttribute(attribute, isString)} IN (`
+  const suffix = ')'
+  return {
+    single: `${prefix} ${singleEscapedValues} ${suffix}`,
+    double: `${prefix} ${doubleEscapedValues} ${suffix}`,
+  }
 }
 
 const getAttribute = (attribute, isString) => {
   return isString ? attribute : `numeric(${attribute})`
 }
 
-const getFilterValue = (value, isString) => {
-  return isString ? `'${value}'` : value
+const getFilterValue = (value, isString, escapeType) => {
+  if (!isString) return value
+
+  switch (escapeType) {
+    case 'double':
+      return `'${doubleEscapeValue(value)}'`
+    default:
+      return `'${escapeValue(value)}'`
+  }
+}
+
+const escapeValue = value => {
+  return value.replace(/'/g, "\\\'")
+}
+
+const doubleEscapeValue = value => {
+  return value.replace(/'/g, "\\\\'")
 }
 
 const isStringValue = el => {
@@ -69,15 +98,27 @@ export const formatFilters = filters => {
     }
   }
 
-  const filterStatements = []
+  const singleEscapedFilters = []
+  const doubleEscapedFilters = []
   for (let [key, value] of attributeMap) {
-    if (value.length < 2) filterStatements.push(singleFilter(key, value[0]))
-    else filterStatements.push(multipleFilters(key, value))
+    if (value.length < 2) {
+      const filterStatement = singleFilter(key, value[0])
+      singleEscapedFilters.push(filterStatement.single)
+      doubleEscapedFilters.push(filterStatement.double)
+    } else {
+      const filterStatement = multipleFilters(key, value)
+      singleEscapedFilters.push(filterStatement.single)
+      doubleEscapedFilters.push(filterStatement.double)
+    }
   }
 
-  console.debug(`filterNrql.filters ${JSON.stringify(filterStatements)}`)
+  console.debug(`filterNrql.filters ${JSON.stringify(singleEscapedFilters)}`)
+  console.debug(`filterNrql.filters ${JSON.stringify(doubleEscapedFilters)}`)
 
-  return filterStatements.join(' ')
+  return {
+    single: singleEscapedFilters.join(' '),
+    double: doubleEscapedFilters.join(' '),
+  }
 }
 
 export const formatFacets = facets => {

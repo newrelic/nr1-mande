@@ -24,9 +24,9 @@ export class Metric extends React.Component {
 
     let nrql = metric.query.nrql + since + compare
 
-    if (filters) nrql = nrql + filters
+    if (filters) nrql = nrql + filters.double
 
-    console.debug('metric.getData() query', nrql)
+    console.debug(`metric.getData() ${metric.title} >>`, nrql)
 
     const query = `{
         actor {
@@ -43,10 +43,12 @@ export class Metric extends React.Component {
     })
 
     if (error) {
-      console.error(error)
+      console.error('error with metric query', query)
+      console.error('error message', error)
     }
 
-    // console.debug('metrc query data', nrql, data)
+    // console.debug(`metric.getData() ${metric.title} results >>`, data)
+
     if (data) {
       let current = data.actor.account.nrql.results[0][metric.query.lookup]
       let previous = data.actor.account.nrql.results[1][metric.query.lookup]
@@ -177,8 +179,8 @@ export class Metric extends React.Component {
     ) : minify ? (
       this.getMinified()
     ) : (
-      this.getMaximized()
-    )
+          this.getMaximized()
+        )
 
     return (
       <StackItem className={minify ? 'metric minified' : 'metric maximized'}>

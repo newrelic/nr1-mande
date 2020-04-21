@@ -57,7 +57,7 @@ const videoDetail = props => {
     let query = config.nrql
     if (config.useSince) query += since
     if (config.useCompare) query += compare
-    if (filters) query += filters
+    if (filters) query += filters.single
 
     if (!config.noFacet) {
       if (config.facets && facets) query += `FACET ${getDedupedFacets(config)}`

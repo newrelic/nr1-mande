@@ -1,6 +1,14 @@
 import React from 'react'
 
-import { NerdGraphQuery, Stack, StackItem, nerdlet } from 'nr1'
+import {
+  NerdGraphQuery,
+  Stack,
+  StackItem,
+  nerdlet,
+  Grid,
+  GridItem,
+  Icon,
+} from 'nr1'
 
 import DimensionContainer from './DimensionContainer'
 import MetricStackContainer from './MetricStackContainer'
@@ -123,45 +131,73 @@ export default class MandeContainer extends React.PureComponent {
     )
 
     return (
-      <div className="container">
-        <DimensionContainer
-          configs={this.dimensionConfigs}
-          history={selectedDimensions}
-        />
-        {accountId && (
+      <Grid className="container">
+        <GridItem className="category-menu-grid-item" columnSpan={2}>
           <Stack
-            fullWidth={true}
+            fullHeight
+            className="category-menu"
             directionType={Stack.DIRECTION_TYPE.VERTICAL}
-            horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
-            gapType={Stack.GAP_TYPE.SMALL}
-            className="main-panel"
           >
-            <StackItem grow>
-              <MetricStackContainer
-                accountId={accountId}
-                threshold={threshold}
-                duration={duration}
-                metricConfigs={metricConfigs}
-                selectedStack={selectedStack}
-                toggleMetric={this.onToggleMetric}
-                toggleDetails={this.onToggleDetailView}
-              />
+            <StackItem className="category-menu-item">
+              <Stack
+                className="category-menu-item-content"
+                directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+              >
+                <StackItem className="category-menu-item-label">
+                  Item 1
+                </StackItem>
+                <StackItem className="category-menu-item-right-side">
+                  <Icon
+                    type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
+                    color={`#B9BDBD`}
+                  />
+                </StackItem>
+              </Stack>
             </StackItem>
-            {selectedStack && (
-              <StackItem grow>
-                <MetricDetailContainer
-                  accountId={accountId}
-                  duration={duration}
-                  threshold={threshold}
-                  activeMetric={selectedMetric}
-                  toggleMetric={this.onToggleMetric}
-                  stack={selectedStack}
-                />
-              </StackItem>
-            )}
           </Stack>
-        )}
-      </div>
+        </GridItem>
+        <GridItem className="primary-content-grid-container" columnSpan={10}>
+          <div className="primary-content-grid">
+            <DimensionContainer
+              configs={this.dimensionConfigs}
+              history={selectedDimensions}
+            />
+            {accountId && (
+              <Stack
+                fullWidth={true}
+                directionType={Stack.DIRECTION_TYPE.VERTICAL}
+                horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
+                gapType={Stack.GAP_TYPE.SMALL}
+                className="main-panel"
+              >
+                <StackItem grow>
+                  <MetricStackContainer
+                    accountId={accountId}
+                    threshold={threshold}
+                    duration={duration}
+                    metricConfigs={metricConfigs}
+                    selectedStack={selectedStack}
+                    toggleMetric={this.onToggleMetric}
+                    toggleDetails={this.onToggleDetailView}
+                  />
+                </StackItem>
+                {selectedStack && (
+                  <StackItem grow>
+                    <MetricDetailContainer
+                      accountId={accountId}
+                      duration={duration}
+                      threshold={threshold}
+                      activeMetric={selectedMetric}
+                      toggleMetric={this.onToggleMetric}
+                      stack={selectedStack}
+                    />
+                  </StackItem>
+                )}
+              </Stack>
+            )}
+          </div>
+        </GridItem>
+      </Grid>
     )
   }
 }

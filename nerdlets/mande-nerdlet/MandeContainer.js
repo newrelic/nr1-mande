@@ -11,6 +11,7 @@ import {
 } from 'nr1'
 
 import DimensionContainer from './DimensionContainer'
+import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import MetricStackContainer from './MetricStackContainer'
 import MetricDetailContainer from './MetricDetailContainer'
 import metricConfigs from '../../config/MetricConfig'
@@ -124,38 +125,29 @@ export default class MandeContainer extends React.PureComponent {
 
     const { accountId, threshold, selectedMetric, selectedStack } = this.state
     // const durationInMinutes = duration / 1000 / 60
-
+    console.log(metricConfigs)
     console.debug(
       'mandeContainer.props.launcherUrlState',
       this.props.launcherUrlState
     )
 
     return (
-      <Grid className="container">
-        <GridItem className="category-menu-grid-item" columnSpan={2}>
-          <Stack
-            fullHeight
-            className="category-menu"
-            directionType={Stack.DIRECTION_TYPE.VERTICAL}
+      <Grid
+        className="container"
+        spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}
+      >
+        {accountId && (
+          <GridItem
+            className="category-menu-grid-item"
+            columnSpan={2}
+            collapseGapAfter
           >
-            <StackItem className="category-menu-item">
-              <Stack
-                className="category-menu-item-content"
-                directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
-              >
-                <StackItem className="category-menu-item-label">
-                  Item 1
-                </StackItem>
-                <StackItem className="category-menu-item-right-side">
-                  <Icon
-                    type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
-                    color={`#B9BDBD`}
-                  />
-                </StackItem>
-              </Stack>
-            </StackItem>
-          </Stack>
-        </GridItem>
+            <CategoryMenu
+              selectedStack={selectedStack}
+              toggleDetails={this.onToggleDetailView}
+            />
+          </GridItem>
+        )}
         <GridItem className="primary-content-grid-container" columnSpan={10}>
           <div className="primary-content-grid">
             <DimensionContainer

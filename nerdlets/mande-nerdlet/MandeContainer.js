@@ -12,6 +12,7 @@ import {
 
 import DimensionContainer from './DimensionContainer'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
+import FilterSidebar from '../../components/filter-sidebar/FilterSidebar'
 import MetricStackContainer from './MetricStackContainer'
 import MetricDetailContainer from './MetricDetailContainer'
 import metricConfigs from '../../config/MetricConfig'
@@ -148,7 +149,10 @@ export default class MandeContainer extends React.PureComponent {
             />
           </GridItem>
         )}
-        <GridItem className="primary-content-grid-container" columnSpan={10}>
+        <GridItem
+          className="primary-content-grid-container"
+          columnSpan={selectedStack ? 8 : 10}
+        >
           <div className="primary-content-grid">
             <DimensionContainer
               configs={this.dimensionConfigs}
@@ -189,6 +193,15 @@ export default class MandeContainer extends React.PureComponent {
             )}
           </div>
         </GridItem>
+        {selectedStack && (
+          <GridItem
+            className="filters-list-grid-item"
+            columnSpan={2}
+            collapseGapBefore
+          >
+            <FilterSidebar />
+          </GridItem>
+        )}
       </Grid>
     )
   }

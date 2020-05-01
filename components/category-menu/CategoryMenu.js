@@ -23,10 +23,23 @@ const CategoryMenu = ({ selectedStack, toggleDetails }) => {
               {metric.title}
             </StackItem>
             <StackItem className="category-menu-item-right-side">
-              <Icon
-                type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
-                color={isActive ? '#007e8a' : '#B9BDBD'}
-              />
+              <Stack
+                verticalType={Stack.VERTICAL_TYPE.CENTER}
+                className="category-menu-item-right-side-stack"
+              >
+                <StackItem>
+                  <ul className="minified-metrics">
+                    <li className="minified-metric yellow"></li>
+                    <li className="minified-metric red"></li>
+                  </ul>
+                </StackItem>
+                <StackItem>
+                  <Icon
+                    type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
+                    color={isActive ? '#007e8a' : '#B9BDBD'}
+                  />
+                </StackItem>
+              </Stack>
             </StackItem>
           </Stack>
         </span>

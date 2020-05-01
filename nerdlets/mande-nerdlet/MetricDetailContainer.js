@@ -36,6 +36,7 @@ export default class MetricDetailContainer extends React.Component {
 
     if (add) {
       clonedFacets.push(attribute)
+      debugger
       this.setState({ facets: clonedFacets })
       return
     }
@@ -43,6 +44,7 @@ export default class MetricDetailContainer extends React.Component {
     let updatedFacets = []
     if (!add) {
       updatedFacets = clonedFacets.filter(cloned => cloned !== attribute)
+      debugger
       this.setState({ facets: updatedFacets })
     }
   }

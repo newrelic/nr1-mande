@@ -65,3 +65,34 @@ div[class*='wnd-StackItem'].category-menu-items {
   display: block;
   width: 100%;
 }
+
+// .category-menu-item-right-side-stack {
+// }
+
+.minified-metrics {
+  padding: 0;
+  max-width: 50px;
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 8px);
+  grid-template-rows: auto;
+  grid-gap: 4px;
+}
+
+.minified-metric {
+  background-color: #d5d7d7;
+  width: 8px;
+  height: 8px;
+
+  &.green {
+    background-color: #10a600;
+  }
+
+  &.yellow {
+    background-color: #ffbf49;
+  }
+
+  &.red {
+    background-color: #bf0015;
+  }
+}

@@ -48,7 +48,14 @@ export default class SessionDetail extends React.PureComponent {
       )
     })
 
-    return <Grid className="session-detail-grid">{gridItems}</Grid>
+    return (
+      <Grid
+        className="session-detail-grid"
+        spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}
+      >
+        {gridItems}
+      </Grid>
+    )
   }
 
   buildKpiStackItem = (results, metric) => {

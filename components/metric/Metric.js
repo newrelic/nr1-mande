@@ -1,5 +1,5 @@
 import React from 'react'
-import { Spinner, Icon, NerdGraphQuery, StackItem } from 'nr1'
+import { Spinner, Icon, NerdGraphQuery, StackItem, SparklineChart } from 'nr1'
 import { includes } from 'lodash'
 import Compare from './Compare'
 import MetricValue from './MetricValue'
@@ -124,17 +124,26 @@ export class Metric extends React.Component {
   }
 
   getMaximized = () => {
-    const { metric } = this.props
+    const { metric, accountId } = this.props
     const { change, difference, current } = this.state
+    const nrql = metric.query.nrql
 
     return (
       <React.Fragment>
         <p className="name">{metric.title}</p>
-        <MetricValue threshold={metric.threshold} value={current} />
-        <Compare
-          invert={metric.invertCompareTo}
-          change={change}
-          difference={difference}
+        <span className="value-container">
+          <MetricValue threshold={metric.threshold} value={current} />
+          <Compare
+            invert={metric.invertCompareTo}
+            change={change}
+            difference={difference}
+          />
+        </span>
+        <SparklineChart
+          className="spark-line-chart"
+          accountId={accountId}
+          query="SELECT count(*) FROM `Synthetics` SINCE 1 DAY AGO TIMESERIES AUTO FACET jobType"
+          onHoverSparkline={() => null}
         />
       </React.Fragment>
     )
@@ -179,8 +188,8 @@ export class Metric extends React.Component {
     ) : minify ? (
       this.getMinified()
     ) : (
-          this.getMaximized()
-        )
+      this.getMaximized()
+    )
 
     return (
       <StackItem className={minify ? 'metric minified' : 'metric maximized'}>

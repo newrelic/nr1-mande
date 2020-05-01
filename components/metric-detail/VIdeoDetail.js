@@ -127,7 +127,7 @@ const videoDetail = props => {
     <ChartGroup>
       <div className="detail-grid">
         {detailConfig && (
-          <Grid>
+          <Grid spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}>
             {detailConfig.map((config, idx) => {
               return (
                 <GridItem

@@ -1,5 +1,7 @@
+
 .filters-list-grid-item {
   background-color: #fff;
+  border-left: 1px solid #e3e4e4;
 }
 div[class*='wnd-StackItem'].filters-container-stack-item {
   width: 100%;
@@ -19,7 +21,6 @@ div[class*='wnd-StackItem'].filters-container-stack-item {
   text-transform: uppercase;
   color: #8E9494;
 
-  border: 1px solid #e3e4e4;
   border-right: none;
 }
 

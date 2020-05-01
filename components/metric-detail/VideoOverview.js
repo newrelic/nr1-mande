@@ -57,7 +57,7 @@ const videoOverview = props => {
 
   return (
     <div className="detail-grid">
-      <Grid>
+      <Grid spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}>
         <ChartGroup>
           {addChart(
             6,

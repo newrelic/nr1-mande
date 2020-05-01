@@ -23,21 +23,32 @@
 }
 
 .metricStack {
-  width: 100%;
-  max-width: 298px;
-  margin: 0px 10px auto;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);
+  border-radius: 2px;
+
+  div.maximized .metric-chart {
+    box-shadow: none;
+  }
 }
 
 .metric {
-  margin: 0 auto;
   text-align: center;
 
   &.title {
-    box-shadow: 0 1px 1px #ccc;
-    border: 1px solid #ddd;
-    font: 400 13px/19px "Open Sans", sans-serif;
-    padding: 5px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    text-align: left;
+    padding: 0 16px;
+    min-height: 36px;
+    border-bottom:1px solid #EDEEEE;
+    width: 100%;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: #000D0D;
 
     @include pointer;
   }
@@ -62,7 +73,7 @@
     width: 10px;
     height: 10px;
 
-    > .metric-chart {
+    .metric-chart {
       color: #222222;
 
       > .value {
@@ -90,7 +101,7 @@
   }
 
   &.maximized {
-    > .metric-chart {
+    .metric-chart {
       padding: 14px 14px 8px;
       box-sizing: border-box;
       display: flex;
@@ -103,6 +114,38 @@
       background-color: white;
       border-radius: 2px;
       box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);
+      transition: all .075s ease-out;
+      transform: translateY(2px);
+
+      .detail-kpis & {
+        &:hover {
+          transform: translateY(0);
+          box-shadow: 
+            0px 1px 0px rgba(0, 63, 66, 0.1), 
+            0px 3px 4px rgba(0, 39, 41, 0.09), 
+            0px 5px 23px rgba(0, 45, 47, 0.09);
+        }
+        
+        &:active {
+          transform: translateY(3px);
+          box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);
+        }
+      }
+
+
+      &.selected {
+        box-shadow: 
+          0px 1px 0px rgba(0, 63, 66, 0.07), 
+          0px 3px 3px rgba(0, 39, 41, 0.03), 
+          0px 5px 23px rgba(0, 45, 47, 0.03),
+          inset 0 0 0 1px #007e8a,
+          inset 0 0 0 4px rgba(#007e8a, .1);
+        border-radius: 4px;
+      }
+
+      .sessionStack & {
+        box-shadow: none;
+      }
 
       @include pointer;
 
@@ -232,5 +275,56 @@
     height: 20px;
     margin: 0;
     min-height: auto;
+  }
+}
+
+.metric-stacks-grid {
+  display: grid;
+  box-sizing: border-box;
+  padding: 4px;
+  grid-gap: 4px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-rows: repeat(3, 256px);
+
+  .maximized {
+    border-right: 1px solid #edeeee;
+    border-bottom: 1px solid #edeeee;
+  }
+}
+
+.metric-block {
+  width: 100%;
+  min-height: calc(100% - 21px);
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: repeat(auto-fill, 110px);
+  overflow: scroll;
+
+  .metric:hover {
+    background-color: #fafbfb;
+  }
+
+  & .metric.maximized .metric-chart {
+    width: auto;
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+  }
+}
+
+.under-performing-kpi {
+  border: 2px solid #bf0015;
+  
+  .metric.title {
+    background-color: #bf0015;
+    color: #fff;
   }
 }

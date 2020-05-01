@@ -1,5 +1,4 @@
 import React from 'react'
-import { Stack, navigation } from 'nr1'
 import MetricStack from '../../components/metric/MetricStack'
 
 const metricStackContainer = props => {
@@ -35,15 +34,7 @@ const metricStackContainer = props => {
       return arr.concat(val)
     }, [])
 
-  return (
-    <Stack
-      fullWidth={true}
-      directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
-      horizontalType={Stack.HORIZONTAL_TYPE.FILL_EVENLY}
-    >
-      {metricStacks}
-    </Stack>
-  )
+  return <div className="metric-stacks-grid">{metricStacks}</div>
 }
 
 export default metricStackContainer

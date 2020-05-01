@@ -166,17 +166,19 @@ export default class MandeContainer extends React.PureComponent {
                 gapType={Stack.GAP_TYPE.SMALL}
                 className="main-panel"
               >
-                <StackItem grow>
-                  <MetricStackContainer
-                    accountId={accountId}
-                    threshold={threshold}
-                    duration={duration}
-                    metricConfigs={metricConfigs}
-                    selectedStack={selectedStack}
-                    toggleMetric={this.onToggleMetric}
-                    toggleDetails={this.onToggleDetailView}
-                  />
-                </StackItem>
+                {!selectedStack && (
+                  <StackItem grow>
+                    <MetricStackContainer
+                      accountId={accountId}
+                      threshold={threshold}
+                      duration={duration}
+                      metricConfigs={metricConfigs}
+                      selectedStack={selectedStack}
+                      toggleMetric={this.onToggleMetric}
+                      toggleDetails={this.onToggleDetailView}
+                    />
+                  </StackItem>
+                )}
                 {selectedStack && (
                   <StackItem grow>
                     <MetricDetailContainer

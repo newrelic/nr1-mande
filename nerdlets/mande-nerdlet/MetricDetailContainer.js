@@ -104,30 +104,6 @@ export default class MetricDetailContainer extends React.Component {
     return (
       <Stack className="detail-container">
         <Stack
-          grow
-          fullHeight
-          directionType={Stack.DIRECTION_TYPE.VERTICAL}
-          className="detail-filter"
-        >
-          <FilterStack
-            grow
-            fullHeight
-            active={true}
-            activeAttributes={activeAttributes}
-            attributeToggle={this.onAttributeToggle}
-          />
-          <FilterStack
-            active={false}
-            accountId={accountId}
-            duration={duration}
-            stack={stack}
-            activeAttributes={activeAttributes}
-            attributeToggle={this.onAttributeToggle}
-            facets={facets}
-            facetToggle={this.onFacetToggle}
-          />
-        </Stack>
-        <Stack
           directionType={Stack.DIRECTION_TYPE.VERTICAL}
           grow
           className="detail-content"

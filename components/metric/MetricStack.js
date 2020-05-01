@@ -82,14 +82,16 @@ const metricStack = props => {
             )}
           </Stack>
         )}
-        {!minify &&
-          (!metrics ? (
-            <StackItem>
-              <div></div>
-            </StackItem>
-          ) : (
-            metrics
-          ))}
+        <div className="metric-block">
+          {!minify &&
+            (!metrics ? (
+              <StackItem>
+                <div></div>
+              </StackItem>
+            ) : (
+              metrics
+            ))}
+        </div>
       </Stack>
     </React.Fragment>
   )

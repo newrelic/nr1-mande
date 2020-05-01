@@ -36,6 +36,7 @@ export default class MetricDetailContainer extends React.Component {
 
     if (add) {
       clonedFacets.push(attribute)
+      debugger
       this.setState({ facets: clonedFacets })
       return
     }
@@ -43,6 +44,7 @@ export default class MetricDetailContainer extends React.Component {
     let updatedFacets = []
     if (!add) {
       updatedFacets = clonedFacets.filter(cloned => cloned !== attribute)
+      debugger
       this.setState({ facets: updatedFacets })
     }
   }
@@ -101,30 +103,6 @@ export default class MetricDetailContainer extends React.Component {
 
     return (
       <Stack className="detail-container">
-        <Stack
-          grow
-          fullHeight
-          directionType={Stack.DIRECTION_TYPE.VERTICAL}
-          className="detail-filter"
-        >
-          <FilterStack
-            grow
-            fullHeight
-            active={true}
-            activeAttributes={activeAttributes}
-            attributeToggle={this.onAttributeToggle}
-          />
-          <FilterStack
-            active={false}
-            accountId={accountId}
-            duration={duration}
-            stack={stack}
-            activeAttributes={activeAttributes}
-            attributeToggle={this.onAttributeToggle}
-            facets={facets}
-            facetToggle={this.onFacetToggle}
-          />
-        </Stack>
         <Stack
           directionType={Stack.DIRECTION_TYPE.VERTICAL}
           grow

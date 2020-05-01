@@ -1,8 +1,18 @@
 import React from 'react'
 
-import { NerdGraphQuery, Stack, StackItem, nerdlet } from 'nr1'
+import {
+  NerdGraphQuery,
+  Stack,
+  StackItem,
+  nerdlet,
+  Grid,
+  GridItem,
+  Icon,
+} from 'nr1'
 
 import DimensionContainer from './DimensionContainer'
+import CategoryMenu from '../../components/category-menu/CategoryMenu'
+import FilterSidebar from '../../components/filter-sidebar/FilterSidebar'
 import MetricStackContainer from './MetricStackContainer'
 import MetricDetailContainer from './MetricDetailContainer'
 import metricConfigs from '../../config/MetricConfig'
@@ -116,52 +126,85 @@ export default class MandeContainer extends React.PureComponent {
 
     const { accountId, threshold, selectedMetric, selectedStack } = this.state
     // const durationInMinutes = duration / 1000 / 60
-
+    console.log(metricConfigs)
     console.debug(
       'mandeContainer.props.launcherUrlState',
       this.props.launcherUrlState
     )
 
     return (
-      <div className="container">
-        <DimensionContainer
-          configs={this.dimensionConfigs}
-          history={selectedDimensions}
-        />
+      <Grid
+        className="container"
+        spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}
+      >
         {accountId && (
-          <Stack
-            fullWidth={true}
-            directionType={Stack.DIRECTION_TYPE.VERTICAL}
-            horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
-            gapType={Stack.GAP_TYPE.SMALL}
-            className="main-panel"
+          <GridItem
+            className="category-menu-grid-item"
+            columnSpan={2}
+            collapseGapAfter
           >
-            <StackItem grow>
-              <MetricStackContainer
-                accountId={accountId}
-                threshold={threshold}
-                duration={duration}
-                metricConfigs={metricConfigs}
-                selectedStack={selectedStack}
-                toggleMetric={this.onToggleMetric}
-                toggleDetails={this.onToggleDetailView}
-              />
-            </StackItem>
-            {selectedStack && (
-              <StackItem grow>
-                <MetricDetailContainer
-                  accountId={accountId}
-                  duration={duration}
-                  threshold={threshold}
-                  activeMetric={selectedMetric}
-                  toggleMetric={this.onToggleMetric}
-                  stack={selectedStack}
-                />
-              </StackItem>
-            )}
-          </Stack>
+            <CategoryMenu
+              selectedStack={selectedStack}
+              toggleDetails={this.onToggleDetailView}
+            />
+          </GridItem>
         )}
-      </div>
+        <GridItem
+          className="primary-content-grid-container"
+          columnSpan={selectedStack ? 8 : 10}
+        >
+          <div className="primary-content-grid">
+            <DimensionContainer
+              configs={this.dimensionConfigs}
+              history={selectedDimensions}
+            />
+            {accountId && (
+              <Stack
+                fullWidth={true}
+                directionType={Stack.DIRECTION_TYPE.VERTICAL}
+                horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
+                gapType={Stack.GAP_TYPE.SMALL}
+                className="main-panel"
+              >
+                {!selectedStack && (
+                  <StackItem grow>
+                    <MetricStackContainer
+                      accountId={accountId}
+                      threshold={threshold}
+                      duration={duration}
+                      metricConfigs={metricConfigs}
+                      selectedStack={selectedStack}
+                      toggleMetric={this.onToggleMetric}
+                      toggleDetails={this.onToggleDetailView}
+                    />
+                  </StackItem>
+                )}
+                {selectedStack && (
+                  <StackItem grow>
+                    <MetricDetailContainer
+                      accountId={accountId}
+                      duration={duration}
+                      threshold={threshold}
+                      activeMetric={selectedMetric}
+                      toggleMetric={this.onToggleMetric}
+                      stack={selectedStack}
+                    />
+                  </StackItem>
+                )}
+              </Stack>
+            )}
+          </div>
+        </GridItem>
+        {selectedStack && (
+          <GridItem
+            className="filters-list-grid-item"
+            columnSpan={2}
+            collapseGapBefore
+          >
+            <FilterSidebar />
+          </GridItem>
+        )}
+      </Grid>
     )
   }
 }

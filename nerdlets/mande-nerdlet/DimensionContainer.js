@@ -9,7 +9,11 @@ const dimensionContainer = props => {
       return [...Array(config)].map((_, idx) => {
         return (
           <StackItem key={config.name + idx}>
-            <DimensionDropDown config={config} duration={props.duration} history={props.history} />
+            <DimensionDropDown
+              config={config}
+              duration={props.duration}
+              history={props.history}
+            />
           </StackItem>
         )
       })

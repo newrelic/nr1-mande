@@ -1,0 +1,63 @@
+{
+  "platform": [{
+    "appName": [{
+        "label": "GPT Sample",
+        "value": "gptSample",
+        "active": true
+      },
+      {
+        "label": "Video Sample",
+        "value": "videoSample",
+        "active": false
+      },
+      {
+        "label": "Third filter",
+        "value": "thirdFilter",
+        "active": false
+      }
+    ],
+    "deviceType": [{
+      "label": "Example filter",
+      "value": "exampleFilter",
+      "active": true
+    }],
+    "userAgentName": [{
+      "label": "Example filter",
+      "value": "exampleFilter",
+      "active": true
+    }],
+    "userAgentOS": [{
+      "label": "Example filter",
+      "value": "exampleFilter",
+      "active": true
+    }],
+    "userAgentVersion": [{
+      "label": "Example filter",
+      "value": "exampleFilter",
+      "active": true
+    }]
+  }],
+  "player": [{
+    "playerName": [{
+        "label": "GPT Sample",
+        "value": "gptSample",
+        "active": true
+      },
+      {
+        "label": "Video Sample",
+        "value": "videoSample",
+        "active": false
+      },
+      {
+        "label": "Third filter",
+        "value": "thirdFilter",
+        "active": false
+      }
+    ],
+    "playerVersion": [{
+      "label": "Example filter",
+      "value": "exampleFilter",
+      "active": true
+    }]
+  }]
+}

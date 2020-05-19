@@ -13,7 +13,7 @@ import {
 import DimensionContainer from './DimensionContainer'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import FilterSidebar from '../../components/filter-sidebar/FilterSidebar'
-import MetricStackContainer from './MetricStackContainer'
+import MetricDashboard from '../../components/metric-dashboard/MetricDashboard'
 import MetricDetailContainer from './MetricDetailContainer'
 import metricConfigs from '../../config/MetricConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
@@ -97,11 +97,10 @@ export default class MandeContainer extends React.PureComponent {
 
   componentDidMount() {
     const { selectedMetric, selectedStack } = this.props.nerdletUrlState
-
     if (selectedMetric) this.onToggleMetric(selectedMetric)
     if (!selectedMetric) {
       if (selectedStack) this.onToggleDetailView(selectedStack)
-      else this.onToggleDetailView('Video') //if (metricConfigs.length === 1)
+      //else this.onToggleDetailView('Video') //if (metricConfigs.length === 1)
     }
   }
 
@@ -125,8 +124,7 @@ export default class MandeContainer extends React.PureComponent {
     const duration = formatSinceAndCompare(timeRange)
 
     const { accountId, threshold, selectedMetric, selectedStack } = this.state
-    // const durationInMinutes = duration / 1000 / 60
-    console.log(metricConfigs)
+
     console.debug(
       'mandeContainer.props.launcherUrlState',
       this.props.launcherUrlState
@@ -144,7 +142,12 @@ export default class MandeContainer extends React.PureComponent {
             collapseGapAfter
           >
             <CategoryMenu
+              accountId={accountId}
+              threshold={threshold}
+              duration={duration}
+              metricConfigs={metricConfigs}
               selectedStack={selectedStack}
+              toggleMetric={this.onToggleMetric}
               toggleDetails={this.onToggleDetailView}
             />
           </GridItem>
@@ -168,12 +171,11 @@ export default class MandeContainer extends React.PureComponent {
               >
                 {!selectedStack && (
                   <StackItem grow>
-                    <MetricStackContainer
+                    <MetricDashboard
                       accountId={accountId}
                       threshold={threshold}
                       duration={duration}
                       metricConfigs={metricConfigs}
-                      selectedStack={selectedStack}
                       toggleMetric={this.onToggleMetric}
                       toggleDetails={this.onToggleDetailView}
                     />

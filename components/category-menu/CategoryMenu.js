@@ -2,13 +2,22 @@ import React from 'react'
 import { Stack, StackItem, Icon } from 'nr1'
 import metricConfigs from '../../config/MetricConfig'
 
-const CategoryMenu = ({ selectedStack, toggleDetails }) => {
+const CategoryMenu = props => {
+  const {
+    accountId,
+    threshold,
+    duration,
+    selectedStack,
+    toggleMetric,
+    toggleDetails,
+  } = props
+
   const renderMenuItems = () => {
-    return metricConfigs.map(metric => {
-      const isActive = selectedStack && selectedStack.title === metric.title
+    return metricConfigs.map(config => {
+      const isActive = selectedStack && selectedStack.title === config.title
       return (
         <span
-          onClick={() => toggleDetails(metric.title)}
+          onClick={() => toggleDetails(config.title)}
           className="category-menu-item-content-container"
         >
           <Stack
@@ -20,7 +29,7 @@ const CategoryMenu = ({ selectedStack, toggleDetails }) => {
             verticalType={Stack.VERTICAL_TYPE.CENTER}
           >
             <StackItem className="category-menu-item-label">
-              {metric.title}
+              {config.title}
             </StackItem>
             <StackItem className="category-menu-item-right-side">
               <Stack

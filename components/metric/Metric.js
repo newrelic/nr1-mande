@@ -41,7 +41,7 @@ export class Metric extends React.Component {
     })
 
     if (error) {
-      console.error(error)
+      console.error(`error occurred with query ${query}: `, error)
     }
 
     if (data) {

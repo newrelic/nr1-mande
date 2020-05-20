@@ -113,9 +113,13 @@ export class Metric extends React.Component {
   }
 
   getMaximized = () => {
-    const { metric, accountId } = this.props
+    const {
+      metric,
+      accountId,
+      duration: { since },
+    } = this.props
     const { change, difference, current } = this.state
-    const nrql = metric.query.nrql
+    const nrql = metric.query.nrql + since + ' TIMESERIES '
 
     return (
       <React.Fragment>
@@ -131,7 +135,7 @@ export class Metric extends React.Component {
         <SparklineChart
           className="spark-line-chart"
           accountId={accountId}
-          query="SELECT count(*) FROM `Synthetics` SINCE 1 DAY AGO TIMESERIES AUTO FACET jobType"
+          query={nrql}
           onHoverSparkline={() => null}
         />
       </React.Fragment>
@@ -179,7 +183,7 @@ export class Metric extends React.Component {
 
     return (
       <div
-        // onClick={() => click(metric.title)}
+        onClick={() => click(metric.title)}
         className={!selected ? 'metric-chart' : 'metric-chart selected'}
       >
         {metricContent}

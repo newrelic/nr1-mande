@@ -22,10 +22,7 @@ const CategoryMenu = props => {
             return (
               <React.Fragment key={metric.query + idx}>
                 {metric.query && (
-                  <li
-                    className="metric minified"
-                    onClick={() => toggleMetric(metric.title)}
-                  >
+                  <li className="metric minified">
                     <Metric
                       accountId={accountId}
                       metric={metric}
@@ -51,8 +48,6 @@ const CategoryMenu = props => {
     return metricConfigs.map((config, idx) => {
       const isActive = selectedStack && selectedStack.title === config.title
       const metrics = getMetrics(config)
-
-      // metrics.forEach(metric => console.info('menu metric', metric))
 
       return (
         <span key={idx} className="category-menu-item-content-container">

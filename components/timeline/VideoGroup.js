@@ -137,7 +137,7 @@ const groups = [
       color: '#016316',
     },
     timelineDisplay: {
-      color: '#016316',
+      color: '#c5fad1',
       label: 'External Calls',
     },
     actionNames: ['UNKNOWN AT THIS TIME'],

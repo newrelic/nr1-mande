@@ -26,8 +26,6 @@ export class Metric extends React.Component {
 
     if (filters) nrql = nrql + filters.double
 
-    console.debug(`metric.getData() ${metric.title} >>`, nrql)
-
     const query = `{
         actor {
           account(id: ${accountId}) {
@@ -43,11 +41,8 @@ export class Metric extends React.Component {
     })
 
     if (error) {
-      console.error('error with metric query', query)
-      console.error('error message', error)
+      console.error(error)
     }
-
-    // console.debug(`metric.getData() ${metric.title} results >>`, data)
 
     if (data) {
       let current = data.actor.account.nrql.results[0][metric.query.lookup]
@@ -113,13 +108,7 @@ export class Metric extends React.Component {
     const { metric } = this.props
     const { current } = this.state
     return (
-      <React.Fragment>
-        <MetricValue
-          minify={true}
-          threshold={metric.threshold}
-          value={current}
-        />
-      </React.Fragment>
+      <MetricValue minify={true} threshold={metric.threshold} value={current} />
     )
   }
 
@@ -151,7 +140,6 @@ export class Metric extends React.Component {
 
   // ============== LIFECYCLE METHODS ================
   async componentDidMount() {
-    console.debug('metric componentDidMount')
     await this.getData()
 
     this.interval = setInterval(async () => {
@@ -178,8 +166,6 @@ export class Metric extends React.Component {
     const { minify, click, metric, selected } = this.props
     const { loading } = this.state
 
-    console.debug(`metric.render ${metric.title} ${loading ? 'loading' : ''}`)
-
     // apply threshold level filtering, if applicable
     if (!this.isVisible()) return null
 
@@ -192,14 +178,12 @@ export class Metric extends React.Component {
     )
 
     return (
-      <StackItem className={minify ? 'metric minified' : 'metric maximized'}>
-        <div
-          onClick={() => click(metric.title)}
-          className={!selected ? 'metric-chart' : 'metric-chart selected'}
-        >
-          {metricContent}
-        </div>
-      </StackItem>
+      <div
+        // onClick={() => click(metric.title)}
+        className={!selected ? 'metric-chart' : 'metric-chart selected'}
+      >
+        {metricContent}
+      </div>
     )
   }
 }

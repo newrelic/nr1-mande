@@ -1,9 +1,8 @@
 .metric {
-  text-align: center;
 
   &.minified {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
 
     .metric-chart {
       color: #222222;
@@ -103,9 +102,9 @@
         overflow: hidden;
         width: 100%;
 
-        @media (max-width: 1610px)  {
-          font-size: 11px;
-        }  
+        // @media (max-width: 1610px)  {
+        //   font-size: 11px;
+        // }  
       }
 
       .value {

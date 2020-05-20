@@ -83,15 +83,17 @@ export default class MetricDetailContainer extends React.Component {
             return (
               <React.Fragment key={metric.title + idx}>
                 {metric.query && (
-                  <Metric
-                    accountId={accountId}
-                    metric={metric}
-                    duration={duration}
-                    threshold={threshold}
-                    selected={activeMetric === metric.title}
-                    click={toggleMetric}
-                    filters={filters}
-                  />
+                  <StackItem className="metric maximized">
+                    <Metric
+                      accountId={accountId}
+                      metric={metric}
+                      duration={duration}
+                      threshold={threshold}
+                      selected={activeMetric === metric.title}
+                      click={toggleMetric}
+                      filters={filters}
+                    />
+                  </StackItem>
                 )}
               </React.Fragment>
             )

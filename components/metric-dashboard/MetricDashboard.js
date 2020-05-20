@@ -35,8 +35,8 @@ const metricDashboard = props => {
               <div></div>
             </StackItem>
           ) : (
-            metrics
-          )}
+              metrics
+            )}
         </div>
       </Stack>
     )
@@ -51,14 +51,16 @@ const metricDashboard = props => {
             return (
               <React.Fragment key={metric.title + idx}>
                 {metric.query && (
-                  <Metric
-                    accountId={accountId}
-                    metric={metric}
-                    duration={duration}
-                    threshold={threshold}
-                    minify={false}
-                    click={toggleMetric}
-                  />
+                  <StackItem className="metric maximized">
+                    <Metric
+                      accountId={accountId}
+                      metric={metric}
+                      duration={duration}
+                      threshold={threshold}
+                      minify={false}
+                      click={toggleMetric}
+                    />
+                  </StackItem>
                 )}
               </React.Fragment>
             )

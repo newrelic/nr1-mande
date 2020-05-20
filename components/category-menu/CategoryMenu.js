@@ -1,6 +1,7 @@
 import React from 'react'
 import { Stack, StackItem, Icon } from 'nr1'
 import metricConfigs from '../../config/MetricConfig'
+import { Metric } from '../metric/Metric'
 
 const CategoryMenu = props => {
   const {
@@ -12,14 +13,49 @@ const CategoryMenu = props => {
     toggleDetails,
   } = props
 
+  const getMetrics = config => {
+    const metrics =
+      config.metrics &&
+      config.metrics
+        .map(metric => {
+          return [...Array(config.metrics)].map((_, idx) => {
+            return (
+              <React.Fragment key={metric.query + idx}>
+                {metric.query && (
+                  <li
+                    className="metric minified"
+                    onClick={() => toggleMetric(metric.title)}
+                  >
+                    <Metric
+                      accountId={accountId}
+                      metric={metric}
+                      duration={duration}
+                      threshold={threshold}
+                      minify={true}
+                      click={toggleMetric}
+                    />
+                  </li>
+                )}
+              </React.Fragment>
+            )
+          })
+        })
+        .reduce((arr, val) => {
+          return arr.concat(val)
+        }, [])
+
+    return metrics
+  }
+
   const renderMenuItems = () => {
-    return metricConfigs.map(config => {
+    return metricConfigs.map((config, idx) => {
       const isActive = selectedStack && selectedStack.title === config.title
+      const metrics = getMetrics(config)
+
+      // metrics.forEach(metric => console.info('menu metric', metric))
+
       return (
-        <span
-          onClick={() => toggleDetails(config.title)}
-          className="category-menu-item-content-container"
-        >
+        <span key={idx} className="category-menu-item-content-container">
           <Stack
             fullWidth
             className={`category-menu-item-content ${
@@ -28,25 +64,30 @@ const CategoryMenu = props => {
             directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
             verticalType={Stack.VERTICAL_TYPE.CENTER}
           >
-            <StackItem className="category-menu-item-label">
-              {config.title}
-            </StackItem>
+            <div
+              className="category-menu-item-label"
+              onClick={() => toggleDetails(config.title)}
+            >
+              <StackItem>{config.title}</StackItem>
+            </div>
             <StackItem className="category-menu-item-right-side">
               <Stack
                 verticalType={Stack.VERTICAL_TYPE.CENTER}
                 className="category-menu-item-right-side-stack"
               >
-                <StackItem>
-                  <ul className="minified-metrics">
-                    <li className="minified-metric yellow"></li>
-                    <li className="minified-metric red"></li>
-                  </ul>
+                <StackItem grow>
+                  <ul className="minified-metrics">{metrics && metrics}</ul>
                 </StackItem>
                 <StackItem>
-                  <Icon
-                    type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
-                    color={isActive ? '#007e8a' : '#B9BDBD'}
-                  />
+                  <div
+                    className="category-menu-item-icon"
+                    onClick={() => toggleDetails(config.title)}
+                  >
+                    <Icon
+                      type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
+                      color={isActive ? '#007e8a' : '#B9BDBD'}
+                    />
+                  </div>
                 </StackItem>
               </Stack>
             </StackItem>

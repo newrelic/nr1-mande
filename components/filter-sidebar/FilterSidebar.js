@@ -92,7 +92,7 @@ class FilterSidebar extends React.PureComponent {
                 <ul className="filter-category-section-filters">
                   <li className="individual-filter">
                     <input type="checkbox" id="gpt-sample" />
-                    <label className="individual-filter-label" for="gpt-sample">
+                    <label className="individual-filter-label" htmlFor="gpt-sample">
                       GPT Sample
                     </label>
                   </li>
@@ -100,7 +100,7 @@ class FilterSidebar extends React.PureComponent {
                     <input type="checkbox" id="video-sample" />
                     <label
                       className="individual-filter-label"
-                      for="video-sample"
+                      htmlFor="video-sample"
                     >
                       Video Sample
                     </label>
@@ -109,7 +109,7 @@ class FilterSidebar extends React.PureComponent {
                     <input type="checkbox" id="gpt-sample-checkbox" />
                     <label
                       className="individual-filter-label"
-                      for="gpt-sample-checkbox"
+                      htmlFor="gpt-sample-checkbox"
                     >
                       Example Sample
                     </label>
@@ -129,7 +129,7 @@ class FilterSidebar extends React.PureComponent {
                 <ul className="filter-category-section-filters">
                   <li className="individual-filter">
                     <input type="checkbox" id="gpt-sample" />
-                    <label className="individual-filter-label" for="gpt-sample">
+                    <label className="individual-filter-label" htmlFor="gpt-sample">
                       GPT Sample
                     </label>
                   </li>
@@ -137,7 +137,7 @@ class FilterSidebar extends React.PureComponent {
                     <input type="checkbox" id="video-sample" />
                     <label
                       className="individual-filter-label"
-                      for="video-sample"
+                      htmlFor="video-sample"
                     >
                       Video Sample
                     </label>
@@ -146,7 +146,7 @@ class FilterSidebar extends React.PureComponent {
                     <input type="checkbox" id="gpt-sample-checkbox" />
                     <label
                       className="individual-filter-label"
-                      for="gpt-sample-checkbox"
+                      htmlFor="gpt-sample-checkbox"
                     >
                       Example Sample
                     </label>
@@ -166,7 +166,7 @@ class FilterSidebar extends React.PureComponent {
                 <ul className="filter-category-section-filters">
                   <li className="individual-filter">
                     <input type="checkbox" id="gpt-sample" />
-                    <label className="individual-filter-label" for="gpt-sample">
+                    <label className="individual-filter-label" htmlFor="gpt-sample">
                       GPT Sample
                     </label>
                   </li>
@@ -174,7 +174,7 @@ class FilterSidebar extends React.PureComponent {
                     <input type="checkbox" id="video-sample" />
                     <label
                       className="individual-filter-label"
-                      for="video-sample"
+                      htmlFor="video-sample"
                     >
                       Video Sample
                     </label>
@@ -183,7 +183,7 @@ class FilterSidebar extends React.PureComponent {
                     <input type="checkbox" id="gpt-sample-checkbox" />
                     <label
                       className="individual-filter-label"
-                      for="gpt-sample-checkbox"
+                      htmlFor="gpt-sample-checkbox"
                     >
                       Example Sample
                     </label>

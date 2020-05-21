@@ -1,11 +1,11 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
 import { Stack, StackItem } from 'nr1'
-import { Metric } from '../../components/metric/Metric'
-import FilterStack from '../../components/metric-filter/FilterStack'
+import { Metric } from '../metric/Metric'
+import FilterStack from '../metric-filter/FilterStack'
 import { formatFilters, formatFacets } from '../../utils/query-formatter'
 
-export default class MetricDetailContainer extends React.Component {
+export default class MetricDetail extends React.Component {
   state = {
     activeAttributes: [],
     facets: [],

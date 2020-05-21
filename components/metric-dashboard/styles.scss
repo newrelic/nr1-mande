@@ -28,7 +28,6 @@
     align-items: center;
     box-sizing: border-box;
     text-align: left;
-    padding: 0 16px;
     min-height: 36px;
     border-bottom:1px solid #EDEEEE;
     width: 100%;
@@ -36,7 +35,16 @@
     font-size: 16px;
     line-height: 24px;
     color: #000D0D;
-    cursor: pointer;
+
+    &:hover {
+      background-color: #fafbfb;
+    }
+
+    .title-content {
+      cursor: pointer;
+      width: 100%;
+      padding: 0 16px;
+    }
   }
 
 }

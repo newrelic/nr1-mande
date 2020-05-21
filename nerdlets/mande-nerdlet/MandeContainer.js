@@ -14,7 +14,7 @@ import DimensionContainer from './DimensionContainer'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import FilterSidebar from '../../components/filter-sidebar/FilterSidebar'
 import MetricDashboard from '../../components/metric-dashboard/MetricDashboard'
-import MetricDetailContainer from './MetricDetailContainer'
+import MetricDetail from '../../components/metric-detail/MetricDetail'
 import metricConfigs from '../../config/MetricConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 
@@ -183,7 +183,7 @@ export default class MandeContainer extends React.PureComponent {
                 )}
                 {selectedStack && (
                   <StackItem grow>
-                    <MetricDetailContainer
+                    <MetricDetail
                       accountId={accountId}
                       duration={duration}
                       threshold={threshold}

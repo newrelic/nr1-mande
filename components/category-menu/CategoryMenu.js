@@ -16,30 +16,24 @@ const CategoryMenu = props => {
   const getMetrics = config => {
     const metrics =
       config.metrics &&
-      config.metrics
-        .map(metric => {
-          return [...Array(config.metrics)].map((_, idx) => {
-            return (
-              <React.Fragment key={metric.query + idx}>
-                {metric.query && (
-                  <li className="metric minified">
-                    <Metric
-                      accountId={accountId}
-                      metric={metric}
-                      duration={duration}
-                      threshold={threshold}
-                      minify={true}
-                      click={toggleMetric}
-                    />
-                  </li>
-                )}
-              </React.Fragment>
-            )
-          })
-        })
-        .reduce((arr, val) => {
-          return arr.concat(val)
-        }, [])
+      config.metrics.map((metric, idx) => {
+        return (
+          <React.Fragment key={metric.query + idx}>
+            {metric.query && (
+              <li className="metric minified">
+                <Metric
+                  accountId={accountId}
+                  metric={metric}
+                  duration={duration}
+                  threshold={threshold}
+                  minify={true}
+                  click={toggleMetric}
+                />
+              </li>
+            )}
+          </React.Fragment>
+        )
+      })
 
     return metrics
   }

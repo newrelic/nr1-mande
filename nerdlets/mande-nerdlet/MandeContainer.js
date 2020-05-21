@@ -10,7 +10,7 @@ import {
   Icon,
 } from 'nr1'
 
-import DimensionContainer from './DimensionContainer'
+import DimensionDropDown from '../../components/dimension/DimensionDropDown'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import FilterSidebar from '../../components/filter-sidebar/FilterSidebar'
 import MetricDashboard from '../../components/metric-dashboard/MetricDashboard'
@@ -95,6 +95,47 @@ export default class MandeContainer extends React.PureComponent {
     }
   }
 
+  renderDimensions = (duration, history) => {
+    const dimensions = this.dimensionConfigs
+      .map(config => {
+        return [...Array(config)].map((_, idx) => {
+          return (
+            <StackItem key={config.name + idx}>
+              <DimensionDropDown
+                config={config}
+                duration={duration}
+                history={history}
+              />
+            </StackItem>
+          )
+        })
+      })
+      .reduce((arr, val) => {
+        return arr.concat(val)
+      }, [])
+
+    return (
+      <React.Fragment>
+        <Stack
+          fullWidth={true}
+          directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+          gapType={Stack.GAP_TYPE.SMALL}
+          className="options-bar-parent"
+        >
+          <StackItem>
+            <Stack
+              directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+              className="options-bar"
+              fullWidth
+            >
+              {dimensions}
+            </Stack>
+          </StackItem>
+        </Stack>
+      </React.Fragment>
+    )
+  }
+
   componentDidMount() {
     const { selectedMetric, selectedStack } = this.props.nerdletUrlState
     if (selectedMetric) this.onToggleMetric(selectedMetric)
@@ -157,10 +198,7 @@ export default class MandeContainer extends React.PureComponent {
           columnSpan={selectedStack ? 8 : 10}
         >
           <div className="primary-content-grid">
-            <DimensionContainer
-              configs={this.dimensionConfigs}
-              history={selectedDimensions}
-            />
+            {this.renderDimensions(duration, selectedDimensions)}
             {accountId && (
               <Stack
                 fullWidth={true}

@@ -1,9 +1,12 @@
 export default {
-  title: 'Platform/Client/App',
+  title: 'Client',
   metrics: [
     {
-      title: 'Crash Rate',
-      query: '',
+      title: 'App Crashes',
+      query: {
+        nrql: `SELECT count(*) as 'result' FROM MobileCrash`,
+        lookup: 'result',
+      },
     },
     {
       title: 'Javascript Error Rate',

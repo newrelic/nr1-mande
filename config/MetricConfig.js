@@ -1,11 +1,11 @@
 import apiConfigs from '../config/ApiConfig'
-import platformConfigs from '../config/PlatformConfig'
+import clientConfigs from '../config/ClientConfig'
 import userConfigs from '../config/UserConfig'
 import videoConfigs from '../config/VideoConfig'
 
 export default [
   userConfigs,
-  platformConfigs,
+  clientConfigs,
   apiConfigs,
   videoConfigs,
   {

@@ -8,6 +8,10 @@
       color: #222222;
       cursor: pointer;
 
+      &:hover {
+        transform: translateY(-1px);
+      }
+
       > .value {
         width: 10px;
         height: 10px;
@@ -50,6 +54,9 @@
       cursor: pointer;
 
       .detail-kpis & {
+        margin-top: 5px;
+        margin-left: 4px;
+
         &:hover {
           transform: translateY(0);
           box-shadow: 

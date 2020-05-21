@@ -110,9 +110,7 @@ export default class MetricDetailContainer extends React.Component {
           grow
           className="detail-content"
         >
-          <StackItem className="detail-kpis">
-            <Stack fullWidth={true}>{metrics}</Stack>
-          </StackItem>
+          <StackItem className="detail-kpis">{metrics}</StackItem>
           <StackItem className="detail-main">
             {this.detailView(filters, facetClause)}
           </StackItem>

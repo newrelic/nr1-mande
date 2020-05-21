@@ -86,16 +86,9 @@
         box-shadow: none;
       }
 
-      // @media (max-width: 1440px) and (max-height: 766px) {
-      //   height: 100px;
-      // }
-
       .icon {
         color: #797878;
         padding-top: 18px;
-        @media (max-width: 1440px) and (max-height: 766px) {
-          padding-top: 9px;
-        }  
       }
 
       .name {
@@ -108,10 +101,6 @@
         white-space: nowrap;
         overflow: hidden;
         width: 100%;
-
-        // @media (max-width: 1610px)  {
-        //   font-size: 11px;
-        // }  
       }
 
       .value {
@@ -122,10 +111,6 @@
         padding-bottom: .2em;
         text-align: left;
         font-weight: 600;
-
-        @media (max-width: 1440px) and (max-height: 766px) {
-          font-size: 28px;
-        }
       }
 
       .compareTo {
@@ -135,10 +120,6 @@
         width: fit-content;
         padding: 3px;
         border-radius: 3px;
-
-        @media (max-width: 1440px) and (max-height: 766px) {
-          font-size: 10px;
-        }
 
         &:before {
           height: 11px;

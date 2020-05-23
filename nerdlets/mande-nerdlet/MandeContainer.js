@@ -1,19 +1,10 @@
 import React from 'react'
-
-import {
-  NerdGraphQuery,
-  Stack,
-  StackItem,
-  nerdlet,
-  Grid,
-  GridItem,
-  Icon,
-} from 'nr1'
-
+import { cloneDeep } from 'lodash'
+import { NerdGraphQuery, Stack, StackItem, nerdlet, Grid, GridItem } from 'nr1'
 import DimensionDropDown from '../../components/dimension/DimensionDropDown'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
-import FilterSidebar from '../../components/filter-sidebar/FilterSidebar'
-import MetricDashboard from '../../components/metric-dashboard/MetricDashboard'
+import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
+import MetricDashboard from '../../components/dashboard/MetricDashboard'
 import MetricDetail from '../../components/metric-detail/MetricDetail'
 import metricConfigs from '../../config/MetricConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
@@ -24,6 +15,9 @@ export default class MandeContainer extends React.PureComponent {
     threshold: 1,
     selectedMetric: null,
     selectedStack: null,
+    activeAttributes: [],
+    facets: [],
+    showFacetSidebar: true,
   }
 
   dimensionConfigs = [
@@ -95,6 +89,68 @@ export default class MandeContainer extends React.PureComponent {
     }
   }
 
+  onSidebarToggle = () => {
+    const { showFacetSidebar } = this.state
+    this.setState({ showFacetSidebar: !showFacetSidebar })
+  }
+
+  onAttributeToggle = (attribute, value, add) => {
+    let clonedActiveAttributes = []
+    if (this.state.activeAttributes)
+      clonedActiveAttributes = cloneDeep(this.state.activeAttributes)
+
+    if (add) {
+      clonedActiveAttributes.push({ attribute, value })
+      this.setState({ activeAttributes: clonedActiveAttributes })
+      return
+    }
+
+    let updatedActiveAttributes = []
+    if (!add) {
+      updatedActiveAttributes = clonedActiveAttributes.filter(
+        active => !(active.attribute === attribute && active.value === value)
+      )
+      this.setState({ activeAttributes: updatedActiveAttributes })
+    }
+  }
+
+  onFacetToggle = (attribute, add) => {
+    const clonedFacets = [...this.state.facets]
+
+    if (add) {
+      clonedFacets.push(attribute)
+      this.setState({ facets: clonedFacets })
+      return
+    }
+
+    let updatedFacets = []
+    if (!add) {
+      updatedFacets = clonedFacets.filter(cloned => cloned !== attribute)
+      this.setState({ facets: updatedFacets })
+    }
+  }
+
+  componentDidMount() {
+    const { selectedMetric, selectedStack } = this.props.nerdletUrlState
+    if (selectedMetric) this.onToggleMetric(selectedMetric)
+    if (!selectedMetric) {
+      if (selectedStack) this.onToggleDetailView(selectedStack)
+      //else this.onToggleDetailView('Video') //if (metricConfigs.length === 1)
+    }
+  }
+
+  componentDidUpdate() {
+    const { accountId, threshold, selectedMetric, selectedStack } = this.state
+    nerdlet.setUrlState({
+      selectedDimensions: [
+        { name: 'Accounts', value: accountId },
+        { name: 'Level', value: threshold },
+      ],
+      selectedMetric,
+      selectedStack: selectedStack ? selectedStack.title : null,
+    })
+  }
+
   renderDimensions = (duration, history) => {
     const dimensions = this.dimensionConfigs
       .map(config => {
@@ -136,25 +192,38 @@ export default class MandeContainer extends React.PureComponent {
     )
   }
 
-  componentDidMount() {
-    const { selectedMetric, selectedStack } = this.props.nerdletUrlState
-    if (selectedMetric) this.onToggleMetric(selectedMetric)
-    if (!selectedMetric) {
-      if (selectedStack) this.onToggleDetailView(selectedStack)
-      //else this.onToggleDetailView('Video') //if (metricConfigs.length === 1)
-    }
-  }
+  renderSidebar = duration => {
+    const {
+      showFacetSidebar,
+      facets,
+      activeAttributes,
+      accountId,
+      selectedStack,
+    } = this.state
+    const selected = showFacetSidebar ? facets : activeAttributes
+    const selectHandler = showFacetSidebar
+      ? this.onFacetToggle
+      : this.onAttributeToggle
 
-  componentDidUpdate() {
-    const { accountId, threshold, selectedMetric, selectedStack } = this.state
-    nerdlet.setUrlState({
-      selectedDimensions: [
-        { name: 'Accounts', value: accountId },
-        { name: 'Level', value: threshold },
-      ],
-      selectedMetric,
-      selectedStack: selectedStack ? selectedStack.title : null,
-    })
+    return (
+      <React.Fragment>
+        <MetricSidebar
+          active={true}
+          showFacets={showFacetSidebar}
+          selected={selected}
+          toggle={selectHandler}
+        />
+        <MetricSidebar
+          active={false}
+          showFacets={showFacetSidebar}
+          selected={selected}
+          toggle={selectHandler}
+          accountId={accountId}
+          duration={duration}
+          stack={selectedStack}
+        />
+      </React.Fragment>
+    )
   }
 
   render() {
@@ -164,12 +233,22 @@ export default class MandeContainer extends React.PureComponent {
 
     const duration = formatSinceAndCompare(timeRange)
 
-    const { accountId, threshold, selectedMetric, selectedStack } = this.state
+    const {
+      accountId,
+      threshold,
+      selectedMetric,
+      selectedStack,
+      activeAttributes,
+      facets,
+      showFacetSidebar,
+    } = this.state
 
     console.debug(
       'mandeContainer.props.launcherUrlState',
       this.props.launcherUrlState
     )
+
+    console.info('mandeContainer.render facets', facets)
 
     return (
       <Grid
@@ -228,6 +307,8 @@ export default class MandeContainer extends React.PureComponent {
                       activeMetric={selectedMetric}
                       toggleMetric={this.onToggleMetric}
                       stack={selectedStack}
+                      activeFilters={activeAttributes}
+                      facets={facets}
                     />
                   </StackItem>
                 )}
@@ -235,13 +316,36 @@ export default class MandeContainer extends React.PureComponent {
             )}
           </div>
         </GridItem>
-        {selectedStack && (
+        {accountId && selectedStack && (
           <GridItem
             className="filters-list-grid-item"
             columnSpan={2}
             collapseGapBefore
           >
-            <FilterSidebar />
+            <div onClick={this.onSidebarToggle}>
+              <Stack
+                fullWidth
+                directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+                verticalType={Stack.VERTICAL_TYPE.CENTER}
+                className="filter-visibility-control"
+              >
+                <StackItem>
+                  {showFacetSidebar ? 'Show filters' : 'Show facets'}
+                </StackItem>
+              </Stack>
+            </div>
+            <Stack
+              grow
+              fullHeight
+              fullWidth
+              directionType={Stack.DIRECTION_TYPE.VERTICAL}
+              className="detail-filter"
+            >
+              <StackItem className="sidebar-title">
+                {showFacetSidebar ? 'Facets' : 'Filters'}
+              </StackItem>
+              {this.renderSidebar(duration)}
+            </Stack>
           </GridItem>
         )}
       </Grid>

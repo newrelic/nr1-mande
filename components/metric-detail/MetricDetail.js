@@ -2,56 +2,10 @@ import React from 'react'
 import { cloneDeep } from 'lodash'
 import { Stack, StackItem } from 'nr1'
 import { Metric } from '../metric/Metric'
-import FilterStack from '../metric-filter/FilterStack'
+import FilterStack from '../metric-sidebar/MetricSidebar'
 import { formatFilters, formatFacets } from '../../utils/query-formatter'
 
 export default class MetricDetail extends React.Component {
-  state = {
-    activeAttributes: [],
-    facets: [],
-  }
-
-  onAttributeToggle = (attribute, value, add) => {
-    let clonedActiveAttributes = []
-    if (this.state.activeAttributes)
-      clonedActiveAttributes = cloneDeep(this.state.activeAttributes)
-
-    if (add) {
-      clonedActiveAttributes.push({ attribute, value })
-      this.setState({ activeAttributes: clonedActiveAttributes })
-      return
-    }
-
-    let updatedActiveAttributes = []
-    if (!add) {
-      updatedActiveAttributes = clonedActiveAttributes.filter(
-        active => !(active.attribute === attribute && active.value === value)
-      )
-      this.setState({ activeAttributes: updatedActiveAttributes })
-    }
-  }
-
-  onFacetToggle = (attribute, add) => {
-    const clonedFacets = [...this.state.facets]
-
-    if (add) {
-      clonedFacets.push(attribute)
-      debugger
-      this.setState({ facets: clonedFacets })
-      return
-    }
-
-    let updatedFacets = []
-    if (!add) {
-      updatedFacets = clonedFacets.filter(cloned => cloned !== attribute)
-      debugger
-      this.setState({ facets: updatedFacets })
-    }
-  }
-
-  onEventSelectorToggle = eventSelector => {
-    console.log('toggled eventSelector')
-  }
 
   detailView = (filters, facetClause) => {
     const { stack, activeMetric } = this.props
@@ -69,10 +23,11 @@ export default class MetricDetail extends React.Component {
       threshold,
       activeMetric,
       toggleMetric,
+      activeFilters,
+      facets,
     } = this.props
-    const { activeAttributes, facets } = this.state
 
-    const filters = formatFilters(activeAttributes)
+    const filters = formatFilters(activeFilters)
     const facetClause = formatFacets(facets)
 
     const metrics =

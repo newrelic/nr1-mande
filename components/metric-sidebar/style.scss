@@ -167,11 +167,12 @@ div[class*="wnd-StackItem"] {
 
 .filter-attribute-item {
   padding-left: 26px;
+  padding-right: 8px;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   // height: 16px;
-  margin-bottom: 8px;
+  margin: 5px, 2px;
   overflow: hidden;
 
   > .filter-attribute-value {

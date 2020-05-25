@@ -123,7 +123,6 @@ export class Metric extends React.Component {
     let nrql = metric.query.nrql + since + ' TIMESERIES '
     if (filters) nrql += filters.single
 
-    console.info('nrql', nrql)
     return (
       <React.Fragment>
         <p className="name">{metric.title}</p>

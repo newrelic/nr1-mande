@@ -8,7 +8,7 @@ export default class MetricSidebar extends React.Component {
   state = {
     loading: true,
     categories: new Map(),
-    eventTypes: 'PageAction, MobileVideo, RokuVideo',
+    eventTypes: '',
   }
 
   getCategories = () => {
@@ -35,6 +35,18 @@ export default class MetricSidebar extends React.Component {
       })
 
     return categories
+  }
+
+  getEventTypes = () => {
+    const { stack } = this.props
+    const types =
+      stack.eventTypes &&
+      stack.eventTypes.reduce((acc, eventType) => {
+        if (eventType.event !== 'Global') acc.push(eventType.event)
+        return acc
+      }, [])
+
+    return types.join()
   }
 
   // placeholder in case we need to present the underlying event type as a selectable attribute. on hold.
@@ -143,7 +155,9 @@ export default class MetricSidebar extends React.Component {
     const { active } = this.props
     if (!active) {
       const categories = this.getCategories()
-      this.setState({ categories })
+      const eventTypes = this.getEventTypes()
+      console.info('eventTypes', eventTypes)
+      this.setState({ categories, eventTypes })
     }
   }
 

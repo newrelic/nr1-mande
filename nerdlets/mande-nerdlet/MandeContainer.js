@@ -358,13 +358,13 @@ export default class MandeContainer extends React.PureComponent {
             >
               {facets && facets.length > 0 && (
                 <React.Fragment>
-                  <StackItem className="sidebar-title">Facets</StackItem>
+                  <StackItem className="sidebar-selected-title">Facets</StackItem>
                   {this.renderSelectedSidebar(true)}
                 </React.Fragment>
               )}
               {activeAttributes && activeAttributes.length > 0 && (
                 <React.Fragment>
-                  <StackItem className="sidebar-title">Filters</StackItem>
+                  <StackItem className="sidebar-selected-title">Filters</StackItem>
                   {this.renderSelectedSidebar(false)}
                 </React.Fragment>
               )}

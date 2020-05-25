@@ -8,14 +8,11 @@ const selected = props => {
   const activeItems =
     selected &&
     selected.map((item, idx) => {
+      const value = showFacets ? item : item.value
       return (
-        <div
-          className="filter-attribute-item__selected"
-          key={showFacets ? item + idx : item.attribute + item.value + idx}
-        >
-          <div className="filter-attribute-item__selected value">
-            {showFacets ? item : item.value}
-          </div>
+        <div className="filter-attribute-item__selected" key={value + idx}>
+          <div className="filter-attribute-item__selected value">{value}</div>
+          {!showFacets && <div className="filter-attribute-item__selected tooltip">{value}</div>}
           <div
             className="filter-attribute-item__selected remove"
             onClick={

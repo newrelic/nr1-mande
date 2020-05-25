@@ -47,7 +47,7 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
 
 }
 
-.sidebar-title {
+.sidebar-selected-title {
   padding: 4px 16px;
   border-top: 1px solid #e3e4e4;
   border-bottom: 1px solid #e3e4e4;
@@ -157,15 +157,29 @@ div[class*="wnd-StackItem"] {
   font-size: 10px;
   display: inline-flex;
   align-items: center;
+  position: relative;
 
   .value {
     padding: 0.3rem;
+    margin-right: 2px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 125px;
     background-color: rgb(208, 240, 255);
     border-radius: 3px 0 0 3px;
+
+    &:hover {
+      +.tooltip {
+        visibility: visible;
+        opacity: 1;
+        transition: .25s opacity ease;
+        transition-delay: .5s;
+        z-index: 10;
+        border: 1px solid #e3e4e4;
+        border-radius: 2px;
+      }
+    }
   }
 
   .remove {
@@ -175,11 +189,23 @@ div[class*="wnd-StackItem"] {
     font-weight: bold;
     border-radius: 0 3px 3px 0;
     margin-left: -5px;
+    cursor: pointer;
 
     &:hover {
       background: #84d8ff;
       color: #003555;
     }
+  }
+
+  .tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: 21px;
+    left: 6px;
+    padding: 8px;
+    background-color: #edeeee;
+    width: 100%;
   }
 }
 

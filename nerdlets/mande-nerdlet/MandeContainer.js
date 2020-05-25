@@ -6,6 +6,7 @@ import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
 import MetricDashboard from '../../components/dashboard/MetricDashboard'
 import MetricDetail from '../../components/metric-detail/MetricDetail'
+import Selected from '../../components/metric-sidebar/Selected'
 import metricConfigs from '../../config/MetricConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 
@@ -192,6 +193,14 @@ export default class MandeContainer extends React.PureComponent {
     )
   }
 
+  renderSelectedSidebar = facet => {
+    const { facets, activeAttributes } = this.state
+    const selected = facet ? facets : activeAttributes
+    const toggle = facet ? this.onFacetToggle : this.onAttributeToggle
+
+    return <Selected showFacets={facet} selected={selected} toggle={toggle} />
+  }
+
   renderSidebar = duration => {
     const {
       showFacetSidebar,
@@ -200,24 +209,15 @@ export default class MandeContainer extends React.PureComponent {
       accountId,
       selectedStack,
     } = this.state
-    const selected = showFacetSidebar ? facets : activeAttributes
-    const selectHandler = showFacetSidebar
-      ? this.onFacetToggle
-      : this.onAttributeToggle
 
     return (
       <React.Fragment>
         <MetricSidebar
-          active={true}
           showFacets={showFacetSidebar}
-          selected={selected}
-          toggle={selectHandler}
-        />
-        <MetricSidebar
-          active={false}
-          showFacets={showFacetSidebar}
-          selected={selected}
-          toggle={selectHandler}
+          selected={showFacetSidebar ? facets : activeAttributes}
+          toggle={
+            showFacetSidebar ? this.onFacetToggle : this.onAttributeToggle
+          }
           accountId={accountId}
           duration={duration}
           stack={selectedStack}
@@ -325,10 +325,27 @@ export default class MandeContainer extends React.PureComponent {
                 fullWidth
                 directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
                 verticalType={Stack.VERTICAL_TYPE.CENTER}
-                className="filter-visibility-control"
+                gapType={Stack.GAP_TYPE.NONE}
               >
-                <StackItem>
-                  {showFacetSidebar ? 'Show filters' : 'Show facets'}
+                <StackItem
+                  grow
+                  className={
+                    showFacetSidebar
+                      ? 'filter-visibility-control selected'
+                      : 'filter-visibility-control notSelected'
+                  }
+                >
+                  Choose Facets
+                </StackItem>
+                <StackItem
+                  grow
+                  className={
+                    !showFacetSidebar
+                      ? 'filter-visibility-control selected'
+                      : 'filter-visibility-control notSelected'
+                  }
+                >
+                  Choose Filters
                 </StackItem>
               </Stack>
             </div>
@@ -339,9 +356,18 @@ export default class MandeContainer extends React.PureComponent {
               directionType={Stack.DIRECTION_TYPE.VERTICAL}
               className="detail-filter"
             >
-              <StackItem className="sidebar-title">
-                {showFacetSidebar ? 'Facets' : 'Filters'}
-              </StackItem>
+              {facets && facets.length > 0 && (
+                <React.Fragment>
+                  <StackItem className="sidebar-title">Facets</StackItem>
+                  {this.renderSelectedSidebar(true)}
+                </React.Fragment>
+              )}
+              {activeAttributes && activeAttributes.length > 0 && (
+                <React.Fragment>
+                  <StackItem className="sidebar-title">Filters</StackItem>
+                  {this.renderSelectedSidebar(false)}
+                </React.Fragment>
+              )}
               {this.renderSidebar(duration)}
             </Stack>
           </GridItem>

@@ -65,44 +65,17 @@ export default class MetricSidebar extends React.Component {
   //   return uniq(attributes).sort
   // }
 
-  getSelected() {
-    const { showFacets, selected, toggle } = this.props
-
-    const activeItems =
-      selected &&
-      selected.map((item, idx) => {
-        return (
-          <div
-            className="filter-attribute-item__selected"
-            key={showFacets ? item + idx : item.attribute + item.value + idx}
-          >
-            <div className="filter-attribute-item__selected value">
-              {showFacets ? item : item.value}
-            </div>
-            <div
-              className="filter-attribute-item__selected remove"
-              onClick={
-                showFacets
-                  ? () => toggle(item, false)
-                  : () => toggle(item.attribute, item.value, false)
-              }
-            >
-              X
-            </div>
-          </div>
-        )
-      })
-
-    return (
-      <React.Fragment>
-        {activeItems && activeItems.length > 0 && (
-          <StackItem className="filter-stack selected">{activeItems}</StackItem>
-        )}
-      </React.Fragment>
-    )
+  componentDidMount() {
+    const { active } = this.props
+    if (!active) {
+      const categories = this.getCategories()
+      const eventTypes = this.getEventTypes()
+      console.info('eventTypes', eventTypes)
+      this.setState({ categories, eventTypes })
+    }
   }
 
-  getAvailable() {
+  render() {
     const { categories, eventTypes } = this.state
     const { accountId, duration, toggle, selected, showFacets } = this.props
 
@@ -148,27 +121,6 @@ export default class MetricSidebar extends React.Component {
       <StackItem grow className="filter-stack not-selected">
         {filterItems}
       </StackItem>
-    )
-  }
-
-  componentDidMount() {
-    const { active } = this.props
-    if (!active) {
-      const categories = this.getCategories()
-      const eventTypes = this.getEventTypes()
-      console.info('eventTypes', eventTypes)
-      this.setState({ categories, eventTypes })
-    }
-  }
-
-  render() {
-    const { active } = this.props
-
-    return (
-      <React.Fragment>
-        {active && this.getSelected()}
-        {!active && this.getAvailable()}
-      </React.Fragment>
     )
   }
 }

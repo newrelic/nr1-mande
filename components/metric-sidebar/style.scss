@@ -16,7 +16,6 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #8e9494;
-
 }
 
 .filter-visibility-control {
@@ -25,15 +24,31 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
   padding: 0 16px;
   height: 58px;
   border-right: none;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e3e4e4;
+  border-left: none;
+  border-right: none;
 
-  &:hover {
-    cursor: pointer;
-    background-color: #e3e4e4;  
+  &:first-child {
+    border-right:  1px solid #e3e4e4;
   }
+
+  &.notSelected {
+    &:hover {
+      cursor: pointer;
+      background-color: #e3e4e4;
+    }  
+  }
+
+  &.selected {
+    color: #3e4141;
+  }
+
 }
 
 .sidebar-title {
-  padding: 8px 16px;
+  padding: 4px 16px;
   border-top: 1px solid #e3e4e4;
   border-bottom: 1px solid #e3e4e4;
   @extend .sidebar-header-base;
@@ -68,7 +83,7 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
     background-color: #fafbfb;
   }
 
-  &.empty:hover{
+  &.empty:hover {
     cursor: default;
     background-color: white;
   }
@@ -89,7 +104,7 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
   @extend .category-section-label-base;
   justify-content: space-between;
 
-  >.empty {
+  > .empty {
     color: #9e9d9d;
   }
 
@@ -120,7 +135,7 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
 .filter-stack {
   width: 100%;
   margin-bottom: 5px;
-  
+
   &.not-selected {
     color: #797878;
   }
@@ -128,6 +143,10 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
 
 div[class*="wnd-StackItem"] {
   &.filter-stack {
+    margin-top: 0px;
+  }
+
+  &.sidebar-title {
     margin-top: 0px;
   }
 }
@@ -140,7 +159,7 @@ div[class*="wnd-StackItem"] {
   align-items: center;
 
   .value {
-    padding: .3rem;
+    padding: 0.3rem;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -152,17 +171,16 @@ div[class*="wnd-StackItem"] {
   .remove {
     color: #0079bf;
     background-color: rgb(208, 240, 255);
-    padding: .3rem .5rem .3rem .3rem;
+    padding: 0.3rem 0.5rem 0.3rem 0.3rem;
     font-weight: bold;
     border-radius: 0 3px 3px 0;
     margin-left: -5px;
-  
+
     &:hover {
       background: #84d8ff;
       color: #003555;
     }
   }
-  
 }
 
 .filter-attribute-item {

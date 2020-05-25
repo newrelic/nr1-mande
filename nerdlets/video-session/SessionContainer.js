@@ -2,13 +2,15 @@ import React from 'react'
 import { Grid, GridItem, HeadingText } from 'nr1'
 import SessionDetail from '../../components/session-detail/SessionDetail'
 import TimelineDetail from '../../components/timeline/TimelineDetail'
+import metricConfig from '../../config/MetricConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 
 const sessionContainer = props => {
   const { timeRange } = props.launcherUrlState
-  const { accountId, session, stack } = props.nerdletUrlState
+  const { accountId, session, stackName } = props.nerdletUrlState
 
   const duration = formatSinceAndCompare(timeRange)
+  const stack = metricConfig.find(config => config.title === stackName)
 
   return (
     <Grid>

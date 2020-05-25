@@ -2,7 +2,6 @@ import React from 'react'
 import { chunk } from 'lodash'
 import { Grid, GridItem, Stack, StackItem, NrqlQuery, Spinner } from 'nr1'
 import MetricValue from '../metric/MetricValue'
-import { render } from 'react-dom'
 
 export default class SessionDetail extends React.PureComponent {
   composeNrqlQuery = (query, dataHandler, handlerParams) => {

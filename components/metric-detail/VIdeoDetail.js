@@ -40,7 +40,7 @@ const videoDetail = props => {
           urlState: {
             accountId,
             session: metadata.name,
-            stack: stack,
+            stackName: stack.title,
           },
         })
       },

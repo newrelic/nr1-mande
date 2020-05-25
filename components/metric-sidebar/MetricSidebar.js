@@ -70,7 +70,6 @@ export default class MetricSidebar extends React.Component {
     if (!active) {
       const categories = this.getCategories()
       const eventTypes = this.getEventTypes()
-      console.info('eventTypes', eventTypes)
       this.setState({ categories, eventTypes })
     }
   }

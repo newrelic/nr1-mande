@@ -35,8 +35,8 @@ const metricDashboard = props => {
               <div></div>
             </StackItem>
           ) : (
-              metrics
-            )}
+            metrics
+          )}
         </div>
       </Stack>
     )

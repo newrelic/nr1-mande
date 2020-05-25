@@ -248,8 +248,6 @@ export default class MandeContainer extends React.PureComponent {
       this.props.launcherUrlState
     )
 
-    console.info('mandeContainer.render facets', facets)
-
     return (
       <Grid
         className="container"

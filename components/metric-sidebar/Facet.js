@@ -10,8 +10,6 @@ const facet = props => {
   const selected =
     activeFacets &&
     activeFacets.find(facet => facet === attribute) !== undefined
-  console.info('facet activeFacets', activeFacets)
-  console.info('facet attribute: ', attribute, ' || selected: ', selected)
 
   return (
     <div className="filter-category-section">

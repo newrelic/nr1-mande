@@ -46,7 +46,7 @@ export default class MetricSidebar extends React.Component {
         return acc
       }, [])
 
-    return types.join()
+    return types ? types.join() : ''
   }
 
   // placeholder in case we need to present the underlying event type as a selectable attribute. on hold.

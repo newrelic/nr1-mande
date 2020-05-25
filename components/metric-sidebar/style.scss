@@ -141,7 +141,10 @@ div[class*="wnd-StackItem"] {
 
   .value {
     padding: .3rem;
-    // padding-right: 0rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 125px;
     background-color: rgb(208, 240, 255);
     border-radius: 3px 0 0 3px;
   }

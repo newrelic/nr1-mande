@@ -117,10 +117,13 @@ export class Metric extends React.Component {
       metric,
       accountId,
       duration: { since },
+      filters,
     } = this.props
     const { change, difference, current } = this.state
-    const nrql = metric.query.nrql + since + ' TIMESERIES '
+    let nrql = metric.query.nrql + since + ' TIMESERIES '
+    if (filters) nrql += filters.single
 
+    console.info('nrql', nrql)
     return (
       <React.Fragment>
         <p className="name">{metric.title}</p>

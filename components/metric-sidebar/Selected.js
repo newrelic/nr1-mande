@@ -12,7 +12,11 @@ const selected = props => {
       return (
         <div className="filter-attribute-item__selected" key={value + idx}>
           <div className="filter-attribute-item__selected value">{value}</div>
-          {!showFacets && <div className="filter-attribute-item__selected tooltip">{value}</div>}
+          {value.length > 25 && (
+            <div className="filter-attribute-item__selected tooltip">
+              {value}
+            </div>
+          )}
           <div
             className="filter-attribute-item__selected remove"
             onClick={

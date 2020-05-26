@@ -104,6 +104,7 @@ div[class*='wnd-StackItem'].category-menu-items {
   grid-template-columns: repeat(auto-fit, 8px);
   grid-template-rows: auto;
   grid-gap: 4px;
+  position: relative;
 }
 
 .minified-metric {

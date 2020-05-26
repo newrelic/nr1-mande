@@ -29,6 +29,18 @@ const CategoryMenu = props => {
                   minify={true}
                   click={toggleMetric}
                 />
+                <div className="metric-tooltip">
+                  <div className="metric maximized">
+                    <Metric
+                      accountId={accountId}
+                      metric={metric}
+                      duration={duration}
+                      threshold={threshold}
+                      minify={false}
+                      click={toggleMetric}
+                    />
+                  </div>
+                </div>
               </li>
             )}
           </React.Fragment>
@@ -49,7 +61,7 @@ const CategoryMenu = props => {
             fullWidth
             className={`category-menu-item-content ${
               isActive ? 'active-menu-item' : ''
-            }`}
+              }`}
             directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
             verticalType={Stack.VERTICAL_TYPE.CENTER}
           >
@@ -116,15 +128,15 @@ const CategoryMenu = props => {
           </StackItem>
         </span>
       ) : (
-        <Stack
-          className="category-menu-title"
-          fullWidth
-          directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
-          verticalType={Stack.VERTICAL_TYPE.CENTER}
-        >
-          <StackItem>Currently viewing dashboard</StackItem>
-        </Stack>
-      )}
+          <Stack
+            className="category-menu-title"
+            fullWidth
+            directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+            verticalType={Stack.VERTICAL_TYPE.CENTER}
+          >
+            <StackItem>Currently viewing dashboard</StackItem>
+          </Stack>
+        )}
       <StackItem className="category-menu-items">{renderMenuItems()}</StackItem>
     </Stack>
   )

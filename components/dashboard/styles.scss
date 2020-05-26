@@ -1,6 +1,7 @@
 .metric-stacks-grid {
   display: grid;
   box-sizing: border-box;
+  height: 100%;
   padding: 4px;
   grid-gap: 4px;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -9,6 +10,10 @@
   .maximized {
     border-right: 1px solid #edeeee;
     border-bottom: 1px solid #edeeee;
+  }
+
+  @media (min-width: 1850px) {
+    grid-template-rows: repeat(2,50%);
   }
 }
 

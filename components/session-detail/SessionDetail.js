@@ -86,7 +86,6 @@ export default class SessionDetail extends React.PureComponent {
   render() {
     const { session, stack } = this.props
 
-    const chunkedMetrics = chunk(stack.metrics, 3)
     return (
       <Stack
         className="sessionStack"
@@ -104,32 +103,25 @@ export default class SessionDetail extends React.PureComponent {
           </StackItem>
         </Stack>
 
-        {chunkedMetrics &&
-          chunkedMetrics.map((chunk, idx) => {
-            return (
-              <Stack fullWidth={true} fullHeight={true} key={idx}>
-                {chunk.map((metric, idx) => {
-                  return (
-                    <StackItem
-                      grow
-                      key={metric.title + idx}
-                      className="sessionStackItem sessionSectionBase"
-                    >
-                      <div className="metric-chart">
-                        <div className="chart-title">{metric.title}</div>
-                        {this.composeNrqlQuery(
-                          metric.query.nrql + ` WHERE viewId='${session}'`,
-                          this.buildKpiStackItem,
-                          metric
-                        )}
-                      </div>
-                    </StackItem>
-                  )
-                })}
-                {chunk.length < 3 && this.buildBlankKpiStack(3 - chunk.length)}
-              </Stack>
-            )
-          })}
+        {stack.metrics && (
+          <div className="session-kpi-grid">
+            {stack.metrics.map((metric, idx) => {
+              return (
+                <div key={metric.title + idx} className="sessionSectionBase">
+                  <div className="metric-chart">
+                    <div className="chart-title">{metric.title}</div>
+                    <div className="chart-title-tooltip">{metric.title}</div>
+                    {this.composeNrqlQuery(
+                      metric.query.nrql + ` WHERE viewId='${session}'`,
+                      this.buildKpiStackItem,
+                      metric
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
       </Stack>
     )
   }

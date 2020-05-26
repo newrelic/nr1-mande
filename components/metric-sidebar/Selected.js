@@ -12,7 +12,7 @@ const selected = props => {
       return (
         <div className="filter-attribute-item__selected" key={value + idx}>
           <div className="filter-attribute-item__selected value">{value}</div>
-          {value.length > 25 && (
+          {value.length > 15 && (
             <div className="filter-attribute-item__selected tooltip">
               {value}
             </div>

@@ -8,6 +8,10 @@
 // Mande Common and Nerdlet Styles
 // ==============================================================
 
+* {
+  box-sizing: border-box;
+}
+
 h4 {
   font-weight: 600;
   font-size: 16px;
@@ -44,11 +48,18 @@ h4 {
 }
 
 .container {
-  min-height: 100%;
-  overflow: hidden;
+  height: 100%;
+  // overflow: hidden;
 }
 
-.main-panel > [class*="StackItem"] {
-  width: 100%;
+.primary-content-grid {
   height: 100%;
+}
+
+.main-panel {
+  height: 100%;
+  > [class*="StackItem"] {
+    width: 100%;
+    height: 100%;
+  }
 }

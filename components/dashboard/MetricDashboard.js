@@ -21,23 +21,15 @@ const metricDashboard = props => {
         gapType={Stack.GAP_TYPE.MEDIUM}
         className="metricStack"
       >
-        <StackItem className={'metricStack__title'}>
+        <div className={'metricStack__title'}>
           <div
             onClick={() => toggleDetails(config.title)}
             className="title-content"
           >
             {config.title}
           </div>
-        </StackItem>
-        <div className="metric-block">
-          {!metrics ? (
-            <StackItem>
-              <div></div>
-            </StackItem>
-          ) : (
-            metrics
-          )}
         </div>
+        <div className="metric-block">{!metrics ? <div /> : metrics}</div>
       </Stack>
     )
   }
@@ -51,16 +43,15 @@ const metricDashboard = props => {
             return (
               <React.Fragment key={metric.title + idx}>
                 {metric.query && (
-                  <StackItem className="metric maximized">
-                    <Metric
-                      accountId={accountId}
-                      metric={metric}
-                      duration={duration}
-                      threshold={threshold}
-                      minify={false}
-                      click={toggleMetric}
-                    />
-                  </StackItem>
+                  <Metric
+                    classes="metric maximized"
+                    accountId={accountId}
+                    metric={metric}
+                    duration={duration}
+                    threshold={threshold}
+                    minify={false}
+                    click={toggleMetric}
+                  />
                 )}
               </React.Fragment>
             )
@@ -70,7 +61,7 @@ const metricDashboard = props => {
           return arr.concat(val)
         }, [])
 
-    if (!metrics && threshold === 1)
+    if (!metrics && threshold === 'All')
       metrics = (
         <React.Fragment>
           <StackItem className={'metric maximized'}>
@@ -93,6 +84,7 @@ const metricDashboard = props => {
       return arr.concat(val)
     }, [])
 
+  // console.info('MetricDashboard', props)
   return <div className="metric-stacks-grid">{metricCategories}</div>
 }
 

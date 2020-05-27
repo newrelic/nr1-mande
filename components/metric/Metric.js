@@ -9,7 +9,7 @@ export class Metric extends React.Component {
     current: null,
     previous: null,
     difference: null,
-    change: '',
+    change: () => null,
     loading: true,
   }
 
@@ -53,13 +53,6 @@ export class Metric extends React.Component {
         previous = Object.values(previous)[0]
       }
 
-      console.debug(
-        'metric.getData() current previous',
-        this.props.metric.title,
-        current,
-        previous
-      )
-
       current = this.roundToTwoDigits(current)
       const difference = Math.abs(previous - current)
       let rounded = difference
@@ -90,14 +83,14 @@ export class Metric extends React.Component {
     const { threshold, metric } = this.props
     const { current } = this.state
 
-    if (threshold === 1) return true
+    if (threshold === 'All') return true
     if (!metric.threshold) return false
-    if (threshold === 2) {
+    if (threshold === 'Warning') {
       if (metric.threshold.type === 'below')
         return current <= metric.threshold.warning
       else return current >= metric.threshold.warning
     }
-    if (threshold === 3) {
+    if (threshold === 'Critical') {
       if (metric.threshold.type === 'below')
         return current <= metric.threshold.critical
       else return current >= metric.threshold.critical
@@ -169,26 +162,37 @@ export class Metric extends React.Component {
   }
 
   render() {
-    const { minify, click, metric, selected } = this.props
+    const { minify, click, metric, selected, classes } = this.props
     const { loading } = this.state
 
     // apply threshold level filtering, if applicable
     if (!this.isVisible()) return null
+
+    const maximized = this.getMaximized()
 
     let metricContent = loading ? (
       <Spinner type={Spinner.TYPE.DOT} fillContainer />
     ) : minify ? (
       this.getMinified()
     ) : (
-      this.getMaximized()
+      maximized
     )
 
     return (
-      <div
-        onClick={() => click(metric.title)}
-        className={!selected ? 'metric-chart' : 'metric-chart selected'}
-      >
-        {metricContent}
+      <div className={classes}>
+        <div
+          onClick={() => click(metric.title)}
+          className={!selected ? 'metric-chart' : 'metric-chart selected'}
+        >
+          {metricContent}
+        </div>
+        {minify && (
+          <div className="metric-tooltip">
+            <div className="metric maximized">
+              <div className={'metric-chart'}>{maximized}</div>
+            </div>
+          </div>
+        )}
       </div>
     )
   }

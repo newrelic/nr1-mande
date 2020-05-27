@@ -1,6 +1,16 @@
 import React from 'react'
 import { cloneDeep } from 'lodash'
-import { NerdGraphQuery, Stack, StackItem, nerdlet, Grid, GridItem } from 'nr1'
+import {
+  AccountPicker,
+  NerdGraphQuery,
+  Stack,
+  StackItem,
+  nerdlet,
+  Grid,
+  GridItem,
+  Select,
+  SelectItem,
+} from 'nr1'
 import DimensionDropDown from '../../components/dimension/DimensionDropDown'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
@@ -10,10 +20,10 @@ import Selected from '../../components/metric-sidebar/Selected'
 import metricConfigs from '../../config/MetricConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 
-export default class MandeContainer extends React.PureComponent {
+export default class MandeContainer extends React.Component {
   state = {
     accountId: null,
-    threshold: 1,
+    threshold: 'All',
     selectedMetric: null,
     selectedStack: null,
     activeAttributes: [],
@@ -21,47 +31,37 @@ export default class MandeContainer extends React.PureComponent {
     showFacetSidebar: true,
   }
 
-  dimensionConfigs = [
-    {
-      name: 'Accounts',
-      mandatory: true,
-      data: async () => {
-        const { data } = await this.query(`{
-            actor {
-              accounts {
-                name
-                id
-              }
-            }
-          }`)
-        const { accounts } = data.actor
-        return accounts
-      },
-      handler: account => {
-        this.setState({ accountId: account.id })
-      },
-    },
-    {
-      name: 'Threshold',
-      mandatory: true,
-      data() {
-        return [
-          { id: 1, name: 'All' },
-          { id: 2, name: 'Warning' },
-          { id: 3, name: 'Critical' },
-        ]
-      },
-      handler: level => {
-        this.setState({ threshold: level.id })
-      },
-    },
-  ]
-
   query = async graphql => {
     return await NerdGraphQuery.query({ query: graphql })
   }
 
+  loadAccounts = async () => {
+    console.debug('**** loading accounts')
+    const { data } = await this.query(`{
+          actor {
+            accounts {
+              name
+              id
+            }
+          }
+        }`)
+    const { accounts } = data.actor
+    console.debug('**** accounts loaded')
+    return accounts
+  }
+
+  onChangeAccount = value => {
+    console.debug('CHANGING STATE onChangeAccount', value)
+    this.setState({ accountId: value })
+  }
+
+  onChangeThreshold = (event, value) => {
+    console.debug('CHANGING STATE onChangeThreshold', value)
+    this.setState({ threshold: value })
+  }
+
   onToggleMetric = selected => {
+    console.debug('CHANGING STATE onToggleMetric', selected)
     const currentMetric = this.state.selectedMetric
 
     if (currentMetric && currentMetric === selected)
@@ -80,6 +80,8 @@ export default class MandeContainer extends React.PureComponent {
   }
 
   onToggleDetailView = stackTitle => {
+    console.debug('CHANGING STATE onToggleDetailView', stackTitle)
+
     const currentStack = this.state.selectedStack
 
     if (currentStack && currentStack.title === stackTitle) {
@@ -131,46 +133,73 @@ export default class MandeContainer extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
-    const { selectedMetric, selectedStack } = this.props.nerdletUrlState
+  async componentDidMount() {
+    console.debug('**** mandeContainer.componentDidMount')
+
+    const {
+      accountId,
+      threshold,
+      selectedMetric,
+      selectedStack,
+    } = this.props.nerdletUrlState
+
     if (selectedMetric) this.onToggleMetric(selectedMetric)
     if (!selectedMetric) {
       if (selectedStack) this.onToggleDetailView(selectedStack)
-      //else this.onToggleDetailView('Video') //if (metricConfigs.length === 1)
+    }
+
+    if (threshold && threshold !== this.state.threshold) this.setState({ threshold })
+
+    if (accountId) this.onChangeAccount(accountId)
+    else {
+      const accounts = await this.loadAccounts()
+      this.onChangeAccount(accounts[0].id)
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state !== nextState) {
+      console.debug('**** mandeContainer.shouldComponentUpdate state mismatch')
+      return true
+    }
+
+    const { launcherUrlState } = this.props
+    const nextLauncherState = nextProps.launcherUrlState
+    if (
+      nextLauncherState.accountId !== launcherUrlState.accountId ||
+      nextLauncherState.tvMode !== launcherUrlState.tvMode ||
+      nextLauncherState.timeRange.begin_time !==
+        launcherUrlState.timeRange.begin_time ||
+      nextLauncherState.timeRange.end_time !==
+        launcherUrlState.timeRange.end_time ||
+      nextLauncherState.timeRange.duration !==
+        launcherUrlState.timeRange.duration
+    ) {
+      console.debug(
+        '**** mandeContainer.shouldComponentUpdate launcher state mismatch'
+      )
+      console.debug('>>>> currentLauncher: ', launcherUrlState)
+      console.debug('>>>> nextLauncher: ', nextLauncherState)
+      return true
+    }
+
+    return false
+  }
+
   componentDidUpdate() {
+    console.debug('**** MandeContainer.componentDidUpdate')
+
     const { accountId, threshold, selectedMetric, selectedStack } = this.state
+
     nerdlet.setUrlState({
-      selectedDimensions: [
-        { name: 'Accounts', value: accountId },
-        { name: 'Level', value: threshold },
-      ],
+      accountId: accountId,
+      threshold: threshold,
       selectedMetric,
       selectedStack: selectedStack ? selectedStack.title : null,
     })
   }
 
-  renderDimensions = (duration, history) => {
-    const dimensions = this.dimensionConfigs
-      .map(config => {
-        return [...Array(config)].map((_, idx) => {
-          return (
-            <StackItem key={config.name + idx}>
-              <DimensionDropDown
-                config={config}
-                duration={duration}
-                history={history}
-              />
-            </StackItem>
-          )
-        })
-      })
-      .reduce((arr, val) => {
-        return arr.concat(val)
-      }, [])
-
+  renderOptionsBar = () => {
     return (
       <React.Fragment>
         <Stack
@@ -185,7 +214,28 @@ export default class MandeContainer extends React.PureComponent {
               className="options-bar"
               fullWidth
             >
-              {dimensions}
+              <StackItem>
+                <Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
+                  <div className="options-bar-label">Accounts</div>
+                  <AccountPicker
+                    value={this.state.accountId}
+                    onChange={this.onChangeAccount}
+                  />
+                </Stack>
+              </StackItem>
+              <StackItem>
+                <Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
+                  <div className="options-bar-label">Threshold</div>
+                  <Select
+                    onChange={this.onChangeThreshold}
+                    value={this.state.threshold}
+                  >
+                    <SelectItem value="All">All</SelectItem>
+                    <SelectItem value="Warning">Warning</SelectItem>
+                    <SelectItem value="Critical">Critical</SelectItem>
+                  </Select>
+                </Stack>
+              </StackItem>
             </Stack>
           </StackItem>
         </Stack>
@@ -227,10 +277,8 @@ export default class MandeContainer extends React.PureComponent {
   }
 
   render() {
-    console.debug('mandecontainer.render')
+    console.debug('**** mandecontainer.render')
     const { timeRange } = this.props.launcherUrlState
-    const { selectedDimensions } = this.props.nerdletUrlState
-
     const duration = formatSinceAndCompare(timeRange)
 
     const {
@@ -242,11 +290,6 @@ export default class MandeContainer extends React.PureComponent {
       facets,
       showFacetSidebar,
     } = this.state
-
-    console.debug(
-      'mandeContainer.props.launcherUrlState',
-      this.props.launcherUrlState
-    )
 
     return (
       <Grid
@@ -275,7 +318,7 @@ export default class MandeContainer extends React.PureComponent {
           columnSpan={selectedStack ? 8 : 10}
         >
           <div className="primary-content-grid">
-            {this.renderDimensions(duration, selectedDimensions)}
+            {this.renderOptionsBar()}
             {accountId && (
               <Stack
                 fullWidth={true}
@@ -358,13 +401,17 @@ export default class MandeContainer extends React.PureComponent {
             >
               {facets && facets.length > 0 && (
                 <React.Fragment>
-                  <StackItem className="sidebar-selected-title">Facets</StackItem>
+                  <StackItem className="sidebar-selected-title">
+                    Facets
+                  </StackItem>
                   {this.renderSelectedSidebar(true)}
                 </React.Fragment>
               )}
               {activeAttributes && activeAttributes.length > 0 && (
                 <React.Fragment>
-                  <StackItem className="sidebar-selected-title">Filters</StackItem>
+                  <StackItem className="sidebar-selected-title">
+                    Filters
+                  </StackItem>
                   {this.renderSelectedSidebar(false)}
                 </React.Fragment>
               )}

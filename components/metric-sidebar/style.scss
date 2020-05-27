@@ -43,8 +43,10 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
   }
 
   &.selected {
-    color: #3e4141;
-    background-color: rgba(227, 228, 228, 0.85);
+    background-color: #f7ffff;
+    color: #007e8a;
+    box-shadow: inset 0 4px 0 0 #007e8a;
+    border-top: none;
   }
 
 }

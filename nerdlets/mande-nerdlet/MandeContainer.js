@@ -1,5 +1,5 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
+import { uniq, cloneDeep, isEqual, flatten } from 'lodash'
 import {
   AccountPicker,
   NerdGraphQuery,
@@ -11,57 +11,75 @@ import {
   Select,
   SelectItem,
 } from 'nr1'
-import DimensionDropDown from '../../components/dimension/DimensionDropDown'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
 import MetricDashboard from '../../components/dashboard/MetricDashboard'
 import MetricDetail from '../../components/metric-detail/MetricDetail'
 import Selected from '../../components/metric-sidebar/Selected'
 import metricConfigs from '../../config/MetricConfig'
-import { formatSinceAndCompare } from '../../utils/query-formatter'
+import {
+  formatFilters,
+  formatFacets,
+  formatSinceAndCompare,
+} from '../../utils/query-formatter'
+import { loadMetricsForConfigs } from '../../utils/metric-data-loader'
 
 export default class MandeContainer extends React.Component {
-  state = {
-    accountId: null,
-    threshold: 'All',
-    selectedMetric: null,
-    selectedStack: null,
-    activeAttributes: [],
-    facets: [],
-    showFacetSidebar: true,
-  }
+  constructor(props) {
+    super(props)
 
-  query = async graphql => {
-    return await NerdGraphQuery.query({ query: graphql })
+    let metricCategories = metricConfigs.map(config => config.title)
+    metricCategories = uniq(metricCategories)
+
+    this.state = {
+      accountId: null,
+      threshold: 'All',
+      selectedMetric: null,
+      selectedStack: null,
+      activeAttributes: [],
+      facets: [],
+      showFacetSidebar: true,
+      metricData: [],
+      metricCategories,
+      metricRefreshInterval: 60000,
+    }
   }
 
   loadAccounts = async () => {
     console.debug('**** loading accounts')
-    const { data } = await this.query(`{
+    const { data } = await NerdGraphQuery.query({
+      query: `{
           actor {
             accounts {
               name
               id
             }
           }
-        }`)
+        }`,
+    })
     const { accounts } = data.actor
     console.debug('**** accounts loaded')
     return accounts
   }
 
+  roundToTwoDigits = value => {
+    return Math.round(value * 100) / 100
+  }
+
   onChangeAccount = value => {
-    console.debug('CHANGING STATE onChangeAccount', value)
     this.setState({ accountId: value })
   }
 
   onChangeThreshold = (event, value) => {
-    console.debug('CHANGING STATE onChangeThreshold', value)
     this.setState({ threshold: value })
   }
 
-  onToggleMetric = selected => {
-    console.debug('CHANGING STATE onToggleMetric', selected)
+  onChangeInterval = (event, value) => {
+    this.setState({ metricRefreshInterval: value })
+  }
+
+  onToggleMetric = (selected, init) => {
+    console.debug('mandeContainer.onToggleMetric', selected)
     const currentMetric = this.state.selectedMetric
 
     if (currentMetric && currentMetric === selected)
@@ -75,20 +93,23 @@ export default class MandeContainer extends React.Component {
         if (metricFound && metricFound.length > 0) return config
       })
 
-      this.setState({ selectedMetric: selected, selectedStack: stack[0] })
+      if (!init)
+        this.setState({ selectedMetric: selected, selectedStack: stack[0] })
+      else return stack[0]
     }
   }
 
-  onToggleDetailView = stackTitle => {
-    console.debug('CHANGING STATE onToggleDetailView', stackTitle)
-
+  onToggleDetailView = (stackTitle, init) => {
+    console.debug('mandeContainer.onToggleDetailView', stackTitle, init)
     const currentStack = this.state.selectedStack
 
     if (currentStack && currentStack.title === stackTitle) {
       this.setState({ selectedMetric: null, selectedStack: null })
     } else {
       const stack = metricConfigs.filter(config => config.title === stackTitle)
-      this.setState({ selectedMetric: null, selectedStack: stack[0] })
+      if (!init)
+        this.setState({ selectedMetric: null, selectedStack: stack[0] })
+      else return stack[0]
     }
   }
 
@@ -133,70 +154,142 @@ export default class MandeContainer extends React.Component {
     }
   }
 
+  setupInterval = interval => {
+    console.debug('**** mandeContainer.interval', interval)
+    const duration = formatSinceAndCompare(
+      this.props.launcherUrlState.timeRange
+    )
+    const { accountId } = this.state
+
+    this.interval = setInterval(async () => {
+      let metricData = []
+      for (let config of metricConfigs) {
+        if (config.metrics) {
+          metricData = metricData.concat(
+            config.metrics.map(metric => {
+              return { def: metric, category: config.title, loading: true }
+            })
+          )
+        }
+      }
+
+      console.debug('**** mandeContainer.interval reset metrics to loading')
+      this.setState({ metricData })
+
+      metricData = await loadMetricsForConfigs(
+        metricConfigs,
+        duration,
+        accountId,
+        null
+      )
+
+      console.debug('**** mandeContainer.interval reset metrics to loaded')
+      this.setState({ metricData })
+    }, interval)
+  }
+
   async componentDidMount() {
     console.debug('**** mandeContainer.componentDidMount')
+    const { timeRange } = this.props.launcherUrlState
+    const duration = formatSinceAndCompare(timeRange)
 
+    let { accountId } = this.props.nerdletUrlState
     const {
-      accountId,
       threshold,
       selectedMetric,
       selectedStack,
     } = this.props.nerdletUrlState
 
-    if (selectedMetric) this.onToggleMetric(selectedMetric)
-    if (!selectedMetric) {
-      if (selectedStack) this.onToggleDetailView(selectedStack)
-    }
+    // no state can have been saved without also having saved accountId, so we can pivot based on presence of accountId
+    const savedState = accountId !== undefined
 
-    if (threshold && threshold !== this.state.threshold) this.setState({ threshold })
-
-    if (accountId) this.onChangeAccount(accountId)
-    else {
+    if (!accountId) {
       const accounts = await this.loadAccounts()
-      this.onChangeAccount(accounts[0].id)
+      accountId = accounts[0].id
     }
+
+    let metricData = await loadMetricsForConfigs(
+      metricConfigs,
+      duration,
+      accountId,
+      null
+    )
+
+    // reset all state if an accountId was saved, otherwise, just set the default accountId state
+    if (savedState) {
+      let savedStack = selectedMetric
+        ? this.onToggleMetric(selectedMetric, true)
+        : selectedStack
+          ? this.onToggleDetailView(selectedStack, true)
+          : null
+      this.setState({
+        accountId,
+        threshold,
+        selectedMetric,
+        selectedStack: savedStack,
+        metricData,
+      })
+    } else {
+      this.setState({ accountId, metricData })
+    }
+
+    this.setupInterval(this.state.metricRefreshInterval)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.state !== nextState) {
+    if (!isEqual(this.state, nextState)) {
       console.debug('**** mandeContainer.shouldComponentUpdate state mismatch')
       return true
     }
 
     const { launcherUrlState } = this.props
     const nextLauncherState = nextProps.launcherUrlState
-    if (
-      nextLauncherState.accountId !== launcherUrlState.accountId ||
-      nextLauncherState.tvMode !== launcherUrlState.tvMode ||
-      nextLauncherState.timeRange.begin_time !==
-        launcherUrlState.timeRange.begin_time ||
-      nextLauncherState.timeRange.end_time !==
-        launcherUrlState.timeRange.end_time ||
-      nextLauncherState.timeRange.duration !==
-        launcherUrlState.timeRange.duration
-    ) {
+    if (!isEqual(launcherUrlState, nextLauncherState)) {
       console.debug(
         '**** mandeContainer.shouldComponentUpdate launcher state mismatch'
       )
-      console.debug('>>>> currentLauncher: ', launcherUrlState)
-      console.debug('>>>> nextLauncher: ', nextLauncherState)
       return true
     }
 
     return false
   }
 
-  componentDidUpdate() {
-    console.debug('**** MandeContainer.componentDidUpdate')
+  componentDidUpdate(prevProps, prevState) {
+    console.debug('**** mandeContainer.componentDidUpdate')
 
-    const { accountId, threshold, selectedMetric, selectedStack } = this.state
-
-    nerdlet.setUrlState({
-      accountId: accountId,
-      threshold: threshold,
+    const {
+      accountId,
+      threshold,
       selectedMetric,
-      selectedStack: selectedStack ? selectedStack.title : null,
-    })
+      selectedStack,
+      metricRefreshInterval,
+    } = this.state
+
+    if (metricRefreshInterval !== prevState.metricRefreshInterval) {
+      clearInterval(this.interval)
+      this.setupInterval(metricRefreshInterval)
+    }
+
+    if (
+      accountId != prevState.accountId ||
+      threshold != prevState.threshold ||
+      selectedMetric != prevState.selectedMetric ||
+      !isEqual(selectedStack, prevState.selectedStack)
+    ) {
+      console.debug(
+        '**** mandeContainer.componentDidUpdate updating nerdletUrlState'
+      )
+      nerdlet.setUrlState({
+        accountId: accountId,
+        threshold: threshold,
+        selectedMetric,
+        selectedStack: selectedStack ? selectedStack.title : null,
+      })
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   renderOptionsBar = () => {
@@ -233,6 +326,21 @@ export default class MandeContainer extends React.Component {
                     <SelectItem value="All">All</SelectItem>
                     <SelectItem value="Warning">Warning</SelectItem>
                     <SelectItem value="Critical">Critical</SelectItem>
+                  </Select>
+                </Stack>
+              </StackItem>
+              <StackItem>
+                <Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
+                  <div className="options-bar-label">Refresh Interval</div>
+                  <Select
+                    onChange={this.onChangeInterval}
+                    value={this.state.metricRefreshInterval}
+                  >
+                    <SelectItem value="30000">30 seconds</SelectItem>
+                    <SelectItem value="60000">1 minute</SelectItem>
+                    <SelectItem value="180000">3 minutes</SelectItem>
+                    <SelectItem value="300000">5 minutes</SelectItem>
+                    <SelectItem value="600000">10 minutes</SelectItem>
                   </Select>
                 </Stack>
               </StackItem>
@@ -277,7 +385,8 @@ export default class MandeContainer extends React.Component {
   }
 
   render() {
-    console.debug('**** mandecontainer.render')
+    console.debug('**** mandeContainer.render')
+
     const { timeRange } = this.props.launcherUrlState
     const duration = formatSinceAndCompare(timeRange)
 
@@ -289,7 +398,13 @@ export default class MandeContainer extends React.Component {
       activeAttributes,
       facets,
       showFacetSidebar,
+      metricData,
+      metricCategories,
+      metricRefreshInterval,
     } = this.state
+
+    const filters = formatFilters(activeAttributes)
+    const facetClause = formatFacets(facets)
 
     return (
       <Grid
@@ -306,7 +421,8 @@ export default class MandeContainer extends React.Component {
               accountId={accountId}
               threshold={threshold}
               duration={duration}
-              metricConfigs={metricConfigs}
+              metricDefs={metricData}
+              metricCategories={metricCategories}
               selectedStack={selectedStack}
               toggleMetric={this.onToggleMetric}
               toggleDetails={this.onToggleDetailView}
@@ -333,7 +449,8 @@ export default class MandeContainer extends React.Component {
                       accountId={accountId}
                       threshold={threshold}
                       duration={duration}
-                      metricConfigs={metricConfigs}
+                      metricDefs={metricData}
+                      metricCategories={metricCategories}
                       toggleMetric={this.onToggleMetric}
                       toggleDetails={this.onToggleDetailView}
                     />
@@ -345,11 +462,12 @@ export default class MandeContainer extends React.Component {
                       accountId={accountId}
                       duration={duration}
                       threshold={threshold}
+                      metricRefreshInterval={metricRefreshInterval}
                       activeMetric={selectedMetric}
                       toggleMetric={this.onToggleMetric}
                       stack={selectedStack}
-                      activeFilters={activeAttributes}
-                      facets={facets}
+                      activeFilters={filters}
+                      facets={facetClause}
                     />
                   </StackItem>
                 )}

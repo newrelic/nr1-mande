@@ -1,107 +1,35 @@
 import React from 'react'
-import { Spinner, Icon, NerdGraphQuery, StackItem, SparklineChart } from 'nr1'
-import { includes } from 'lodash'
+import { Spinner, Icon, NerdGraphQuery, SparklineChart, NrqlQuery } from 'nr1'
 import Compare from './Compare'
 import MetricValue from './MetricValue'
 
 export class Metric extends React.Component {
-  state = {
-    current: null,
-    previous: null,
-    difference: null,
-    change: () => null,
-    loading: true,
-  }
-
-  // ============== HANDLERS/METHODS ===============
-  getData = async () => {
-    const {
-      accountId,
-      metric,
-      duration: { since, compare },
-      filters,
-    } = this.props
-
-    let nrql = metric.query.nrql + since + compare
-
-    if (filters) nrql = nrql + filters.double
-
-    const query = `{
-        actor {
-          account(id: ${accountId}) {
-            nrql(query: "${nrql}") {
-              results
-            }
-          }
-        }
-      }`
-    const { data, error } = await NerdGraphQuery.query({
-      query,
-      fetchPolicyType: NerdGraphQuery.FETCH_POLICY_TYPE.NO_CACHE,
-    })
-
-    if (error) {
-      console.error(`error occurred with query ${query}: `, error)
-    }
-
-    if (data) {
-      let current = data.actor.account.nrql.results[0][metric.query.lookup]
-      let previous = data.actor.account.nrql.results[1][metric.query.lookup]
-
-      if (metric.query.lookup === 'percentile') {
-        current = Object.values(current)[0]
-        previous = Object.values(previous)[0]
-      }
-
-      current = this.roundToTwoDigits(current)
-      const difference = Math.abs(previous - current)
-      let rounded = difference
-
-      if (difference > 0) {
-        rounded = this.roundToTwoDigits((difference / previous) * 100)
-      }
-
-      this.setState({
-        current,
-        previous,
-        difference: rounded,
-        change() {
-          if (current > previous) return 'increase'
-          else if (current < previous) return 'decrease'
-          else return 'noChange'
-        },
-        loading: false,
-      })
-    }
-  }
-
-  roundToTwoDigits = value => {
-    return Math.round(value * 100) / 100
-  }
 
   isVisible = () => {
     const { threshold, metric } = this.props
-    const { current } = this.state
 
     if (threshold === 'All') return true
-    if (!metric.threshold) return false
+    if (!metric.def.threshold) return false
     if (threshold === 'Warning') {
-      if (metric.threshold.type === 'below')
-        return current <= metric.threshold.warning
-      else return current >= metric.threshold.warning
+      if (metric.def.threshold.type === 'below')
+        return metric.value <= metric.def.threshold.warning
+      else return metric.value >= metric.def.threshold.warning
     }
     if (threshold === 'Critical') {
-      if (metric.threshold.type === 'below')
-        return current <= metric.threshold.critical
-      else return current >= metric.threshold.critical
+      if (metric.def.threshold.type === 'below')
+        return metric.value <= metric.def.threshold.critical
+      else return metric.value >= metric.def.threshold.critical
     }
   }
 
   getMinified = () => {
     const { metric } = this.props
-    const { current } = this.state
     return (
-      <MetricValue minify={true} threshold={metric.threshold} value={current} />
+      <MetricValue
+        minify={true}
+        threshold={metric.def.threshold}
+        value={metric.value}
+      />
     )
   }
 
@@ -109,79 +37,60 @@ export class Metric extends React.Component {
     const {
       metric,
       accountId,
+      minify,
       duration: { since },
       filters,
     } = this.props
-    const { change, difference, current } = this.state
-    let nrql = metric.query.nrql + since + ' TIMESERIES '
+
+    let nrql = metric.def.query.nrql + since + ' TIMESERIES '
     if (filters) nrql += filters.single
 
     return (
       <React.Fragment>
-        <p className="name">{metric.title}</p>
+        <p className="name">{metric.def.title}</p>
         <span className="value-container">
-          <MetricValue threshold={metric.threshold} value={current} />
+          <MetricValue threshold={metric.def.threshold} value={metric.value} />
           <Compare
-            invert={metric.invertCompareTo}
-            change={change}
-            difference={difference}
+            invert={metric.def.invertCompareTo}
+            change={metric.change}
+            difference={metric.difference}
           />
         </span>
-        <SparklineChart
-          className="spark-line-chart"
-          accountId={accountId}
-          query={nrql}
-          onHoverSparkline={() => null}
-        />
+        {!minify && (
+          <SparklineChart
+            className="spark-line-chart"
+            accountId={accountId}
+            query={nrql}
+            onHoverSparkline={() => null}
+          />
+        )}
       </React.Fragment>
     )
   }
 
-  // ============== LIFECYCLE METHODS ================
-  async componentDidMount() {
-    await this.getData()
-
-    this.interval = setInterval(async () => {
-      if (!this.props.minify) this.setState({ loading: true })
-      await this.getData()
-    }, 30000)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval)
-  }
-
-  componentDidUpdate(prevProps) {
-    const prevFilters = prevProps.filters
-    const currentFilters = this.props.filters
-    const prevDuration = prevProps.duration
-    const currentDuration = this.props.duration
-
-    if (prevFilters !== currentFilters || prevDuration != currentDuration)
-      this.getData()
-  }
-
   render() {
     const { minify, click, metric, selected, classes } = this.props
-    const { loading } = this.state
 
-    // apply threshold level filtering, if applicable
-    if (!this.isVisible()) return null
+    let metricContent
+    let maximized
 
-    const maximized = this.getMaximized()
+    if (metric.loading) {
+      metricContent = <Spinner type={Spinner.TYPE.DOT} fillContainer />
+    } else {
+      // apply threshold level filtering, if applicable
+      if (!this.isVisible()) return null
 
-    let metricContent = loading ? (
-      <Spinner type={Spinner.TYPE.DOT} fillContainer />
-    ) : minify ? (
-      this.getMinified()
-    ) : (
-      maximized
-    )
+      maximized = this.getMaximized()
+      if (minify) metricContent = this.getMinified()
+      else {
+        metricContent = maximized
+      }
+    }
 
     return (
       <div className={classes}>
         <div
-          onClick={() => click(metric.title)}
+          onClick={() => click(metric.def.title)}
           className={!selected ? 'metric-chart' : 'metric-chart selected'}
         >
           {metricContent}

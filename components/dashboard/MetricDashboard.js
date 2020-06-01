@@ -7,13 +7,16 @@ const metricDashboard = props => {
     accountId,
     threshold,
     duration,
-    metricConfigs,
+    metricDefs,
+    metricCategories,
     toggleMetric,
     toggleDetails,
   } = props
 
-  const getMetricCategory = (key, config) => {
-    const metrics = getMetrics(config)
+  console.debug('**** metricDashboard.render')
+
+  const getMetricCategory = (key, category) => {
+    const metrics = getMetrics(category)
     return (
       <Stack
         key={key}
@@ -23,10 +26,10 @@ const metricDashboard = props => {
       >
         <div className={'metricStack__title'}>
           <div
-            onClick={() => toggleDetails(config.title)}
+            onClick={() => toggleDetails(category)}
             className="title-content"
           >
-            {config.title}
+            {category}
           </div>
         </div>
         <div className="metric-block">{!metrics ? <div /> : metrics}</div>
@@ -34,34 +37,32 @@ const metricDashboard = props => {
     )
   }
 
-  const getMetrics = config => {
-    let metrics =
-      config.metrics &&
-      config.metrics
-        .map(metric => {
-          return [...Array(config.metrics)].map((_, idx) => {
-            return (
-              <React.Fragment key={metric.title + idx}>
-                {metric.query && (
-                  <Metric
-                    classes="metric maximized"
-                    accountId={accountId}
-                    metric={metric}
-                    duration={duration}
-                    threshold={threshold}
-                    minify={false}
-                    click={toggleMetric}
-                  />
-                )}
-              </React.Fragment>
-            )
-          })
-        })
-        .reduce((arr, val) => {
-          return arr.concat(val)
-        }, [])
+  const getMetrics = category => {
+    const categoryMetricDefs = metricDefs.filter(
+      def => category === def.category
+    )
 
-    if (!metrics && threshold === 'All')
+    let metrics =
+      categoryMetricDefs &&
+      categoryMetricDefs.map((metricDef, idx) => {
+        return (
+          <React.Fragment key={metricDef.def.title + idx}>
+            {metricDef && (
+              <Metric
+                classes="metric maximized"
+                accountId={accountId}
+                metric={metricDef}
+                duration={duration}
+                threshold={threshold}
+                minify={false}
+                click={toggleMetric}
+              />
+            )}
+          </React.Fragment>
+        )
+      })
+
+    if (!metrics && threshold === 1)
       metrics = (
         <React.Fragment>
           <StackItem className={'metric maximized'}>
@@ -74,18 +75,11 @@ const metricDashboard = props => {
   }
 
   // convert metricConfigs into components
-  const metricCategories = metricConfigs
-    .map(config => {
-      return [...Array(config)].map((_, idx) => {
-        return getMetricCategory(config.title + idx, config)
-      })
-    })
-    .reduce((arr, val) => {
-      return arr.concat(val)
-    }, [])
+  const categories = metricCategories.map((category, idx) =>
+    getMetricCategory(category + idx, category)
+  )
 
-  // console.info('MetricDashboard', props)
-  return <div className="metric-stacks-grid">{metricCategories}</div>
+  return <div className="metric-stacks-grid">{categories}</div>
 }
 
 export default metricDashboard

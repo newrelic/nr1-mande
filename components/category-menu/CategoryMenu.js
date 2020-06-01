@@ -8,23 +8,29 @@ const CategoryMenu = props => {
     accountId,
     threshold,
     duration,
+    metricDefs,
+    metricCategories,
     selectedStack,
     toggleMetric,
     toggleDetails,
   } = props
 
-  const getMetrics = config => {
+  const getMetrics = category => {
+    const categoryMetricDefs = metricDefs.filter(
+      def => category === def.category
+    )
+
     const metrics =
-      config.metrics &&
-      config.metrics.map((metric, idx) => {
+      categoryMetricDefs &&
+      categoryMetricDefs.map((metricDef, idx) => {
         return (
-          <React.Fragment key={metric.query + idx}>
-            {metric.query && (
+          <React.Fragment key={metricDef.def.title + idx}>
+            {metricDef && (
               <li>
                 <Metric
                   classes="metric minified"
                   accountId={accountId}
-                  metric={metric}
+                  metric={metricDef}
                   duration={duration}
                   threshold={threshold}
                   minify={true}
@@ -40,9 +46,9 @@ const CategoryMenu = props => {
   }
 
   const renderMenuItems = () => {
-    return metricConfigs.map((config, idx) => {
-      const isActive = selectedStack && selectedStack.title === config.title
-      const metrics = getMetrics(config)
+    return metricCategories.map((category, idx) => {
+      const isActive = selectedStack && selectedStack.title === category
+      const metrics = getMetrics(category)
 
       return (
         <span key={idx} className="category-menu-item-content-container">
@@ -56,9 +62,9 @@ const CategoryMenu = props => {
           >
             <div
               className="category-menu-item-label"
-              onClick={() => toggleDetails(config.title)}
+              onClick={() => toggleDetails(category)}
             >
-              <StackItem>{config.title}</StackItem>
+              <StackItem>{category}</StackItem>
             </div>
             <StackItem className="category-menu-item-right-side">
               <Stack
@@ -71,7 +77,7 @@ const CategoryMenu = props => {
                 <StackItem>
                   <div
                     className="category-menu-item-icon"
-                    onClick={() => toggleDetails(config.title)}
+                    onClick={() => toggleDetails(category)}
                   >
                     <Icon
                       type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}

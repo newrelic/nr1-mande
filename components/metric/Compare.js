@@ -16,7 +16,7 @@ const compare = props => {
     },
   }
 
-  const changeClass = props.change()
+  const changeClass = props.change
   const classes = ['compareTo', changeClass]
   if (changeClass !== 'noChange') {
     const invert = props.invert ? props.invert : false

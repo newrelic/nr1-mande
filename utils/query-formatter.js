@@ -88,6 +88,8 @@ const isStringValue = el => {
 }
 
 export const formatFilters = filters => {
+  if (!filters || filters.length === 0) return
+
   let attributeMap = new Map()
   for (let filter of filters) {
     const entries = attributeMap.get(filter.attribute)
@@ -112,8 +114,8 @@ export const formatFilters = filters => {
     }
   }
 
-  console.debug(`filterNrql.filters ${JSON.stringify(singleEscapedFilters)}`)
-  console.debug(`filterNrql.filters ${JSON.stringify(doubleEscapedFilters)}`)
+  // console.debug(`filterNrql.filters ${JSON.stringify(singleEscapedFilters)}`)
+  // console.debug(`filterNrql.filters ${JSON.stringify(doubleEscapedFilters)}`)
 
   return {
     single: singleEscapedFilters.join(' '),

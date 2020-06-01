@@ -208,7 +208,10 @@
   right: -15px;
   width: 100%;
 
-  .metric-chart {
-    border: 1.5px solid #e3e4e4;
+  >.metric {
+    >.metric-chart {
+      border: 1.5px solid #e3e4e4;
+      height: 90px;
+    }
   }
 }

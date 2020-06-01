@@ -1,12 +1,27 @@
 import React from 'react'
-import { cloneDeep } from 'lodash'
 import { Stack, StackItem } from 'nr1'
+import { isEqual } from 'lodash'
 import { Metric } from '../metric/Metric'
-import FilterStack from '../metric-sidebar/MetricSidebar'
-import { formatFilters, formatFacets } from '../../utils/query-formatter'
+import { loadMetricsForConfig } from '../../utils/metric-data-loader'
 
 export default class MetricDetail extends React.Component {
+  state = {
+    metricDefs: [],
+  }
 
+  loadMetricData = async () => {
+    console.debug('>>>> metricDetail.loadMetricData')
+
+    const { accountId, duration, stack, activeFilters } = this.props
+    let metricDefs = await loadMetricsForConfig(
+      stack,
+      duration,
+      accountId,
+      activeFilters
+    )
+
+    this.setState({ metricDefs })
+  }
   detailView = (filters, facetClause) => {
     const { stack, activeMetric } = this.props
     if (activeMetric && stack.detailView)
@@ -15,9 +30,65 @@ export default class MetricDetail extends React.Component {
     return <div />
   }
 
+  async componentDidMount() {
+    console.debug('**** metricDetail.componentDidMount')
+
+    await this.loadMetricData()
+
+    const { stack, metricRefreshInterval } = this.props
+    this.interval = setInterval(async () => {
+      console.debug('**** metricDetail.interval reset metrics to loading')
+
+      let loadingMetrics = []
+      loadingMetrics = loadingMetrics.concat(
+        stack.metrics.map(metric => {
+          return { def: metric, category: stack.title, loading: true }
+        })
+      )
+
+      this.setState({ metricDefs: loadingMetrics })
+
+      console.debug('**** metricDetail.interval reset metrics to loaded')
+      await this.loadMetricData()
+    }, metricRefreshInterval)
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.props, nextProps)) {
+      console.debug('**** metricDetail.componentShouldUpdate props mismatch')
+      return true
+    }
+
+    if (!isEqual(this.state, nextState)) {
+      console.debug('**** metricDetail.componentShouldUpdate state mismatch')
+      return true
+    }
+
+    return false
+  }
+
+  async componentDidUpdate(prevProps) {
+    console.debug('**** metricDetail.componentDidUpdate')
+
+    if (
+      !isEqual(prevProps.activeFilters, this.props.activeFilters) ||
+      prevProps.duration !== this.props.duration ||
+      prevProps.stack !== this.props.stack ||
+      prevProps.accountId !== this.props.accountId
+    ) {
+      console.debug(
+        '**** metricDetail.componentDidUpdate triggering data refresh'
+      )
+      await this.loadMetricData()
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
+  }
+
   render() {
     const {
-      stack,
       accountId,
       duration,
       threshold,
@@ -26,37 +97,32 @@ export default class MetricDetail extends React.Component {
       activeFilters,
       facets,
     } = this.props
+    const { metricDefs } = this.state
 
-    const filters = formatFilters(activeFilters)
-    const facetClause = formatFacets(facets)
+    console.debug('**** metricDetail.render')
+    console.debug('**** metricDetail.render >>>>> props', this.props)
 
     const metrics =
-      stack.metrics &&
-      stack.metrics
-        .map(metric => {
-          return [...Array(stack.metrics)].map((_, idx) => {
-            return (
-              <React.Fragment key={metric.title + idx}>
-                {metric.query && (
-                  <StackItem className="metric maximized">
-                    <Metric
-                      accountId={accountId}
-                      metric={metric}
-                      duration={duration}
-                      threshold={threshold}
-                      selected={activeMetric === metric.title}
-                      click={toggleMetric}
-                      filters={filters}
-                    />
-                  </StackItem>
-                )}
-              </React.Fragment>
-            )
-          })
-        })
-        .reduce((arr, val) => {
-          return arr.concat(val)
-        }, [])
+      metricDefs &&
+      metricDefs.map((metricDef, idx) => {
+        return (
+          <React.Fragment key={metricDef.def.title + idx}>
+            {metricDef && (
+              <StackItem className="metric maximized">
+                <Metric
+                  accountId={accountId}
+                  metric={metricDef}
+                  duration={duration}
+                  threshold={threshold}
+                  selected={activeMetric === metricDef.def.title}
+                  click={toggleMetric}
+                  filters={activeFilters}
+                />
+              </StackItem>
+            )}
+          </React.Fragment>
+        )
+      })
 
     return (
       <Stack className="detail-container">
@@ -67,7 +133,7 @@ export default class MetricDetail extends React.Component {
         >
           <StackItem className="detail-kpis">{metrics}</StackItem>
           <StackItem className="detail-main">
-            {this.detailView(filters, facetClause)}
+            {this.detailView(activeFilters, facets)}
           </StackItem>
         </Stack>
       </Stack>

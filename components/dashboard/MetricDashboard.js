@@ -17,6 +17,8 @@ const metricDashboard = props => {
 
   const getMetricCategory = (key, category) => {
     const metrics = getMetrics(category)
+    const hasMetrics = metrics && metrics.length > 0
+
     return (
       <Stack
         key={key}
@@ -24,9 +26,9 @@ const metricDashboard = props => {
         gapType={Stack.GAP_TYPE.MEDIUM}
         className="metricStack"
       >
-        <div className={'metricStack__title'}>
+        <div className={`metricStack__title ${!hasMetrics ? 'empty' : ''}`}>
           <div
-            onClick={() => toggleDetails(category)}
+            onClick={metrics && metrics.length > 0 ? () => toggleDetails(category) : () => null}
             className="title-content"
           >
             {category}

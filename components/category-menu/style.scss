@@ -45,8 +45,11 @@
   color: #464E4E;
   font-size: 14px;
 
+  &.empty:hover {
+    background-color: white;
+  }
+
   &:hover {
-    // cursor: pointer;
     background-color: #fafbfb;
   }
 

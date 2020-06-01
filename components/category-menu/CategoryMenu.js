@@ -49,20 +49,24 @@ const CategoryMenu = props => {
     return metricCategories.map((category, idx) => {
       const isActive = selectedStack && selectedStack.title === category
       const metrics = getMetrics(category)
+      const hasMetrics = metrics && metrics.length > 0
 
+      console.debug('categoryMeun.renderMenuItems metrics', metrics)
       return (
         <span key={idx} className="category-menu-item-content-container">
           <Stack
             fullWidth
             className={`category-menu-item-content ${
-              isActive ? 'active-menu-item' : ''
-              }`}
+              isActive ? 'active-menu-item' : !hasMetrics ? 'empty' : ''
+            }`}
             directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
             verticalType={Stack.VERTICAL_TYPE.CENTER}
           >
             <div
-              className="category-menu-item-label"
-              onClick={() => toggleDetails(category)}
+              className={`category-menu-item-label ${
+                !hasMetrics ? 'empty' : ''
+              }`}
+              onClick={hasMetrics ? () => toggleDetails(category) : () => null}
             >
               <StackItem>{category}</StackItem>
             </div>
@@ -76,8 +80,12 @@ const CategoryMenu = props => {
                 </StackItem>
                 <StackItem>
                   <div
-                    className="category-menu-item-icon"
-                    onClick={() => toggleDetails(category)}
+                    className={`category-menu-item-icon ${
+                      !hasMetrics ? 'empty' : ''
+                    }`}
+                    onClick={
+                      hasMetrics ? () => toggleDetails(category) : () => null
+                    }
                   >
                     <Icon
                       type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_RIGHT}
@@ -123,15 +131,15 @@ const CategoryMenu = props => {
           </StackItem>
         </span>
       ) : (
-          <Stack
-            className="category-menu-title"
-            fullWidth
-            directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
-            verticalType={Stack.VERTICAL_TYPE.CENTER}
-          >
-            <StackItem>Currently viewing dashboard</StackItem>
-          </Stack>
-        )}
+        <Stack
+          className="category-menu-title"
+          fullWidth
+          directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+          verticalType={Stack.VERTICAL_TYPE.CENTER}
+        >
+          <StackItem>Currently viewing dashboard</StackItem>
+        </Stack>
+      )}
       <StackItem className="category-menu-items">{renderMenuItems()}</StackItem>
     </Stack>
   )

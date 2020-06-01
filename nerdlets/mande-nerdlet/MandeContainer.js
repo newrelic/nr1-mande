@@ -62,10 +62,6 @@ export default class MandeContainer extends React.Component {
     return accounts
   }
 
-  roundToTwoDigits = value => {
-    return Math.round(value * 100) / 100
-  }
-
   onChangeAccount = value => {
     this.setState({ accountId: value })
   }

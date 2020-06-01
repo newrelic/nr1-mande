@@ -100,7 +100,6 @@ export default class MetricDetail extends React.Component {
     const { metricDefs } = this.state
 
     console.debug('**** metricDetail.render')
-    console.debug('**** metricDetail.render >>>>> props', this.props)
 
     const metrics =
       metricDefs &&

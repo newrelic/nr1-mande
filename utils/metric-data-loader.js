@@ -48,9 +48,9 @@ export const loadMetricsForConfig = async (
 export const loadMetric = async (metric, duration, accountId, filters) => {
   let nrql = metric.query.nrql + duration.since + duration.compare
 
-  if (filters && filters.length > 0) nrql = nrql + filters.double
+  if (filters) nrql = nrql + filters.double
 
-  // console.debug('>>>> metric-data-loader.loadMetric nrql', nrql)
+  // console.debug(`>>>> metric-data-loader.loadMetric ${metric.title} nrql ${nrql}`)
 
   const query = `{
       actor {
@@ -71,7 +71,7 @@ export const loadMetric = async (metric, duration, accountId, filters) => {
   }
 
   if (data) {
-    // console.debug('>>>> metric-data-loader data', data)
+    // console.debug(`>>>> metric-data-loader ${metric.title} data`, data)
     let current = data.actor.account.nrql.results[0][metric.query.lookup]
     let previous = data.actor.account.nrql.results[1][metric.query.lookup]
 

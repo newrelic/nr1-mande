@@ -1,5 +1,5 @@
 import React from 'react'
-import { Stack, StackItem, Link } from 'nr1'
+import { Stack, HeadingText } from 'nr1'
 import { Metric, BlankMetric } from '../metric/Metric'
 
 const metricDashboard = props => {
@@ -15,6 +15,16 @@ const metricDashboard = props => {
 
   console.debug('**** metricDashboard.render')
 
+  const getEmptyCategoryContents = title => {
+    return (
+      <div className="empty-state">
+        <div className="empty-state-desc">
+          We don't have any data yet for {title}
+        </div>
+      </div>
+    )
+  }
+
   const getMetricCategory = (key, category) => {
     const metrics = getMetrics(category)
     const hasMetrics = metrics && metrics.length > 0
@@ -28,13 +38,20 @@ const metricDashboard = props => {
       >
         <div className={`metricStack__title ${!hasMetrics ? 'empty' : ''}`}>
           <div
-            onClick={metrics && metrics.length > 0 ? () => toggleDetails(category) : () => null}
+            onClick={
+              metrics && metrics.length > 0
+                ? () => toggleDetails(category)
+                : () => null
+            }
             className="title-content"
           >
             {category}
           </div>
         </div>
-        <div className="metric-block">{!metrics ? <div /> : metrics}</div>
+        <React.Fragment>
+          {hasMetrics && <div className="metric-block">{metrics}</div>}
+          {!hasMetrics && getEmptyCategoryContents(category)}
+        </React.Fragment>
       </Stack>
     )
   }
@@ -63,15 +80,6 @@ const metricDashboard = props => {
           </React.Fragment>
         )
       })
-
-    if (!metrics && threshold === 1)
-      metrics = (
-        <React.Fragment>
-          <StackItem className={'metric maximized'}>
-            <BlankMetric minified={false} />
-          </StackItem>
-        </React.Fragment>
-      )
 
     return metrics
   }

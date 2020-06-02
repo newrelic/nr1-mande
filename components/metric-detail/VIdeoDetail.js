@@ -139,6 +139,7 @@ const videoDetail = props => {
                     <div className="chart-title">
                       {config.title}
                       <div className="chart-subtitle">{formattedDuration}</div>
+                      <div className="chart-title-tooltip">{config.title}</div>
                     </div>
                     <div className={'detail-chart ' + config.chartSize}>
                       {getChart(config)}

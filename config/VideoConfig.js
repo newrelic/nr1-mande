@@ -85,7 +85,7 @@ export default {
     {
       title: 'Player Ready (Seconds)',
       threshold: {
-        critical: 10,
+        critical: 6.5,
         warning: 5,
       },
       query: {
@@ -94,7 +94,7 @@ export default {
       },
       detailConfig: [
         {
-          nrql: `SELECT (filter(uniqueCount(viewId), WHERE timeSinceLoad > 10)/count(*)) * 100 as '% Impact' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'PLAYER_READY'`,
+          nrql: `SELECT (filter(uniqueCount(viewId), WHERE timeSinceLoad > 6.5)/count(*)) * 100 as '% Impact' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'PLAYER_READY'`,
           columnStart: 1,
           columnEnd: 4,
           chartSize: 'small',
@@ -156,6 +156,10 @@ export default {
     },
     {
       title: 'Video Start Failure (%)',
+      threshold: {
+        critical: 2,
+        warning: 1,
+      },
       query: {
         nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(count(*), where actionName = 'CONTENT_ERROR' and contentPlayhead = 0) / filter(count(*), where actionName = 'CONTENT_REQUEST') * 100 as 'result'`,
         lookup: 'result',
@@ -205,8 +209,8 @@ export default {
     {
       title: 'In-Stream Error Ratio (%)',
       threshold: {
-        critical: 1,
-        warning: 0.5,
+        critical: 0.15,
+        warning: 0.1,
       },
       query: {
         nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(count(*), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(count(*), where actionName = 'CONTENT_REQUEST') * 100 as 'result'`,
@@ -258,8 +262,8 @@ export default {
     {
       title: 'Join Time Since Requested (Median)',
       threshold: {
-        critical: 5,
-        warning: 3,
+        critical: 4,
+        warning: 3.5,
       },
       query: {
         nrql: `SELECT percentile(timeSinceRequested/1000, 50) as 'percentile' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START'`,
@@ -357,6 +361,10 @@ export default {
     },
     {
       title: 'Rebuffering Ratio (%)',
+      threshold: {
+        critical: 2.12,
+        warning: 2,
+      },
       query: {
         nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0) / filter(sum(playtimeSinceLastEvent), WHERE contentPlayhead is not null) * 100 as 'result'`,
         lookup: 'result',
@@ -415,6 +423,10 @@ export default {
     },
     {
       title: 'Average Bitrate (mbps)',
+      threshold: {
+        critical: 4,
+        warning: 3.5,
+      },
       query: {
         nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT average(contentBitrate)/1000000 as 'result' where contentBitrate is not null `,
         lookup: 'result',
@@ -463,6 +475,10 @@ export default {
     },
     {
       title: 'Interruption Ratio (%)',
+      threshold: {
+        critical: 23,
+        warning: 20,
+      },
       query: {
         nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and contentPlayhead > 0) / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as 'result'`,
         lookup: 'result',

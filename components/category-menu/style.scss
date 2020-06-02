@@ -89,14 +89,17 @@ div[class*='wnd-StackItem'].category-menu-items {
 }
 
 .category-menu-item-label {
-  @extend .category-menu-item-content-base;
-  cursor: pointer;
   width: 100%;
 }
 
+.category-menu-item-label,
 .category-menu-item-icon {
   @extend .category-menu-item-content-base;
   cursor: pointer;
+
+  &.empty {
+    cursor: default;
+  }
 }
 
 .minified-metrics {

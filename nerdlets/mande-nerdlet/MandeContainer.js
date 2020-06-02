@@ -273,7 +273,7 @@ export default class MandeContainer extends React.Component {
     return false
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     console.debug('**** mandeContainer.componentDidUpdate')
 
     const {
@@ -304,6 +304,24 @@ export default class MandeContainer extends React.Component {
         selectedMetric,
         selectedStack: selectedStack ? selectedStack.title : null,
       })
+    }
+
+    const { timeRange } = this.props.launcherUrlState
+    const prevTimeRange = prevProps.launcherUrlState.timeRange
+
+    if (
+      prevTimeRange.begin_time !== timeRange.begin_time ||
+      prevTimeRange.end_time !== timeRange.end_time ||
+      prevTimeRange.duration !== timeRange.duration
+    ) {
+      const duration = formatSinceAndCompare(timeRange)
+      let metricData = await loadMetricsForConfigs(
+        metricConfigs,
+        duration,
+        accountId,
+        null
+      )
+      this.setState({ metricData })
     }
   }
 

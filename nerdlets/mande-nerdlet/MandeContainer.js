@@ -36,7 +36,7 @@ export default class MandeContainer extends React.Component {
       threshold: 'All',
       selectedMetric: null,
       selectedStack: null,
-      activeAttributes: [],
+      activeFilters: [],
       facets: [],
       showFacetSidebar: true,
       metricData: [],
@@ -89,9 +89,20 @@ export default class MandeContainer extends React.Component {
         if (metricFound && metricFound.length > 0) return config
       })
 
-      if (!init)
-        this.setState({ selectedMetric: selected, selectedStack: stack[0] })
-      else return stack[0]
+      const metricStack = stack[0]
+      const currentStack = this.state.selectedStack
+
+      if (!init) {
+        if (currentStack && currentStack.title !== metricStack.title)
+          this.setState({
+            selectedMetric: selected,
+            selectedStack: metricStack,
+            activeFilters: [],
+            facets: [],
+            showFacetSidebar: true,
+          })
+        else this.setState({ selectedMetric: selected })
+      } else return stack[0]
     }
   }
 
@@ -100,11 +111,23 @@ export default class MandeContainer extends React.Component {
     const currentStack = this.state.selectedStack
 
     if (currentStack && currentStack.title === stackTitle) {
-      this.setState({ selectedMetric: null, selectedStack: null })
+      this.setState({
+        selectedMetric: null,
+        selectedStack: null,
+        activeFilters: [],
+        facets: [],
+        showFacetSidebar: true,
+      })
     } else {
       const stack = metricConfigs.filter(config => config.title === stackTitle)
       if (!init)
-        this.setState({ selectedMetric: null, selectedStack: stack[0] })
+        this.setState({
+          selectedMetric: null,
+          selectedStack: stack[0],
+          activeFilters: [],
+          facets: [],
+          showFacetSidebar: true,
+        })
       else return stack[0]
     }
   }
@@ -114,14 +137,14 @@ export default class MandeContainer extends React.Component {
     this.setState({ showFacetSidebar: !showFacetSidebar })
   }
 
-  onAttributeToggle = (attribute, value, add) => {
+  onSelectFilter = (attribute, value, add) => {
     let clonedActiveAttributes = []
-    if (this.state.activeAttributes)
-      clonedActiveAttributes = cloneDeep(this.state.activeAttributes)
+    if (this.state.activeFilters)
+      clonedActiveAttributes = cloneDeep(this.state.activeFilters)
 
     if (add) {
       clonedActiveAttributes.push({ attribute, value })
-      this.setState({ activeAttributes: clonedActiveAttributes })
+      this.setState({ activeFilters: clonedActiveAttributes })
       return
     }
 
@@ -130,11 +153,11 @@ export default class MandeContainer extends React.Component {
       updatedActiveAttributes = clonedActiveAttributes.filter(
         active => !(active.attribute === attribute && active.value === value)
       )
-      this.setState({ activeAttributes: updatedActiveAttributes })
+      this.setState({ activeFilters: updatedActiveAttributes })
     }
   }
 
-  onFacetToggle = (attribute, add) => {
+  onSelectFacet = (attribute, add) => {
     const clonedFacets = [...this.state.facets]
 
     if (add) {
@@ -216,8 +239,8 @@ export default class MandeContainer extends React.Component {
       let savedStack = selectedMetric
         ? this.onToggleMetric(selectedMetric, true)
         : selectedStack
-          ? this.onToggleDetailView(selectedStack, true)
-          : null
+        ? this.onToggleDetailView(selectedStack, true)
+        : null
       this.setState({
         accountId,
         threshold,
@@ -348,9 +371,9 @@ export default class MandeContainer extends React.Component {
   }
 
   renderSelectedSidebar = facet => {
-    const { facets, activeAttributes } = this.state
-    const selected = facet ? facets : activeAttributes
-    const toggle = facet ? this.onFacetToggle : this.onAttributeToggle
+    const { facets, activeFilters } = this.state
+    const selected = facet ? facets : activeFilters
+    const toggle = facet ? this.onSelectFacet : this.onSelectFilter
 
     return <Selected showFacets={facet} selected={selected} toggle={toggle} />
   }
@@ -359,7 +382,7 @@ export default class MandeContainer extends React.Component {
     const {
       showFacetSidebar,
       facets,
-      activeAttributes,
+      activeFilters,
       accountId,
       selectedStack,
     } = this.state
@@ -368,10 +391,8 @@ export default class MandeContainer extends React.Component {
       <React.Fragment>
         <MetricSidebar
           showFacets={showFacetSidebar}
-          selected={showFacetSidebar ? facets : activeAttributes}
-          toggle={
-            showFacetSidebar ? this.onFacetToggle : this.onAttributeToggle
-          }
+          selected={showFacetSidebar ? facets : activeFilters}
+          toggle={showFacetSidebar ? this.onSelectFacet : this.onSelectFilter}
           accountId={accountId}
           duration={duration}
           stack={selectedStack}
@@ -391,7 +412,7 @@ export default class MandeContainer extends React.Component {
       threshold,
       selectedMetric,
       selectedStack,
-      activeAttributes,
+      activeFilters,
       facets,
       showFacetSidebar,
       metricData,
@@ -399,7 +420,7 @@ export default class MandeContainer extends React.Component {
       metricRefreshInterval,
     } = this.state
 
-    const filters = formatFilters(activeAttributes)
+    const filters = formatFilters(activeFilters)
     const facetClause = formatFacets(facets)
 
     return (
@@ -521,7 +542,7 @@ export default class MandeContainer extends React.Component {
                   {this.renderSelectedSidebar(true)}
                 </React.Fragment>
               )}
-              {activeAttributes && activeAttributes.length > 0 && (
+              {activeFilters && activeFilters.length > 0 && (
                 <React.Fragment>
                   <StackItem className="sidebar-selected-title">
                     Filters

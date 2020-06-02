@@ -51,7 +51,6 @@ const CategoryMenu = props => {
       const metrics = getMetrics(category)
       const hasMetrics = metrics && metrics.length > 0
 
-      console.debug('categoryMeun.renderMenuItems metrics', metrics)
       return (
         <span key={idx} className="category-menu-item-content-container">
           <Stack

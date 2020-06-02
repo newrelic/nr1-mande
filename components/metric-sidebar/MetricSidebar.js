@@ -66,8 +66,14 @@ export default class MetricSidebar extends React.Component {
   // }
 
   componentDidMount() {
-    const { active } = this.props
-    if (!active) {
+    const categories = this.getCategories()
+    const eventTypes = this.getEventTypes()
+    this.setState({ categories, eventTypes })
+  }
+
+  componentDidUpdate(prevProps) {
+    console.debug('**** metricSidebar.componentDidUpdate')
+    if (prevProps.stack !== this.props.stack) {
       const categories = this.getCategories()
       const eventTypes = this.getEventTypes()
       this.setState({ categories, eventTypes })

@@ -94,12 +94,12 @@ export default {
       },
       detailConfig: [
         {
-          nrql: `SELECT (filter(uniqueCount(viewId), WHERE timeSinceLoad > 6.5)/count(*)) * 100 as '% Impact' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'PLAYER_READY'`,
+          nrql: `SELECT (filter(uniqueCount(viewId), WHERE timeSinceLoad > 6.5)/count(*)) * 100 as '%' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'PLAYER_READY'`,
           columnStart: 1,
           columnEnd: 4,
           chartSize: 'small',
           chartType: 'billboard',
-          title: 'Views above Threshold',
+          title: 'Views above Threshold (6.5s)',
           useSince: true,
         },
         {
@@ -166,12 +166,12 @@ export default {
       },
       detailConfig: [
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead = 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '% Impact' `,
+          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead = 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
           chartType: 'billboard',
-          title: 'Views above Threshold',
+          title: 'Views above Threshold (2%)',
           useSince: true,
         },
         {
@@ -218,12 +218,12 @@ export default {
       },
       detailConfig: [
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '% Impact' `,
+          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
           chartType: 'billboard',
-          title: 'Views above Threshold',
+          title: 'Views above Threshold (.15%)',
           useSince: true,
         },
         {
@@ -271,12 +271,12 @@ export default {
       },
       detailConfig: [
         {
-          nrql: `SELECT filter(uniqueCount(viewId), WHERE timeSinceRequested > 4000) / uniqueCount(viewId) * 100 as '% Impact' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START' `,
+          nrql: `SELECT filter(uniqueCount(viewId), WHERE timeSinceRequested > 4000) / uniqueCount(viewId) * 100 as '%' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
           chartType: 'billboard',
-          title: 'Views above Threshold',
+          title: 'Views above Threshold (4s)',
           useSince: true,
         },
         {
@@ -434,7 +434,7 @@ export default {
       title: 'Average Bitrate (mbps)',
       threshold: {
         critical: 4,
-        warning: 3.5,
+        warning: 4.5,
         type: 'below',
       },
       invertCompareTo: 'true',
@@ -444,12 +444,12 @@ export default {
       },
       detailConfig: [
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(uniqueCount(viewId), where contentBitrate <= 4000000) / uniqueCount(viewId) * 100 as '% Impact' WHERE contentBitrate is not null `,
+          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(uniqueCount(viewId), where contentBitrate <= 4000000) / uniqueCount(viewId) * 100 as '%' WHERE contentBitrate is not null `,
           columnStart: 1,
           columnEnd: 4,
           chartSize: 'small',
           chartType: 'billboard',
-          title: 'Views above Threshold',
+          title: 'Views below Threshold (4 mbsp)',
           useSince: true,
         },
         {
@@ -505,12 +505,12 @@ export default {
       },
       detailConfig: [
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START' and contentPlayhead > 0) / filter(uniqueCount(viewId), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '% Impact' `,
+          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START' and contentPlayhead > 0) / filter(uniqueCount(viewId), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
           chartType: 'billboard',
-          title: 'Views above Threshold',
+          title: 'Views above Threshold (23%)',
           useSince: true,
         },
         {

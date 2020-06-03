@@ -3,7 +3,7 @@ import React from 'react'
 import { ChartGroup, AreaChart, LineChart, Grid, GridItem } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
 
-const videoOverview = props => {
+const metricOverview = props => {
   const {
     accountId,
     duration: { since, compare, timeRange },
@@ -51,7 +51,7 @@ const videoOverview = props => {
     if (filters) query += filters.single
     if (facets) query += `FACET ${facets}`
 
-    // console.info('videoOverview.query', query)
+    // console.debug('metricOverview.query', query)
     return query
   }
 
@@ -105,4 +105,4 @@ const videoOverview = props => {
   )
 }
 
-export default videoOverview
+export default metricOverview

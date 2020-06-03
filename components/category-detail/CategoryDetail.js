@@ -2,15 +2,17 @@ import React from 'react'
 import { Stack, StackItem } from 'nr1'
 import { isEqual } from 'lodash'
 import { Metric } from '../metric/Metric'
+import MetricDetail from './MetricDetail'
+import MetricOverview from './MetricOverview'
 import { loadMetricsForConfig } from '../../utils/metric-data-loader'
 
-export default class MetricDetail extends React.Component {
+export default class CategoryDetail extends React.Component {
   state = {
     metricDefs: [],
   }
 
   loadMetricData = async () => {
-    console.debug('>>>> metricDetail.loadMetricData')
+    console.debug('>>>> categoryDetail.loadMetricData')
 
     const { accountId, duration, stack, activeFilters } = this.props
     let metricDefs = await loadMetricsForConfig(
@@ -22,22 +24,43 @@ export default class MetricDetail extends React.Component {
 
     this.setState({ metricDefs })
   }
+
   detailView = (filters, facetClause) => {
-    const { stack, activeMetric } = this.props
-    if (activeMetric && stack.detailView)
-      return stack.detailView(this.props, filters, facetClause)
-    if (stack.overview) return stack.overview(this.props, filters, facetClause)
-    return <div />
+    const { accountId, duration, stack, activeMetric } = this.props
+    let view = <div />
+    if (activeMetric)
+      view = (
+        <MetricDetail
+          accountId={accountId}
+          duration={duration}
+          stack={stack}
+          activeMetric={activeMetric}
+          filters={filters}
+          facets={facetClause}
+        />
+      )
+    else
+      view = (
+        <MetricOverview
+          accountId={accountId}
+          duration={duration}
+          filters={filters}
+          facets={facetClause}
+        />
+      )
+
+    console.debug('categoryDetail.detailView view', view)
+    return view
   }
 
   async componentDidMount() {
-    console.debug('**** metricDetail.componentDidMount')
+    console.debug('**** categoryDetail.componentDidMount')
 
     await this.loadMetricData()
 
     const { stack, metricRefreshInterval } = this.props
     this.interval = setInterval(async () => {
-      console.debug('**** metricDetail.interval reset metrics to loading')
+      console.debug('**** categoryDetail.interval reset metrics to loading')
 
       let loadingMetrics = []
       loadingMetrics = loadingMetrics.concat(
@@ -48,19 +71,19 @@ export default class MetricDetail extends React.Component {
 
       this.setState({ metricDefs: loadingMetrics })
 
-      console.debug('**** metricDetail.interval reset metrics to loaded')
+      console.debug('**** categoryDetail.interval reset metrics to loaded')
       await this.loadMetricData()
     }, metricRefreshInterval)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (!isEqual(this.props, nextProps)) {
-      console.debug('**** metricDetail.componentShouldUpdate props mismatch')
+      console.debug('**** categoryDetail.componentShouldUpdate props mismatch')
       return true
     }
 
     if (!isEqual(this.state, nextState)) {
-      console.debug('**** metricDetail.componentShouldUpdate state mismatch')
+      console.debug('**** categoryDetail.componentShouldUpdate state mismatch')
       return true
     }
 
@@ -68,7 +91,7 @@ export default class MetricDetail extends React.Component {
   }
 
   async componentDidUpdate(prevProps) {
-    console.debug('**** metricDetail.componentDidUpdate')
+    console.debug('**** categoryDetail.componentDidUpdate')
 
     if (
       !isEqual(prevProps.activeFilters, this.props.activeFilters) ||
@@ -77,7 +100,7 @@ export default class MetricDetail extends React.Component {
       prevProps.accountId !== this.props.accountId
     ) {
       console.debug(
-        '**** metricDetail.componentDidUpdate triggering data refresh'
+        '**** categoryDetail.componentDidUpdate triggering data refresh'
       )
       await this.loadMetricData()
     }
@@ -99,7 +122,7 @@ export default class MetricDetail extends React.Component {
     } = this.props
     const { metricDefs } = this.state
 
-    console.debug('**** metricDetail.render')
+    console.debug('**** categoryDetail.render')
 
     const metrics =
       metricDefs &&

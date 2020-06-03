@@ -1,5 +1,5 @@
-import VideoOverview from '../components/metric-detail/VideoOverview'
-import VideoDetail from '../components/metric-detail/VIdeoDetail'
+// import VideoOverview from '../components/category-detail/MetricOverview'
+// import VideoDetail from '../components/category-detail/MetricDetail'
 
 export default {
   title: 'Video',
@@ -59,28 +59,6 @@ export default {
       ],
     },
   ],
-  overview: (props, filters, facets) => {
-    return (
-      <VideoOverview
-        accountId={props.accountId}
-        duration={props.duration}
-        filters={filters}
-        facets={facets}
-      />
-    )
-  },
-  detailView: (props, filters, facets) => {
-    return (
-      <VideoDetail
-        accountId={props.accountId}
-        duration={props.duration}
-        stack={props.stack}
-        activeMetric={props.activeMetric}
-        filters={filters}
-        facets={facets}
-      />
-    )
-  },
   metrics: [
     {
       title: 'Player Ready (Seconds)',

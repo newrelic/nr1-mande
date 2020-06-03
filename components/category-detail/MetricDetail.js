@@ -16,8 +16,9 @@ import {
 } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
 import { formatFacets } from '../../utils/query-formatter'
+import { getHook } from '../../config/Hooks'
 
-const videoDetail = props => {
+const metricDetail = props => {
   const {
     accountId,
     duration: { since, compare, timeRange },
@@ -28,30 +29,6 @@ const videoDetail = props => {
   } = props
 
   const formattedDuration = dateFormatter(timeRange)
-
-  const clicks = [
-    {
-      name: 'openSession',
-      handler: ({ data, metadata }) => {
-        console.debug('data and metadata on click', data, metadata)
-
-        navigation.openStackedNerdlet({
-          id: 'video-session',
-          urlState: {
-            accountId,
-            session: metadata.name,
-            stackName: stack.title,
-          },
-        })
-      },
-    },
-  ]
-
-  const getClick = name => {
-    const click = clicks.filter(c => c.name === name)[0]
-    if (!click) return () => {}
-    else return click.handler
-  }
 
   const getQuery = config => {
     let query = config.nrql
@@ -90,7 +67,9 @@ const videoDetail = props => {
           <BarChart
             accountId={accountId}
             query={getQuery(config)}
-            onClickBar={getClick(config.click)}
+            onClickBar={
+              config.click ? getHook(config.click).bind(props) : () => null
+            }
           />
         )
       case 'billboard':
@@ -112,7 +91,9 @@ const videoDetail = props => {
           <ScatterChart
             accountId={accountId}
             query={getQuery(config)}
-            onClickScatter={getClick(config.click)}
+            onClickScatter={
+              config.click ? getHook(config.click).bind(props) : () => null
+            }
           />
         )
       default:
@@ -155,4 +136,4 @@ const videoDetail = props => {
   )
 }
 
-export default videoDetail
+export default metricDetail

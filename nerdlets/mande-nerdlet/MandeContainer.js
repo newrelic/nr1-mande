@@ -14,7 +14,7 @@ import {
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
 import MetricDashboard from '../../components/dashboard/MetricDashboard'
-import MetricDetail from '../../components/metric-detail/MetricDetail'
+import CategoryDetail from '../../components/category-detail/CategoryDetail'
 import Selected from '../../components/metric-sidebar/Selected'
 import metricConfigs from '../../config/MetricConfig'
 import {
@@ -493,7 +493,7 @@ export default class MandeContainer extends React.Component {
                 )}
                 {selectedStack && (
                   <StackItem grow>
-                    <MetricDetail
+                    <CategoryDetail
                       accountId={accountId}
                       duration={duration}
                       threshold={threshold}

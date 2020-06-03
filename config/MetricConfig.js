@@ -1,16 +1,15 @@
-import apiConfigs from '../config/ApiConfig'
-import clientConfigs from '../config/ClientConfig'
-import userConfigs from '../config/UserConfig'
-import videoConfigs from '../config/VideoConfig'
+import apiConfigs from './ApiConfig'
+import clientConfigs from './ClientConfig'
+import userConfigs from './UserConfig'
+import videoConfigs from './VideoConfig'
+import adConfigs from './AdConfig'
 
 export default [
   userConfigs,
   clientConfigs,
   apiConfigs,
   videoConfigs,
-  {
-    title: 'Ads',
-  },
+  adConfigs,
   {
     title: 'CDN',
   },

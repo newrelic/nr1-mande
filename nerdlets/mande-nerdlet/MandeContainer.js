@@ -92,8 +92,9 @@ export default class MandeContainer extends React.Component {
       const metricStack = stack[0]
       const currentStack = this.state.selectedStack
 
+      console.debug('mandeContainer.onToggleMetric >>>> metricStack vs currentStack', metricStack, currentStack)
       if (!init) {
-        if (currentStack && currentStack.title !== metricStack.title)
+        if (!currentStack || currentStack.title !== metricStack.title)
           this.setState({
             selectedMetric: selected,
             selectedStack: metricStack,

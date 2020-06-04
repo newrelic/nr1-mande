@@ -175,12 +175,12 @@ export default class MandeContainer extends React.Component {
 
   setupInterval = interval => {
     console.debug('**** mandeContainer.interval', interval)
-    const duration = formatSinceAndCompare(
-      this.props.launcherUrlState.timeRange
-    )
-    const { accountId } = this.state
-
     this.interval = setInterval(async () => {
+      const duration = formatSinceAndCompare(
+        this.props.launcherUrlState.timeRange
+      )
+      const { accountId } = this.state
+
       let metricData = []
       for (let config of metricConfigs) {
         if (config.metrics) {
@@ -239,8 +239,8 @@ export default class MandeContainer extends React.Component {
       let savedStack = selectedMetric
         ? this.onToggleMetric(selectedMetric, true)
         : selectedStack
-        ? this.onToggleDetailView(selectedStack, true)
-        : null
+          ? this.onToggleDetailView(selectedStack, true)
+          : null
       this.setState({
         accountId,
         threshold,

@@ -12,20 +12,19 @@ import {
   HeatmapChart,
   HistogramChart,
   PieChart,
-  navigation,
+  FunnelChart,
 } from 'nr1'
 import { dateFormatter } from '../../utils/date-formatter'
 import { formatFacets } from '../../utils/query-formatter'
 import { getHook } from '../../config/Hooks'
 
-const metricDetail = props => {
+const chartGrid = props => {
   const {
     accountId,
     duration: { since, compare, timeRange },
-    stack,
-    activeMetric,
     filters,
     facets,
+    chartDefs,
   } = props
 
   const formattedDuration = dateFormatter(timeRange)
@@ -86,6 +85,8 @@ const metricDetail = props => {
         return <PieChart accountId={accountId} query={getQuery(config)} />
       case 'line':
         return <LineChart accountId={accountId} query={getQuery(config)} />
+      case 'funnel':
+        return <FunnelChart accountId={accountId} query={getQuery(config)} />
       case 'scatter':
         return (
           <ScatterChart
@@ -101,29 +102,26 @@ const metricDetail = props => {
     }
   }
 
-  const metric = stack.metrics.filter(m => m.title === activeMetric)
-  const detailConfig = metric[0].detailConfig
-
   return (
     <ChartGroup>
       <div className="detail-grid">
-        {detailConfig && (
+        {chartDefs && (
           <Grid spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}>
-            {detailConfig.map((config, idx) => {
+            {chartDefs.map((chart, idx) => {
               return (
                 <GridItem
-                  key={config.title + idx}
-                  columnStart={config.columnStart}
-                  columnEnd={config.columnEnd}
+                  key={chart.title + idx}
+                  columnStart={chart.columnStart}
+                  columnEnd={chart.columnEnd}
                 >
                   <div className="chart-container">
                     <div className="chart-title">
-                      {config.title}
+                      {chart.title}
                       <div className="chart-subtitle">{formattedDuration}</div>
-                      <div className="chart-title-tooltip">{config.title}</div>
+                      <div className="chart-title-tooltip">{chart.title}</div>
                     </div>
-                    <div className={'detail-chart ' + config.chartSize}>
-                      {getChart(config)}
+                    <div className={'detail-chart ' + chart.chartSize}>
+                      {getChart(chart)}
                     </div>
                   </div>
                 </GridItem>
@@ -136,4 +134,4 @@ const metricDetail = props => {
   )
 }
 
-export default metricDetail
+export default chartGrid

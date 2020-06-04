@@ -1,6 +1,3 @@
-// import VideoOverview from '../components/category-detail/MetricOverview'
-// import VideoDetail from '../components/category-detail/MetricDetail'
-
 export default {
   title: 'Video',
   eventTypes: [
@@ -57,6 +54,59 @@ export default {
         ['osVersion', 'Platform'],
         ['errorMessage', 'Error'],
       ],
+    },
+  ],
+  overviewConfig: [
+    {
+      nrql: `SELECT filter(average(timeSinceLoad), WHERE actionName = 'CONTENT_REQUEST') as 'Time to Content Request', 
+      average(timeSinceLoad) as 'Time to Player Ready',
+      filter(average(timeSinceRequested)/1000, WHERE actionName='CONTENT_START') as 'Time To First Frame'
+      FROM PageAction TIMESERIES `,
+      columnStart: 1,
+      columnEnd: 6,
+      chartSize: 'medium',
+      chartType: 'area',
+      title: 'Content Request vs Player Ready vs Video Start (Average in Seconds)',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT filter(count(*), WHERE actionName = 'CONTENT_REQUEST') as 'Total Requests', 
+      filter(count(*), WHERE actionName = 'CONTENT_START') as 'Total Starts' 
+      FROM PageAction TIMESERIES `,
+      columnStart: 7,
+      columnEnd: 12,
+      chartSize: 'medium',
+      chartType: 'line',
+      title: 'Total Requests vs Total Starts',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT filter(count(*), WHERE actionName = 'CONTENT_ERROR') / filter(count(*), WHERE actionName = 'CONTENT_REQUEST') as 'Video Errors', 
+      filter(count(*), WHERE actionName = 'CONTEN_ERROR' and contentPlayhead = 0) AS 'Failures Before Start' FROM PageAction, MobileVideo, RokuVideo TIMESERIES `,
+      columnStart: 1,
+      columnEnd: 4,
+      chartSize: 'medium',
+      chartType: 'area',
+      title: 'Video Errors and Failures Before Start',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and isInitialBuffering = 0) / filter(sum(playtimeSinceLastEvent), WHERE contentPlayhead is not null) as 'Rebuffer Ratio' FROM PageAction, MobileVideo, RokuVideo TIMESERIES `,
+      columnStart: 5,
+      columnEnd: 8,
+      chartSize: 'medium',
+      chartType: 'area',
+      title: 'Video Errors and Failures Before Start',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and isInitialBuffering = 0) / filter(sum(playtimeSinceLastEvent), WHERE contentPlayhead is not null) as 'Rebuffer Ratio' FROM PageAction, MobileVideo, RokuVideo TIMESERIES `,
+      columnStart: 9,
+      columnEnd: 12,
+      chartSize: 'medium',
+      chartType: 'area',
+      title: 'Interruption Ratio',
+      useSince: true,
     },
   ],
   metrics: [

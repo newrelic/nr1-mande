@@ -2,8 +2,7 @@ import React from 'react'
 import { Stack, StackItem } from 'nr1'
 import { isEqual } from 'lodash'
 import { Metric } from '../metric/Metric'
-import MetricDetail from './MetricDetail'
-import MetricOverview from './MetricOverview'
+import ChartGrid from './ChartGrid'
 import { loadMetricsForConfig } from '../../utils/metric-data-loader'
 
 export default class CategoryDetail extends React.Component {
@@ -28,24 +27,30 @@ export default class CategoryDetail extends React.Component {
   detailView = (filters, facetClause) => {
     const { accountId, duration, stack, activeMetric } = this.props
     let view = <div />
-    if (activeMetric)
+    if (activeMetric) {
+      const metric = stack.metrics.filter(m => m.title === activeMetric)
+      const detailConfig = metric[0].detailConfig
+
+      if (detailConfig)
+        view = (
+          <ChartGrid
+            accountId={accountId}
+            duration={duration}
+            stack={stack}
+            activeMetric={activeMetric}
+            filters={filters}
+            facets={facetClause}
+            chartDefs={detailConfig}
+          />
+        )
+    } else if (stack.overviewConfig)
       view = (
-        <MetricDetail
+        <ChartGrid
           accountId={accountId}
           duration={duration}
-          stack={stack}
-          activeMetric={activeMetric}
           filters={filters}
           facets={facetClause}
-        />
-      )
-    else
-      view = (
-        <MetricOverview
-          accountId={accountId}
-          duration={duration}
-          filters={filters}
-          facets={facetClause}
+          chartDefs={stack.overviewConfig}
         />
       )
 

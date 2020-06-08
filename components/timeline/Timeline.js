@@ -14,7 +14,7 @@ export default class Timeline extends Component {
       }
 
       const value = result.timestamp - prevEvent.timestamp
-      const sessionGroup = videoGroup(prevEvent.actionName)
+      const sessionGroup = videoGroup(result.actionName)
 
       eventStream.push({
         label: sessionGroup.timelineDisplay.label,

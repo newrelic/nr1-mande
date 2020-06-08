@@ -74,6 +74,7 @@ export const loadMetric = async (metric, duration, accountId, filters) => {
     // console.debug(`>>>> metric-data-loader ${metric.title} data`, data)
     let current = data.actor.account.nrql.results[0][metric.query.lookup]
     let previous = data.actor.account.nrql.results[1][metric.query.lookup]
+    // console.debug('>>>> metric-data-loader current vs previous', current, previous)
 
     if (metric.query.lookup === 'percentile') {
       current = Object.values(current)[0]

@@ -41,7 +41,7 @@ export default class MandeContainer extends React.Component {
       showFacetSidebar: true,
       metricData: [],
       metricCategories,
-      metricRefreshInterval: 60000,
+      metricRefreshInterval: 180000,
     }
   }
 

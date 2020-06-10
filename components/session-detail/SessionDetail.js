@@ -66,22 +66,6 @@ export default class SessionDetail extends React.PureComponent {
     )
   }
 
-  buildBlankKpiStack = numBlanks => {
-    const blanks = []
-    for (let i = 0; i < numBlanks; i++) {
-      blanks.push(
-        <StackItem
-          grow
-          key={'blank' + i}
-          className="sessionStackItem sessionSectionBase  blank"
-        >
-          <div />
-        </StackItem>
-      )
-    }
-    return blanks
-  }
-
   render() {
     const { session, stack } = this.props
 

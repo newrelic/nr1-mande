@@ -49,6 +49,7 @@ const groups = [
       'CONTENT_RESUME',
       'CONTENT_SEEK_START',
       'CONTENT_SEEK_END',
+      'CONTENT_DROPPED_FRAMES',
     ],
   },
   {
@@ -63,7 +64,7 @@ const groups = [
       color: '#cea3e6',
       label: 'Heartbeat',
     },
-    actionNames: ['CONTENT_HEARTBEAT','AD_HEARTBEAT'],
+    actionNames: ['CONTENT_HEARTBEAT', 'AD_HEARTBEAT'],
   },
   {
     name: 'ADS',
@@ -84,6 +85,11 @@ const groups = [
       'AD_END',
       'AD_PAUSE',
       'AD_RESUME',
+      'AD_BREAK_START',
+      'AD_BREAK_END',
+      'AD_CLICK',
+      'AD_SEEK_START',
+      'AD_SEEK_END',
     ],
   },
   {
@@ -126,7 +132,7 @@ const groups = [
       color: '#02acfa',
       label: 'Rendition',
     },
-    actionNames: ['CONTENT_RENDITION_CHANGE'],
+    actionNames: ['CONTENT_RENDITION_CHANGE', 'AD_RENDITION_CHANGE'],
   },
   {
     name: 'EXTERNAL',

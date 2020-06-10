@@ -2,6 +2,6 @@
   "schemaType": "LAUNCHER",
   "id": "mande-launcher",
   "description": "Understand the live performance of your video and ad streaming",
-  "displayName": "Media and Entertainment [v3]",
+  "displayName": "Media and Entertainment [demo]",
   "rootNerdletId": "mande-nerdlet"
 }

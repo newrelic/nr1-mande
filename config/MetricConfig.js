@@ -3,6 +3,7 @@ import clientConfigs from './ClientConfig'
 import userConfigs from './UserConfig'
 import videoConfigs from './VideoConfig'
 import adConfigs from './AdConfig'
+import sourceConfigs from './SourceConfig'
 
 export default [
   userConfigs,
@@ -19,7 +20,5 @@ export default [
   {
     title: 'Ingest/Encode',
   },
-  {
-    title: 'Content/Source',
-  },
+  sourceConfigs
 ]

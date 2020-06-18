@@ -235,13 +235,13 @@ export default {
       ],
     },
     {
-      title: 'In-Stream Error Ratio (%)',
+      title: '5xx Errors (Count)',
       threshold: {
-        critical: 0.15,
-        warning: 0.1,
+        critical: 5,
+        warning: 2,
       },
       query: {
-        nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(count(*), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(count(*), where actionName = 'CONTENT_REQUEST') * 100 as 'result'`,
+        nrql: `SELECT sum(provider.error5xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
         lookup: 'result',
       },
       detailConfig: [

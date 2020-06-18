@@ -183,13 +183,13 @@ export default {
       ],
     },
     {
-      title: 'Video Start Failure (%)',
+      title: '4xx Errors (Count)',
       threshold: {
-        critical: 2,
-        warning: 1,
+        critical: 10,
+        warning: 5,
       },
       query: {
-        nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(count(*), where actionName = 'CONTENT_ERROR' and contentPlayhead = 0) / filter(count(*), where actionName = 'CONTENT_REQUEST') * 100 as 'result'`,
+        nrql: `SELECT sum(provider.error4xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
         lookup: 'result',
       },
       detailConfig: [

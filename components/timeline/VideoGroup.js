@@ -49,6 +49,7 @@ const groups = [
       'CONTENT_RESUME',
       'CONTENT_SEEK_START',
       'CONTENT_SEEK_END',
+      'CONTENT_DROPPED_FRAMES',
     ],
   },
   {
@@ -84,6 +85,8 @@ const groups = [
       'AD_END',
       'AD_PAUSE',
       'AD_RESUME',
+      'AD_BREAK_START',
+      'AD_BREAK_END',
     ],
   },
   {

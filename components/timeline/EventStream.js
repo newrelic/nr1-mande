@@ -67,7 +67,7 @@ export default class EventStream extends React.Component {
                 <Moment format="MM/DD/YYYY" date={date} />
               </span>
               <span className="timeline-timestamp-time">
-                <Moment format="h:mm:ss a" date={date} />
+                <Moment format="h:mm:ss.SSS a" date={date} />
               </span>
             </div>
             <div className="timeline-item-dot"></div>

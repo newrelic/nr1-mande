@@ -4,6 +4,7 @@ import userConfigs from './UserConfig'
 import videoConfigs from './VideoConfig'
 import adConfigs from './AdConfig'
 import sourceConfigs from './SourceConfig'
+import ingestConfigs from './IngestConfig'
 
 export default [
   userConfigs,
@@ -17,8 +18,6 @@ export default [
   {
     title: 'Origin/Packaging',
   },
-  {
-    title: 'Ingest/Encode',
-  },
+  ingestConfigs,
   sourceConfigs
 ]

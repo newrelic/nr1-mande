@@ -401,13 +401,13 @@ export default {
       ],
     },
     {
-      title: '# of Objects (Avg)',
+      title: 'Ingest Failure Ratio (%)',
       threshold: {
         critical: 10,
-        warning: 8,
+        warning: 5,
       },
       query: {
-        nrql: `SELECT average(provider.numberOfObjects.Average) as 'result'from DatastoreSample WHERE provider.bucketName like '%source%'`,
+        nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'result' WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
         lookup: 'result',
       },
       detailConfig: [

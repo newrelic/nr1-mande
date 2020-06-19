@@ -239,13 +239,13 @@ export default {
       ],
     },
     {
-      title: '5xx Errors (Count)',
+      title: 'Ingests Failed (Count)',
       threshold: {
-        critical: 5,
-        warning: 2,
+        critical: 1,
+        warning: .5,
       },
       query: {
-        nrql: `SELECT sum(provider.error5xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+        nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
         lookup: 'result',
       },
       detailConfig: [

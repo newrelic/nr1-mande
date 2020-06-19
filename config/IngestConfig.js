@@ -111,7 +111,7 @@ export default {
   ],
   metrics: [
     {
-      title: 'Ingests Initiated',
+      title: 'Ingests Initiated (Count)',
       threshold: {
         critical: 3,
         warning: 5,
@@ -185,13 +185,15 @@ export default {
       ],
     },
     {
-      title: '4xx Errors (Count)',
+      title: 'Ingests Succeeded (Count)',
       threshold: {
-        critical: 10,
+        critical: 3,
         warning: 5,
+        type: 'below',
       },
+      invertCompareTo: 'true',
       query: {
-        nrql: `SELECT sum(provider.error4xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+        nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
         lookup: 'result',
       },
       detailConfig: [

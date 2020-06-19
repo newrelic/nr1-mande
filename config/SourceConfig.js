@@ -288,7 +288,7 @@ export default {
       ],
     },
     {
-      title: 'Join Time Since Requested (Median)',
+      title: 'All Requests',
       threshold: {
         critical: 4,
         warning: 3.5,
@@ -397,13 +397,13 @@ export default {
       ],
     },
     {
-      title: 'Rebuffering Ratio (%)',
+      title: '# of Objects (Avg)',
       threshold: {
-        critical: 2.12,
-        warning: 2,
+        critical: 10,
+        warning: 8,
       },
       query: {
-        nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead > 0) / filter(sum(playtimeSinceLastEvent), WHERE contentPlayhead is not null) * 100 as 'result'`,
+        nrql: `SELECT average(provider.numberOfObjects.Average) as 'result'from DatastoreSample WHERE provider.bucketName like '%source%'`,
         lookup: 'result',
       },
       detailConfig: [

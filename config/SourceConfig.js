@@ -459,15 +459,13 @@ export default {
       ],
     },
     {
-      title: 'Average Bitrate (mbps)',
+      title: 'First Byte Latency (ms)',
       threshold: {
-        critical: 4,
-        warning: 4.5,
-        type: 'below',
+        critical: 150,
+        warning: 100,
       },
-      invertCompareTo: 'true',
       query: {
-        nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT average(contentBitrate)/1000000 as 'result' where contentBitrate is not null `,
+        nrql: `SELECT average(provider.firstByteLatency.Average) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
         lookup: 'result',
       },
       detailConfig: [

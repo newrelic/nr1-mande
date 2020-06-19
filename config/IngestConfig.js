@@ -111,13 +111,15 @@ export default {
   ],
   metrics: [
     {
-      title: 'Bucket Size (Avg MB)',
+      title: 'Ingests Initiated',
       threshold: {
-        critical: 500,
-        warning: 300,
+        critical: 3,
+        warning: 5,
+        type: 'below',
       },
+      invertCompareTo: 'true',
       query: {
-        nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'result' from DatastoreSample WHERE provider.bucketName like '%source%' and provider = 'S3Bucket'`,
+        nrql: `SELECT sum(provider.executionsStarted.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
         lookup: 'result',
       },
       detailConfig: [

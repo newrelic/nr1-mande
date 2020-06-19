@@ -459,7 +459,7 @@ export default {
       ],
     },
     {
-      title: 'First Byte Latency (ms)',
+      title: 'First Byte Latency - Avg (ms)',
       threshold: {
         critical: 150,
         warning: 100,
@@ -520,13 +520,13 @@ export default {
       ],
     },
     {
-      title: 'Interruption Ratio (%)',
+      title: 'Total Request Latency - Avg (ms)',
       threshold: {
-        critical: 23,
-        warning: 20,
+        critical: 200,
+        warning: 180,
       },
       query: {
-        nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and contentPlayhead > 0) / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as 'result'`,
+        nrql: `SELECT average(provider.totalRequestLatency.Average) as 'result' from DatastoreSample where provider='S3BucketRequests' where entityName like '%source%'`,
         lookup: 'result',
       },
       detailConfig: [

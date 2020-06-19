@@ -292,13 +292,13 @@ export default {
       ],
     },
     {
-      title: 'All Requests',
+      title: 'Ingest Time (s)',
       threshold: {
-        critical: 100,
-        warning: 80,
+        critical: 20,
+        warning: 10,
       },
       query: {
-        nrql: `SELECT sum(provider.allRequests.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+        nrql: `SELECT average(provider.executionTime.Average/1000) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='IngestWorkflow'`,
         lookup: 'result',
       },
       detailConfig: [

@@ -290,12 +290,12 @@ export default {
     {
       title: 'All Requests',
       threshold: {
-        critical: 4,
-        warning: 3.5,
+        critical: 100,
+        warning: 80,
       },
       query: {
-        nrql: `SELECT percentile(timeSinceRequested/1000, 50) as 'percentile' FROM PageAction, MobileVideo, RokuVideo WHERE actionName = 'CONTENT_START'`,
-        lookup: 'percentile',
+        nrql: `SELECT sum(provider.allRequests.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+        lookup: 'result',
       },
       detailConfig: [
         {

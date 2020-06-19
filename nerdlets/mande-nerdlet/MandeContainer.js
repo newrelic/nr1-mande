@@ -10,6 +10,7 @@ import {
   GridItem,
   Select,
   SelectItem,
+  Button,
 } from 'nr1'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
@@ -39,6 +40,7 @@ export default class MandeContainer extends React.Component {
       activeFilters: [],
       facets: [],
       showFacetSidebar: true,
+      showFindUser: false,
       metricData: [],
       metricCategories,
       metricRefreshInterval: 180000,
@@ -60,6 +62,34 @@ export default class MandeContainer extends React.Component {
     const { accounts } = data.actor
     console.debug('**** accounts loaded')
     return accounts
+  }
+
+  loadUserFlag = async (accountId, duration) => {
+    let userFound = false
+
+    const query = `{
+      actor {
+        account(id: ${accountId}) {
+          nrql(query: "FROM PageAction, MobileVideo, RokuVideo SELECT latest(userId) ${duration.since}") {
+            results
+          }
+        }
+      }
+    }`
+
+    const { data, errors } = await NerdGraphQuery.query({ query })
+
+    if (errors) {
+      console.error('error checking for userId', errors)
+      return false
+    }
+
+    if (data) {
+      console.debug('mandeContainer.loadUserFlag', data)
+      userFound = data.actor.account.nrql.results[0]['latest.userId'] !== null
+    }
+
+    return userFound
   }
 
   onChangeAccount = value => {
@@ -234,22 +264,25 @@ export default class MandeContainer extends React.Component {
       null
     )
 
+    const showFindUser = await this.loadUserFlag(accountId, duration)
+
     // reset all state if an accountId was saved, otherwise, just set the default accountId state
     if (savedState) {
       let savedStack = selectedMetric
         ? this.onToggleMetric(selectedMetric, true)
         : selectedStack
-          ? this.onToggleDetailView(selectedStack, true)
-          : null
+        ? this.onToggleDetailView(selectedStack, true)
+        : null
       this.setState({
         accountId,
         threshold,
         selectedMetric,
         selectedStack: savedStack,
         metricData,
+        showFindUser,
       })
     } else {
-      this.setState({ accountId, metricData })
+      this.setState({ accountId, metricData, showFindUser })
     }
 
     this.setupInterval(this.state.metricRefreshInterval)
@@ -321,7 +354,9 @@ export default class MandeContainer extends React.Component {
         accountId,
         null
       )
-      this.setState({ metricData })
+      const showFindUser = await this.loadUserFlag(accountId, duration)
+
+      this.setState({ metricData, showFindUser })
     }
   }
 
@@ -381,6 +416,11 @@ export default class MandeContainer extends React.Component {
                   </Select>
                 </Stack>
               </StackItem>
+              {this.state.showFindUser && (
+                <StackItem style={{ alignSelf: 'center', marginLeft: 'auto' }}>
+                  <Button type={Button.TYPE.PRIMARY}>Find User</Button>
+                </StackItem>
+              )}
             </Stack>
           </StackItem>
         </Stack>

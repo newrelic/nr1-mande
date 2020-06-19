@@ -1,5 +1,5 @@
 export default {
-  title: 'Source',
+  title: 'Ingest',
   eventTypes: [
     {
       event: 'Global',

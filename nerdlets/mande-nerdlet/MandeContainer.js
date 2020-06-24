@@ -11,6 +11,7 @@ import {
   Select,
   SelectItem,
   Button,
+  navigation,
 } from 'nr1'
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
@@ -90,6 +91,15 @@ export default class MandeContainer extends React.Component {
     }
 
     return userFound
+  }
+
+  onFindUserClick = () => {
+    navigation.openStackedNerdlet({
+      id: 'find-user',
+      urlState: {
+        accountId: this.state.accountId,
+      },
+    })
   }
 
   onChangeAccount = value => {
@@ -418,7 +428,12 @@ export default class MandeContainer extends React.Component {
               </StackItem>
               {this.state.showFindUser && (
                 <StackItem style={{ alignSelf: 'center', marginLeft: 'auto' }}>
-                  <Button type={Button.TYPE.PRIMARY}>Find User</Button>
+                  <Button
+                    type={Button.TYPE.PRIMARY}
+                    onClick={this.onFindUserClick}
+                  >
+                    Find User
+                  </Button>
                 </StackItem>
               )}
             </Stack>

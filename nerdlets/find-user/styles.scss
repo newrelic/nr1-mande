@@ -1,5 +1,45 @@
+@mixin defaultPanel {
+  background-color: #fff;
+  padding: 1rem;
+  border: 1px solid #e3e4e4;
+  box-shadow: 0 1px 3px 0 rgba(203, 226, 226, 0.34);
+}
+
+@mixin defaultContainer {
+  @include defaultPanel;
+  margin: auto;
+  width: 98%;
+}
+
 .header {
   margin-left: 16px;
   margin-top: 24px;
   margin-bottom: 24px;
+}
+
+.find-user-container {
+  height: 100%;
+}
+
+.search-bar-container {
+  @include defaultContainer;
+
+  .search-bar-header {
+    width: 100%;
+    padding-bottom: .5rem;
+  }
+  .search-bar-select {
+    width: 100%;
+  }
+}
+
+.empty-state-container {
+  height: 100%;
+  @include defaultContainer;
+
+  >.empty-state {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+  }
 }

@@ -290,11 +290,13 @@ export default {
       {
         title: 'All Requests',
         threshold: {
-          critical: 100,
-          warning: 80,
+          critical: 1000,
+          warning: 1250,
+          type: 'below',
         },
+        invertCompareTo: 'true',
         query: {
-          nrql: `SELECT sum(provider.allRequests.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+          nrql: `SELECT sum(provider.requests.Sum) as 'result' FROM LoadBalancerSample WHERE providerAccountId = '36376' and provider = 'CloudFrontDistribution'`,
           lookup: 'result',
         },
         detailConfig: [

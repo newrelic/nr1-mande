@@ -235,13 +235,13 @@ export default {
         ],
       },
       {
-        title: '5xx Errors (Count)',
+        title: 'Requests per Minute (Rate)',
         threshold: {
-          critical: 5,
-          warning: 2,
+          critical: 1,
+          warning: .05,
         },
         query: {
-          nrql: `SELECT sum(provider.error5xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+          nrql: `SELECT rate(sum(provider.requests.Sum), 5 minute) as 'result' FROM LoadBalancerSample WHERE providerAccountId = '36376' and provider = 'CloudFrontDistribution'`,
           lookup: 'result',
         },
         detailConfig: [

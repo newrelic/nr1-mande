@@ -8,6 +8,7 @@ import {
   NrqlQuery,
   Spinner,
   BlockText,
+  Table,
 } from 'nr1'
 import { dateFormatter } from '../../../../utils/date-formatter'
 import videoConfig from '../../../../config/VideoConfig'
@@ -43,48 +44,61 @@ export default class SessionContainer extends React.Component {
     )
   }
 
+  renderSessionList = () => {
+    return <div>Session table placeholder</div>
+  }
+
   render() {
     const { user, duration } = this.props
     const formattedDuration = dateFormatter(duration.timeRange)
 
     console.info('sessionContainer.render videoConfig', videoConfig)
     return (
-      <Stack
-        fullWidth
-        horizontalType={Stack.HORIZONTAL_TYPE.FILL}
-        directionType={Stack.DIRECTION_TYPE.VERTICAL}
-        style={{ height: '100%' }}
-      >
-        <div className="session-container">
-          <StackItem>
-            <HeadingText
-              className="panel-header"
-              type={HeadingText.TYPE.HEADING_4}
-            >
-              Sessions for User <strong>{user}</strong>
-              <span className="date-header">{formattedDuration}</span>
-            </HeadingText>
-          </StackItem>
+      <React.Fragment>
+        {user && (
+          <Stack
+            fullWidth
+            horizontalType={Stack.HORIZONTAL_TYPE.FILL}
+            directionType={Stack.DIRECTION_TYPE.VERTICAL}
+            style={{ height: '100%' }}
+          >
+            <div className="session-container">
+              <StackItem>
+                <HeadingText
+                  className="panel-header"
+                  type={HeadingText.TYPE.HEADING_4}
+                >
+                  Sessions for User <strong>{user}</strong>
+                  <span className="date-header">{formattedDuration}</span>
+                </HeadingText>
+              </StackItem>
 
-          {videoConfig.metrics && (
-            <Stack className="session-kpi-group" fullWidth>
-              {videoConfig.metrics.map((metric, idx) => {
-                return (
-                  <div key={metric.title + idx} className="sessionSectionBase">
-                    <div className="metric-chart">
-                      <div className="chart-title">{metric.title}</div>
-                      <div className="chart-title-tooltip">{metric.title}</div>
-                      {this.renderKpiItem(metric)}
-                    </div>
-                  </div>
-                )
-              })}
-            </Stack>
-          )}
+              {videoConfig.metrics && (
+                <Stack className="session-kpi-group" fullWidth>
+                  {videoConfig.metrics.map((metric, idx) => {
+                    return (
+                      <div
+                        key={metric.title + idx}
+                        className="sessionSectionBase"
+                      >
+                        <div className="metric-chart">
+                          <div className="chart-title">{metric.title}</div>
+                          <div className="chart-title-tooltip">
+                            {metric.title}
+                          </div>
+                          {this.renderKpiItem(metric)}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </Stack>
+              )}
 
-          <StackItem>Session List</StackItem>
-        </div>
-      </Stack>
+              <div className="session-table">{this.renderSessionList()}</div>
+            </div>
+          </Stack>
+        )}
+      </React.Fragment>
     )
   }
 }

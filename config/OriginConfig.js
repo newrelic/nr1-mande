@@ -1,5 +1,5 @@
 export default {
-    title: 'Origin',
+    title: 'Deliver - Origin',
     eventTypes: [
       {
         event: 'Global',

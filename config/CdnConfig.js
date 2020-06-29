@@ -399,13 +399,15 @@ export default {
         ],
       },
       {
-        title: '# of Objects (Avg)',
+        title: 'Downloaded Bytes (MB)',
         threshold: {
-          critical: 10,
-          warning: 8,
+          critical: 275,
+          warning: 300,
+          type: 'below',
         },
+        invertCompareTo: 'true',
         query: {
-          nrql: `SELECT average(provider.numberOfObjects.Average) as 'result'from DatastoreSample WHERE provider.bucketName like '%source%'`,
+          nrql: `SELECT sum(provider.bytesDownloaded.Sum/1000000) as 'result' FROM LoadBalancerSample WHERE providerAccountId = '36376' and provider = 'CloudFrontDistribution'`,
           lookup: 'result',
         },
         detailConfig: [

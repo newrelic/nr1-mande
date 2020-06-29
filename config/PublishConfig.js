@@ -1,5 +1,5 @@
 export default {
-    title: 'Ingest',
+    title: 'Publish',
     eventTypes: [
       {
         event: 'Global',
@@ -111,7 +111,7 @@ export default {
     ],
     metrics: [
       {
-        title: 'Ingests Initiated (Count)',
+        title: 'Publishes Initiated (Count)',
         threshold: {
           critical: 3,
           warning: 5,
@@ -119,7 +119,7 @@ export default {
         },
         invertCompareTo: 'true',
         query: {
-          nrql: `SELECT sum(provider.executionsStarted.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
+          nrql: `SELECT sum(provider.executionsStarted.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'PublishWorkflow'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -185,7 +185,7 @@ export default {
         ],
       },
       {
-        title: 'Ingests Succeeded (Count)',
+        title: 'Publishes Succeeded (Count)',
         threshold: {
           critical: 3,
           warning: 5,
@@ -193,7 +193,7 @@ export default {
         },
         invertCompareTo: 'true',
         query: {
-          nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
+          nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'PublishWorkflow'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -239,13 +239,13 @@ export default {
         ],
       },
       {
-        title: 'Ingests Failed (Count)',
+        title: 'Publishes Failed (Count)',
         threshold: {
           critical: 1,
           warning: .5,
         },
         query: {
-          nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
+          nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'PublishWorkflow'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -292,13 +292,13 @@ export default {
         ],
       },
       {
-        title: 'Ingest Time (s)',
+        title: 'Publish Time (s)',
         threshold: {
           critical: 20,
           warning: 10,
         },
         query: {
-          nrql: `SELECT average(provider.executionTime.Average/1000) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='IngestWorkflow'`,
+          nrql: `SELECT average(provider.executionTime.Average/1000) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='PublishWorkflow'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -401,13 +401,13 @@ export default {
         ],
       },
       {
-        title: 'Ingest Failure Ratio (%)',
+        title: 'Publish Failure Ratio (%)',
         threshold: {
           critical: 10,
           warning: 5,
         },
         query: {
-          nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'result' WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
+          nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'result' WHERE \`label.aws:cloudformation:logical-id\` = 'PublishWorkflow'`,
           lookup: 'result',
         },
         detailConfig: [

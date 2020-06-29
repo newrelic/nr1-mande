@@ -111,7 +111,7 @@ export default {
     ],
     metrics: [
       {
-        title: '5xx Errros',
+        title: '5xx Errors (Count)',
         threshold: {
           critical: 5,
           warning: 3,

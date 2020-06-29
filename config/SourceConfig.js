@@ -290,8 +290,8 @@ export default {
     {
       title: 'All Requests',
       threshold: {
-        critical: 100,
-        warning: 80,
+        critical: 400,
+        warning: 300,
       },
       query: {
         nrql: `SELECT sum(provider.allRequests.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,

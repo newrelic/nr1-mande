@@ -117,7 +117,7 @@ export default {
           warning: 3,
         },
         query: {
-          nrql: `SELECT average(provider.error5xxErrorRate.Average) as 'result' FROM LoadBalancerSample WHERE label.Name IN ('VOD-Video-Demo') and provider = 'CloudFrontDistribution'`,
+          nrql: `SELECT average(provider.error5xxErrorRate.Average) as 'result' FROM LoadBalancerSample WHERE providerAccountId = '36376' and provider = 'CloudFrontDistribution'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -189,7 +189,7 @@ export default {
           warning: 5,
         },
         query: {
-          nrql: `SELECT sum(provider.error4xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+          nrql: `SELECT average(provider.error4xxErrorRate.Average) as 'result' FROM LoadBalancerSample WHERE providerAccountId = '36376' and provider = 'CloudFrontDistribution'`,
           lookup: 'result',
         },
         detailConfig: [

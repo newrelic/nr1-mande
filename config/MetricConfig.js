@@ -6,6 +6,7 @@ import adConfigs from './AdConfig'
 import sourceConfigs from './SourceConfig'
 import ingestConfigs from './IngestConfig'
 import processConfigs from './ProcessConfig'
+import publishConfigs from './PublishConfig'
 
 export default [
   userConfigs,
@@ -19,6 +20,7 @@ export default [
   {
     title: 'Deliver - Origin',
   },
+  publishConfigs,
   processConfigs,
   ingestConfigs,
   sourceConfigs

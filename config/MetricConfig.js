@@ -8,6 +8,7 @@ import ingestConfigs from './IngestConfig'
 import processConfigs from './ProcessConfig'
 import publishConfigs from './PublishConfig'
 import originConfigs from './OriginConfig'
+import cdnConfigs from './CdnConfig'
 
 export default [
   userConfigs,
@@ -15,9 +16,7 @@ export default [
   apiConfigs,
   videoConfigs,
   adConfigs,
-  {
-    title: 'Deliver - CDN',
-  },
+  cdnConfigs,
   originConfigs,
   publishConfigs,
   processConfigs,

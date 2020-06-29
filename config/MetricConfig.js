@@ -5,6 +5,7 @@ import videoConfigs from './VideoConfig'
 import adConfigs from './AdConfig'
 import sourceConfigs from './SourceConfig'
 import ingestConfigs from './IngestConfig'
+import processConfigs from './ProcessConfig'
 
 export default [
   userConfigs,
@@ -13,11 +14,12 @@ export default [
   videoConfigs,
   adConfigs,
   {
-    title: 'CDN',
+    title: 'Deliver - CDN',
   },
   {
-    title: 'Origin/Packaging',
+    title: 'Deliver - Origin',
   },
+  processConfigs,
   ingestConfigs,
   sourceConfigs
 ]

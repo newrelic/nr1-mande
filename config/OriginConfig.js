@@ -1,5 +1,5 @@
 export default {
-    title: 'Source',
+    title: 'Origin',
     eventTypes: [
       {
         event: 'Global',
@@ -117,7 +117,7 @@ export default {
           warning: 300,
         },
         query: {
-          nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'result' from DatastoreSample WHERE provider.bucketName like '%source%' and provider = 'S3Bucket'`,
+          nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'result' from DatastoreSample WHERE provider.bucketName like '%destination%' and provider = 'S3Bucket'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -189,7 +189,7 @@ export default {
           warning: 5,
         },
         query: {
-          nrql: `SELECT sum(provider.error4xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+          nrql: `SELECT sum(provider.error4xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -241,7 +241,7 @@ export default {
           warning: 2,
         },
         query: {
-          nrql: `SELECT sum(provider.error5xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+          nrql: `SELECT sum(provider.error5xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -294,7 +294,7 @@ export default {
           warning: 80,
         },
         query: {
-          nrql: `SELECT sum(provider.allRequests.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+          nrql: `SELECT sum(provider.allRequests.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -403,7 +403,7 @@ export default {
           warning: 8,
         },
         query: {
-          nrql: `SELECT average(provider.numberOfObjects.Average) as 'result'from DatastoreSample WHERE provider.bucketName like '%source%'`,
+          nrql: `SELECT average(provider.numberOfObjects.Average) as 'result'from DatastoreSample WHERE provider.bucketName like '%destination%'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -465,7 +465,7 @@ export default {
           warning: 100,
         },
         query: {
-          nrql: `SELECT average(provider.firstByteLatency.Average) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%source%'`,
+          nrql: `SELECT average(provider.firstByteLatency.Average) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
           lookup: 'result',
         },
         detailConfig: [
@@ -526,7 +526,7 @@ export default {
           warning: 180,
         },
         query: {
-          nrql: `SELECT average(provider.totalRequestLatency.Average) as 'result' from DatastoreSample where provider='S3BucketRequests' where entityName like '%source%'`,
+          nrql: `SELECT average(provider.totalRequestLatency.Average) as 'result' from DatastoreSample where provider='S3BucketRequests' where entityName like '%destination%'`,
           lookup: 'result',
         },
         detailConfig: [

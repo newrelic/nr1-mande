@@ -5,7 +5,7 @@ import { sortBy } from 'lodash'
 
 import { HeadingText, NerdGraphQuery, Stack, StackItem } from 'nr1'
 
-const searchBarContainer = props => {
+const searchBar = props => {
   const loadData = async searchTerm => {
     console.debug('searchBar.loadData')
 
@@ -51,6 +51,7 @@ const searchBarContainer = props => {
 
   const handleChange = selectedItem => {
     console.info('handling change', selectedItem)
+    props.selectUser(selectedItem.value)
   }
 
   return (
@@ -62,11 +63,11 @@ const searchBarContainer = props => {
       <div className="search-bar-container">
         <StackItem>
           <HeadingText
-            className="search-bar-header"
+            className="panel-header"
             type={HeadingText.TYPE.HEADING_4}
           >
             Search for user
-            </HeadingText>
+          </HeadingText>
         </StackItem>
         <StackItem>
           <AsyncSelect
@@ -83,8 +84,10 @@ const searchBarContainer = props => {
   )
 }
 
-export default searchBarContainer
+export default searchBar
 
-searchBarContainer.propTypes = {
+searchBar.propTypes = {
   duration: PropTypes.object.isRequired,
+  accountId: PropTypes.number.isRequired,
+  selectUser: PropTypes.func.isRequired,
 }

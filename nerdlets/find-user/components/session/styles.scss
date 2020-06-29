@@ -1,0 +1,17 @@
+.session-container {
+  @include defaultContainer;
+  height: 100%;
+}
+
+.session-kpi-group {
+  @include metricChartBasic;
+  @include defaultPanel;
+
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+
+  .sessionSectionBase {
+    margin-right: 8px;
+    width: 250px;
+  }
+}

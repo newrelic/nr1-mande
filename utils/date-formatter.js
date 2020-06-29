@@ -18,7 +18,6 @@ export const dateFormatter = timeRange => {
     const begin = moment.utc(begin_time).tz(tz)
     const end = moment.utc(end_time).tz(tz)
 
-    console.info('begin utc', begin_time)
     return `Since ${begin.format('MMM DD hh:mm')} Until ${end.format(
       'MMM DD hh:mm'
     )}`

@@ -15,59 +15,7 @@
     display: none;
   }
 
-  .metric-chart {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 2px;
-    border: none;
-    position: relative;
-    
-    > .chart-title {
-      font-size: 14px;
-      font-weight: normal;
-      text-align: center;
-      color: rgb(70, 78, 78);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 90%;
-
-      &:hover {
-        +.chart-title-tooltip {
-          visibility: visible;
-          opacity: 1;
-          transition: .25s opacity ease;
-          transition-delay: .5s;
-          z-index: 10;
-          border: 1px solid #e3e4e4;
-          border-radius: 2px;
-        }
-      }
-
-    }
-
-    .chart-title-tooltip {
-      visibility: hidden;
-      opacity: 0;
-      position: absolute;
-      top: 20px;
-      right: -15px;
-      padding: 8px;
-      background-color: #edeeee;
-      width: 100%;
-    }
-
-    > .value {
-      width: 100%;
-      font-size: 50px;
-      font-weight: 400;
-      text-align: center;
-    }
-  }
+  @include metricChartBasic;
 
   .chart-container {
     width: 100%;

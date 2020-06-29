@@ -1,6 +1,7 @@
 import React from 'react'
 import { Stack, StackItem, HeadingText } from 'nr1'
-import SearchBarContainer from './SearchBarContainer'
+import SearchBar from './components/search-bar/SearchBar'
+import SessionContainer from './components/session/SessionContainer'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 
 export default class FindUserContainer extends React.Component {
@@ -8,7 +9,9 @@ export default class FindUserContainer extends React.Component {
     user: '',
   }
 
-  onSelectUser = async => {}
+  onSelectUser = async user => {
+    this.setState({ user })
+  }
 
   render() {
     const { user } = this.state
@@ -24,7 +27,7 @@ export default class FindUserContainer extends React.Component {
         className="find-user-container"
       >
         <StackItem>
-          <header className="header">
+          <header className="nerdlet-header">
             <HeadingText type={HeadingText.TYPE.HEADING_3}>
               User Session Analysis
             </HeadingText>
@@ -32,7 +35,11 @@ export default class FindUserContainer extends React.Component {
         </StackItem>
 
         <StackItem>
-          <SearchBarContainer accountId={accountId} duration={duration} />
+          <SearchBar
+            accountId={accountId}
+            duration={duration}
+            selectUser={this.onSelectUser}
+          />
         </StackItem>
 
         {!user && (
@@ -45,10 +52,20 @@ export default class FindUserContainer extends React.Component {
                 Search for a user to start
               </HeadingText>
               <div className="empty-state-desc">
-                To get started, please search for and select an id in the
-                search bar above
+                To get started, please search for and select an id in the search
+                bar above
               </div>
             </div>
+          </StackItem>
+        )}
+
+        {user && (
+          <StackItem style={{ height: '100%' }}>
+            <SessionContainer
+              accountId={accountId}
+              duration={duration}
+              user={this.state.user}
+            />
           </StackItem>
         )}
       </Stack>

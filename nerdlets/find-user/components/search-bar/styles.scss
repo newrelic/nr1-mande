@@ -1,0 +1,8 @@
+
+.search-bar-container {
+  @include defaultContainer;
+
+  .search-bar-select {
+    width: 100%;
+  }
+}

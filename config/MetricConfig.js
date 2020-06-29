@@ -7,6 +7,7 @@ import sourceConfigs from './SourceConfig'
 import ingestConfigs from './IngestConfig'
 import processConfigs from './ProcessConfig'
 import publishConfigs from './PublishConfig'
+import originConfigs from './OriginConfig'
 
 export default [
   userConfigs,
@@ -17,9 +18,7 @@ export default [
   {
     title: 'Deliver - CDN',
   },
-  {
-    title: 'Deliver - Origin',
-  },
+  originConfigs,
   publishConfigs,
   processConfigs,
   ingestConfigs,

@@ -111,13 +111,13 @@ export default {
     ],
     metrics: [
       {
-        title: 'Bucket Size (Avg MB)',
+        title: '5xx Errros',
         threshold: {
-          critical: 500,
-          warning: 300,
+          critical: 5,
+          warning: 3,
         },
         query: {
-          nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'result' from DatastoreSample WHERE provider.bucketName like '%source%' and provider = 'S3Bucket'`,
+          nrql: `SELECT average(provider.error5xxErrorRate.Average) as 'result' FROM LoadBalancerSample WHERE label.Name IN ('VOD-Video-Demo') and provider = 'CloudFrontDistribution'`,
           lookup: 'result',
         },
         detailConfig: [

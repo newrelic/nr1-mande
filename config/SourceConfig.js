@@ -58,15 +58,12 @@ export default {
   ],
   overviewConfig: [
     {
-      nrql: `SELECT filter(average(timeSinceLoad), WHERE actionName = 'CONTENT_REQUEST') as 'Time to Content Request', 
-      average(timeSinceLoad) as 'Time to Player Ready',
-      filter(average(timeSinceRequested)/1000, WHERE actionName='CONTENT_START') as 'Time To First Frame'
-      FROM PageAction TIMESERIES `,
+      nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'MB' from DatastoreSample WHERE provider.bucketName like '%source%' and provider = 'S3Bucket'`,
       columnStart: 1,
       columnEnd: 6,
-      chartSize: 'medium',
-      chartType: 'area',
-      title: 'Content Request vs Player Ready vs Video Start (Average in Seconds)',
+      chartSize: 'small',
+      chartType: 'scatter',
+      title: 'Bucket Size',
       useSince: true,
     },
     {

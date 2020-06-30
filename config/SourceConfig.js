@@ -146,6 +146,24 @@ export default {
       chartType: 'line',
       title: 'Source First Byte Latency (Avg - ms)',
       useSince: true,
+    },
+    {
+      nrql: `SELECT average(provider.totalRequestLatency.Average) as 'ms' from DatastoreSample where provider='S3BucketRequests' where entityName like '%source%'`,
+      columnStart: 1,
+      columnEnd: 3,
+      chartSize: 'small',
+      chartType: 'billboard',
+      title: 'Views Source Total Request Latency (Avg - ms)',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT average(provider.totalRequestLatency.Average) as 'ms' from DatastoreSample where provider='S3BucketRequests' where entityName like '%source%'`,
+      columnStart: 4,
+      columnEnd: 12,
+      chartSize: 'small',
+      chartType: 'line',
+      title: 'Views Source Total Request Latency (Avg - ms)',
+      useSince: true,
     }
   ],
   metrics: [

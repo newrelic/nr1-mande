@@ -108,7 +108,7 @@ export default {
   ],
   metrics: [
     {
-      title: 'Bucket Size (Avg MB)',
+      title: 'Source Bucket Size (Avg MB)',
       threshold: {
         critical: 500,
         warning: 300,
@@ -124,7 +124,7 @@ export default {
           columnEnd: 4,
           chartSize: 'small',
           chartType: 'billboard',
-          title: 'Views above Threshold (6.5s)',
+          title: 'Source Bucket Size (MB)',
           useSince: true,
         },
         {

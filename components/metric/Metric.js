@@ -1,10 +1,9 @@
 import React from 'react'
-import { Spinner, Icon, NerdGraphQuery, SparklineChart, NrqlQuery } from 'nr1'
+import { Spinner, Icon, SparklineChart } from 'nr1'
 import Compare from './Compare'
 import MetricValue from './MetricValue'
 
 export class Metric extends React.Component {
-
   isVisible = () => {
     const { threshold, metric } = this.props
 
@@ -47,7 +46,9 @@ export class Metric extends React.Component {
 
     return (
       <React.Fragment>
-        <p className="name">{metric.def.title}</p>
+        <p className="name">
+          {metric.def.query.title ? metric.def.query.title : metric.def.title}
+        </p>
         <span className="value-container">
           <MetricValue threshold={metric.def.threshold} value={metric.value} />
           <Compare

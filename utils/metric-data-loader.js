@@ -1,20 +1,22 @@
 import { NerdGraphQuery } from 'nr1'
 import { flatten } from 'lodash'
+import { roundToTwoDigits } from './number-formatter'
 
 export const loadMetricsForConfigs = async (
   metricConfigs,
   duration,
   accountId,
-  filters
+  filters,
+  parser
 ) => {
-  console.debug('>>>> metric-data-loader.loadMetricsForConfigs')
+  // console.debug('>>>> metric-data-loader.loadMetricsForConfigs')
   let metricData = []
 
   metricData = await Promise.all(
     metricConfigs
       .filter(config => config.metrics)
       .map(async config =>
-        loadMetricsForConfig(config, duration, accountId, filters)
+        loadMetricsForConfig(config, duration, accountId, filters, parser)
       )
   )
 
@@ -25,16 +27,26 @@ export const loadMetricsForConfig = async (
   metricConfig,
   duration,
   accountId,
-  filters
+  filters,
+  parser,
+  queryCategory
 ) => {
-  console.debug('>>>> metric-data-loader.loadMetricsForConfig', metricConfig)
+  // console.debug('>>>> metric-data-loader.loadMetricsForConfig', metricConfig)
   let metricData = []
   metricData = metricData.concat(
     await Promise.all(
       metricConfig.metrics
         .filter(metric => metric.query)
         .map(async metric => {
-          const dataDef = await loadMetric(metric, duration, accountId, filters)
+          const dataDef = await loadMetric(
+            metric,
+            duration,
+            accountId,
+            filters,
+            parser,
+            queryCategory
+          )
+          dataDef.id = metricConfig.id
           dataDef.category = metricConfig.title
           dataDef.loading = false
           dataDef.def = metric
@@ -45,12 +57,28 @@ export const loadMetricsForConfig = async (
   return metricData
 }
 
-export const loadMetric = async (metric, duration, accountId, filters) => {
-  let nrql = metric.query.nrql + duration.since + duration.compare
+export const loadMetric = async (
+  metric,
+  duration,
+  accountId,
+  filters,
+  parser,
+  queryCategory
+) => {
+  // defaults for backwards compatibility
+  if (!parser) parser = compareParser
+  if (!queryCategory || !metric[queryCategory]) queryCategory = 'query'
 
-  if (filters) nrql = nrql + filters.double
+  let nrql =
+    metric[queryCategory].nrql +
+    duration.since +
+    (parser.name === 'compareParser' ? duration.compare : '')
 
-  // console.debug(`>>>> metric-data-loader.loadMetric ${metric.title} nrql ${nrql}`)
+  if (filters) nrql = nrql + (filters.double ? filters.double : filters)
+
+  console.debug(
+    `>>>> metric-data-loader.loadMetric ${metric.title} nrql ${nrql}`
+  )
 
   const query = `{
       actor {
@@ -70,13 +98,29 @@ export const loadMetric = async (metric, duration, accountId, filters) => {
     console.error(`error occurred with query ${query}: `, errors)
   }
 
-  if (data) {
-    // console.debug(`>>>> metric-data-loader ${metric.title} data`, data)
-    let current = data.actor.account.nrql.results[0][metric.query.lookup]
-    let previous = data.actor.account.nrql.results[1][metric.query.lookup]
-    // console.debug('>>>> metric-data-loader current vs previous', current, previous)
+  return parser(metric, data, metric[queryCategory].lookup)
 
-    if (metric.query.lookup === 'percentile') {
+}
+
+export const compareParser = (metric, data, lookup) => {
+  if (data) {
+    console.debug(
+      `>>>> metric-data-loader.compareParser ${metric.title} data`,
+      data
+    )
+
+    if (data.actor.account.nrql.results.length === 0)
+      return { value: 0, difference: 0, change: 0 }
+
+    let current = data.actor.account.nrql.results[0][lookup]
+    let previous = data.actor.account.nrql.results[1][lookup]
+    console.debug(
+      `>>>> metric-data-loader.compareParser ${metric.title} current vs previous`,
+      current,
+      previous
+    )
+
+    if (isNaN(current) && lookup === 'percentile') {
       current = Object.values(current)[0]
       previous = Object.values(previous)[0]
     }
@@ -93,8 +137,8 @@ export const loadMetric = async (metric, duration, accountId, filters) => {
       current > previous
         ? 'increase'
         : current < previous
-        ? 'decrease'
-        : 'noChange'
+          ? 'decrease'
+          : 'noChange'
 
     return {
       value: current,
@@ -102,10 +146,27 @@ export const loadMetric = async (metric, duration, accountId, filters) => {
       change,
     }
   } else {
-    return null
+    return { value: 0, difference: 0, change: 0 }
   }
 }
 
-const roundToTwoDigits = value => {
-  return Math.round(value * 100) / 100
+export const facetParser = (metric, data, lookup) => {
+  if (data) {
+    console.debug(
+      `>>>> metric-data-loader.facetParser ${metric.title} data`,
+      data
+    )
+    if (data.actor.account.nrql.results.length === 0) return {}
+
+    const results = data.actor.account.nrql.results.map(r => {
+      let value = r[lookup]
+      if (value) value = roundToTwoDigits(value)
+      return { facets: r.facet, value }
+    })
+
+    return { results }
+  } else {
+    return {}
+  }
 }
+

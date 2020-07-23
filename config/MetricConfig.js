@@ -8,7 +8,7 @@ import ingestConfigs from './IngestConfig'
 import processConfigs from './ProcessConfig'
 import publishConfigs from './PublishConfig'
 import originConfigs from './OriginConfig'
-import cdnConfigs from './CdnConfig'
+import cdnConfigs from './AwsCdnConfig'
 
 export default [
   userConfigs,

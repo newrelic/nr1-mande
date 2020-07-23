@@ -1,5 +1,5 @@
 export default {
-  title: 'Users',
+  title: 'Audience',
   metrics: [
     {
       title: '# of Active Viewers',

@@ -1,21 +1,22 @@
 import React from 'react'
 
 const metricValue = props => {
-  const getThresholdClass = (threshold, value) => {
-    if (!threshold) return ''
+  const getThresholdClass = (threshold, value, greenLight) => {
+    const baseStyle = greenLight ? 'greenLight' : ''
+    if (!threshold) return baseStyle
     if (threshold.type === 'below') {
-      if (value > threshold.warning) return ''
+      if (value > threshold.warning) return baseStyle
       if (value <= threshold.critical) return 'redLight'
       return 'yellowLight'
     } else {
-      if (value < threshold.warning) return ''
+      if (value < threshold.warning) return baseStyle
       if (value >= threshold.critical) return 'redLight'
       return 'yellowLight'
     }
   }
 
-  const { threshold, value, minify } = props
-  const classes = ['value', getThresholdClass(threshold, value)]
+  const { threshold, value, minify, greenLight } = props
+  const classes = ['value', getThresholdClass(threshold, value, greenLight)]
 
   return (
     <React.Fragment>

@@ -10,7 +10,12 @@ export default class FindUserContainer extends React.Component {
   }
 
   onSelectUser = async user => {
-    this.setState({ user })
+    if (this.state.user !== user) this.setState({ user })
+  }
+
+  onChooseSession = (item, scope) => {
+    scope = scope ? scope : 'all'
+    console.info(`handleChooseSession triggered`, item, scope)
   }
 
   render() {
@@ -65,6 +70,7 @@ export default class FindUserContainer extends React.Component {
               accountId={accountId}
               duration={duration}
               user={this.state.user}
+              chooseSession={this.onChooseSession}
             />
           </StackItem>
         )}

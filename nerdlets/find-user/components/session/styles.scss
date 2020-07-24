@@ -12,21 +12,16 @@
   margin-left: 0;
 }
 
-.session-kpi-group {
-  flex-wrap: wrap;
-  padding-bottom: 4px;
-
-  .sessionSectionBase {
-    margin-right: 8px;
-    width: 250px;
-  }
-}
-
-.session-kpi-qos {
+.session-qos-base {
+  // margin-right: 8px;
+  // width: 250px;
   height: 95%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center;  
+}
+
+.sessionSectionBase.session-qos-base {
 
   >.metric-chart {
     >.chart-title {
@@ -37,6 +32,16 @@
       font-size: 60px;
     }
   
+  }
+}
+
+.session-kpi-group {
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+
+  .sessionSectionBase {
+    margin-right: 8px;
+    width: 250px;
   }
 }
 

@@ -51,7 +51,8 @@ const searchBar = props => {
 
   const handleChange = selectedItem => {
     console.info('handling change', selectedItem)
-    props.selectUser(selectedItem.value)
+    const val = selectedItem ? selectedItem.value : null
+    props.selectUser(val)
   }
 
   return (
@@ -72,6 +73,7 @@ const searchBar = props => {
         <StackItem>
           <AsyncSelect
             autoFocus
+            isClearable={true}
             className="search-bar-select"
             placeholder="Start typing the user identifier ..."
             cacheOptions

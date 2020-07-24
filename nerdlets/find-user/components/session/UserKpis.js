@@ -20,15 +20,16 @@ export default class UserKpis extends React.Component {
         {userKpis && (
           <Grid className="session-user-kpis">
             <GridItem columnStart={1} columnEnd={4}>
-              <div className="sessionSectionBase  session-kpi-qos">
+              <div className="session-qos-base sessionSectionBase">
                 <div className="metric-chart">
                   <div className="chart-title">
                     Aggregate View Quality Score
-                  </div>
+                    </div>
                   <MetricValue
                     threshold={qosThreshold}
                     value={sessionViews.qualityScore}
                     greenLight={true}
+                    decoration=" %"
                   />
                 </div>
               </div>

@@ -185,17 +185,6 @@ export default class SessionContainer extends React.Component {
 
     console.info('sessionContainer.sessionViews', sessionViews)
 
-    // sessionKpis.forEach(s =>
-    //   console.info(
-    //     'sessionContainer.loadSessions >> sessionKpis',
-    //     s.session,
-    //     s.kpis
-    //   )
-    // )
-    // userKpis.forEach(k =>
-    //   console.info('sessionContainer.loadSessions >> collectUserKpis', k, k.value / k.viewCount)
-    // )
-
     return { sessionViews, sessionKpis, userKpis }
   }
 
@@ -215,12 +204,8 @@ export default class SessionContainer extends React.Component {
     }
   }
 
-  onChooseSession = () => {
-    console.info('handleChooseSession triggered')
-  }
-
   render() {
-    const { user, duration, accountId } = this.props
+    const { user, duration, accountId, chooseSession } = this.props
     const { loading, userKpis, sessionViews } = this.state
     const formattedDuration = dateFormatter(duration.timeRange)
 
@@ -258,7 +243,7 @@ export default class SessionContainer extends React.Component {
                       user={user}
                       duration={duration}
                       sessionViews={sessionViews}
-                      chooseSession={this.onChooseSession}
+                      chooseSession={chooseSession}
                     />
                   </div>
                 </div>
@@ -275,4 +260,5 @@ SessionContainer.propTypes = {
   duration: PropTypes.object.isRequired,
   accountId: PropTypes.number.isRequired,
   user: PropTypes.string.isRequired,
+  chooseSession: PropTypes.func.isRequired,
 }

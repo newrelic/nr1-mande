@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import numeral from 'numeral'
 import {
   Spinner,
   NrqlQuery,
@@ -16,26 +17,62 @@ import {
 } from '../../../../utils/date-formatter'
 
 export default class SessionTable extends React.Component {
+  getTableActions = () => {
+    return [
+      {
+        label: 'View All Streams',
+        iconType:
+          TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER,
+        onClick: (evt, { item, index }) => {
+          this.onViewSession(evt, { item, index }, 'all')
+        },
+      },
+      {
+        label: 'View High Quality Streams',
+        iconType:
+          TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER__A_CHECKED,
+        onClick: (evt, { item, index }) => {
+          this.onViewSession(evt, { item, index }, 'good')
+        },
+      },
+      {
+        label: 'View Low Quality Streams',
+        iconType:
+          TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER__S_ERROR,
+        onClick: (evt, { item, index }) => {
+          this.onViewSession(evt, { item, index }, 'bad')
+        },
+      },
+    ]
+  }
+
   getViewQualityCount = (views, threshold, above) => {
     const count = views.reduce((acc, v) => {
-      if (above && v.qualityScore >= threshold) {
-        acc += 1
-      }
-      
-      if (!above && v.qualityScore < threshold) {
-        acc += 1
-      }
-
-      return acc
-    }, 0)
+        if (
+          (above && v.qualityScore >= threshold) ||
+          (!above && v.qualityScore < threshold)
+        ) {
+          acc.count += 1
+          acc.views.push(v.id)
+        }
+        return acc
+      },
+      { count: 0, views: [] }
+    )
 
     return count
+  }
+
+  onViewSession = (evt, { item, index }, scope) => {
+    this.props.chooseSession(item, scope)
   }
 
   render() {
     const { accountId, duration, user, sessionViews } = this.props
     const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp), max(timestamp) WHERE userId = '${user}' LIMIT MAX ${duration.since} facet viewSession`
     console.info('renderSessionList nrql', nrql)
+
+    console.info('sessionTable.render sessionViews', sessionViews)
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
@@ -63,7 +100,7 @@ export default class SessionTable extends React.Component {
 
             const timedSession = {
               session: s.session,
-              // kpis: [...s.kpis],
+              qualityScore: s.qualityScore,
               totalViews: s.views.length,
               goodViews: this.getViewQualityCount(s.views, 90, true),
               badViews: this.getViewQualityCount(s.views, 90, false),
@@ -92,6 +129,9 @@ export default class SessionTable extends React.Component {
                   Duration
                 </TableHeaderCell>
                 <TableHeaderCell className="session-table__table-header">
+                  Quality Score
+                </TableHeaderCell>
+                <TableHeaderCell className="session-table__table-header">
                   Total Streams
                 </TableHeaderCell>
                 <TableHeaderCell className="session-table__table-header">
@@ -103,7 +143,10 @@ export default class SessionTable extends React.Component {
               </TableHeader>
 
               {({ item }) => (
-                <TableRow onClick={this.onChooseSession}>
+                <TableRow
+                  onClick={this.onViewSession}
+                  actions={this.getTableActions()}
+                >
                   <TableRowCell className="session-table__row">
                     {item.session}
                   </TableRowCell>
@@ -117,13 +160,16 @@ export default class SessionTable extends React.Component {
                     {formatTimeAsString(item.duration, milliseconds)}
                   </TableRowCell>
                   <TableRowCell className="session-table__row">
+                    {item.qualityScore + ' %'}
+                  </TableRowCell>
+                  <TableRowCell className="session-table__row">
                     {item.totalViews}
                   </TableRowCell>
                   <TableRowCell className="session-table__row">
-                    {item.goodViews}
+                    {item.goodViews.count}
                   </TableRowCell>
                   <TableRowCell className="session-table__row">
-                    {item.badViews}
+                    {item.badViews.count}
                   </TableRowCell>
                 </TableRow>
               )}

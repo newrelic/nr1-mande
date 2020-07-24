@@ -9,8 +9,9 @@ import {
   facetParser,
 } from '../../../../utils/metric-data-loader'
 import videoConfig from '../../../../config/VideoConfig'
-import MetricValue from '../../../../components/metric/MetricValue'
+import { metricQualityScore, viewQualityScore } from './quality-score'
 import SessionTable from './SessionTable'
+import UserKpis from './UserKpis'
 
 export default class SessionContainer extends React.Component {
   state = {
@@ -40,8 +41,16 @@ export default class SessionContainer extends React.Component {
     return metricDefs
   }
 
-  collectSessionViews = (views, session, view) => {
-    const found = views.find(s => s.session === session)
+  collectSessionViews = (sessionViews, session, view) => {
+    if (view.def.qualityScoreStrategy) {
+      view.qualityScore = metricQualityScore(
+        view.value,
+        view.def.threshold.critical,
+        view.def.qualityScoreStrategy
+      )
+    }
+
+    const found = sessionViews.find(s => s.session === session)
     if (found) {
       const foundView = found.views.find(v => v.id === view.viewId)
 
@@ -51,12 +60,12 @@ export default class SessionContainer extends React.Component {
         found.views.push({ id: view.viewId, details: [view] })
       }
     } else {
-      views.push({
+      sessionViews.push({
         session: session,
         views: [{ id: view.viewId, details: [view] }],
       })
     }
-    return views
+    return sessionViews
   }
 
   collectSessionKpis = (sessions, session, view) => {
@@ -70,6 +79,7 @@ export default class SessionContainer extends React.Component {
         kpi.value = (kpi.value + view.value) / kpi.viewCount
       } else {
         found.kpis.push({
+          id: view.def.id,
           name: metricName,
           threshold: view.def.threshold,
           viewCount: 1,
@@ -81,10 +91,12 @@ export default class SessionContainer extends React.Component {
         session: session,
         kpis: [
           {
+            id: view.def.id,
             name: metricName,
             threshold: view.def.threshold,
             viewCount: 1,
             value: view.value,
+            qualityScoreStrategy: view.def.qualityScoreStrategy,
           },
         ],
       })
@@ -102,10 +114,12 @@ export default class SessionContainer extends React.Component {
       found.value += view.value
     } else {
       kpis.push({
+        id: view.def.id,
         name: metricName,
         threshold: view.def.threshold,
         viewCount: 1,
         value: view.value,
+        qualityScoreStrategy: view.def.qualityScoreStrategy,
       })
     }
 
@@ -147,13 +161,30 @@ export default class SessionContainer extends React.Component {
         })
     })
 
-    // sessionViews.forEach(v =>
-    //   console.info(
-    //     'sessionContainer.loadSessions >> sessionViews',
-    //     v.session,
-    //     v.views
-    //   )
-    // )
+    sessionViews.forEach(s => {
+      s.qualityScore = roundToTwoDigits(
+        s.views.reduce((acc, v) => {
+          v.qualityScore = viewQualityScore(v, videoConfig.qualityScore)
+          acc += v.qualityScore
+          return acc
+        }, 0) / s.views.length
+      )
+    })
+
+    sessionViews.qualityScore = roundToTwoDigits(
+      sessionViews.reduce((acc, s) => {
+        acc += s.qualityScore
+        return acc
+      }, 0) / sessionViews.length
+    )
+
+    sessionViews.totalViews = sessionViews.reduce((acc, s) => {
+      acc += s.views.length
+      return acc
+    }, 0)
+
+    console.info('sessionContainer.sessionViews', sessionViews)
+
     // sessionKpis.forEach(s =>
     //   console.info(
     //     'sessionContainer.loadSessions >> sessionKpis',
@@ -190,7 +221,7 @@ export default class SessionContainer extends React.Component {
 
   render() {
     const { user, duration, accountId } = this.props
-    const { loading, userKpis, sessionKpis } = this.state
+    const { loading, userKpis, sessionViews } = this.state
     const formattedDuration = dateFormatter(duration.timeRange)
 
     console.info('**** sessionContainer.render')
@@ -219,39 +250,14 @@ export default class SessionContainer extends React.Component {
                     </HeadingText>
                   </StackItem>
 
-                  {userKpis && (
-                    <Stack className="session-kpi-group" fullWidth>
-                      {userKpis.map((kpi, idx) => {
-                        return (
-                          <div
-                            key={kpi.name + idx}
-                            className="sessionSectionBase"
-                          >
-                            <div className="metric-chart">
-                              <div className="chart-title">{kpi.name}</div>
-                              <div className="chart-title-tooltip">
-                                {kpi.name}
-                              </div>
-                              <MetricValue
-                                threshold={kpi.threshold}
-                                value={
-                                  // eslint-disable-next-line prettier/prettier
-                                  roundToTwoDigits(kpi.value / kpi.viewCount)
-                                }
-                              />
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </Stack>
-                  )}
+                  <UserKpis sessionViews={sessionViews} userKpis={userKpis} />
 
                   <div className="session-table">
                     <SessionTable
                       accountId={accountId}
                       user={user}
                       duration={duration}
-                      sessionKpis={sessionKpis}
+                      sessionViews={sessionViews}
                       chooseSession={this.onChooseSession}
                     />
                   </div>

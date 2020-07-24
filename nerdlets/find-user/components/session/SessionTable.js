@@ -14,11 +14,26 @@ import {
   formatTimeAsString,
   milliseconds,
 } from '../../../../utils/date-formatter'
-import { roundToTwoDigits } from '../../../../utils/number-formatter'
 
 export default class SessionTable extends React.Component {
+  getViewQualityCount = (views, threshold, above) => {
+    const count = views.reduce((acc, v) => {
+      if (above && v.qualityScore >= threshold) {
+        acc += 1
+      }
+      
+      if (!above && v.qualityScore < threshold) {
+        acc += 1
+      }
+
+      return acc
+    }, 0)
+
+    return count
+  }
+
   render() {
-    const { accountId, duration, user, sessionKpis } = this.props
+    const { accountId, duration, user, sessionViews } = this.props
     const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp), max(timestamp) WHERE userId = '${user}' LIMIT MAX ${duration.since} facet viewSession`
     console.info('renderSessionList nrql', nrql)
 
@@ -31,7 +46,7 @@ export default class SessionTable extends React.Component {
           if (!data) return <div></div>
           // console.info('renderSessionList data', data)
 
-          const timedSessions = sessionKpis.map(s => {
+          const timedSessions = sessionViews.map(s => {
             const timedResults = data.filter(
               d => d.metadata.groups[1].value === s.session
             )
@@ -48,12 +63,15 @@ export default class SessionTable extends React.Component {
 
             const timedSession = {
               session: s.session,
-              kpis: [...s.kpis],
+              // kpis: [...s.kpis],
+              totalViews: s.views.length,
+              goodViews: this.getViewQualityCount(s.views, 90, true),
+              badViews: this.getViewQualityCount(s.views, 90, false),
               minTime,
               maxTime,
               duration: maxTime - minTime,
             }
-            console.info('timedSession', timedSession)
+            // console.info('timedSession', timedSession)
 
             return timedSession
           })
@@ -77,10 +95,10 @@ export default class SessionTable extends React.Component {
                   Total Streams
                 </TableHeaderCell>
                 <TableHeaderCell className="session-table__table-header">
-                  Good Streams
+                  High Quality Streams
                 </TableHeaderCell>
                 <TableHeaderCell className="session-table__table-header">
-                  Bad Streams
+                  Low Quality Streams
                 </TableHeaderCell>
               </TableHeader>
 
@@ -98,6 +116,15 @@ export default class SessionTable extends React.Component {
                   <TableRowCell className="session-table__row">
                     {formatTimeAsString(item.duration, milliseconds)}
                   </TableRowCell>
+                  <TableRowCell className="session-table__row">
+                    {item.totalViews}
+                  </TableRowCell>
+                  <TableRowCell className="session-table__row">
+                    {item.goodViews}
+                  </TableRowCell>
+                  <TableRowCell className="session-table__row">
+                    {item.badViews}
+                  </TableRowCell>
                 </TableRow>
               )}
             </Table>
@@ -112,6 +139,6 @@ SessionTable.propTypes = {
   duration: PropTypes.object.isRequired,
   accountId: PropTypes.number.isRequired,
   user: PropTypes.string.isRequired,
-  sessionKpis: PropTypes.array.isRequired,
+  sessionViews: PropTypes.array.isRequired,
   chooseSession: PropTypes.func.isRequired,
 }

@@ -1,6 +1,6 @@
 
 export default {
-  title: 'Devices',
+  title: 'Devices & Frontend Apps',
   metrics: [
     {
       title: 'App Crashes - Mobile',

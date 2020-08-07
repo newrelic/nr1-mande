@@ -9,7 +9,7 @@ export default {
       },
     },
     {
-      title: 'Non 5xx Error Rate',
+      title: '4xx Error Rate',
       threshold: {
         critical: 5.5,
         warning: 4.9,

@@ -48,5 +48,12 @@ export default {
         lookup: 'result',
       },
     },
+    {
+      title: 'Response Time (s): Mobile',
+      query: {
+        nrql: `SELECT percentile(responseTime, 50) as 'percentile' from MobileRequest`,
+        lookup: 'percentile',
+      },
+    },
   ],
 }

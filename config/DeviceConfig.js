@@ -49,9 +49,30 @@ export default {
       },
     },
     {
+      title: 'Mobile Request Throughput (ppm)',
+      query: {
+        nrql: `FROM MobileRequest SELECT rate(count(*), 1 minute) as result`,
+        lookup: 'result',
+      },
+    },
+    {
+      title: 'SPA Throughput (ppm)',
+      query: {
+        nrql: `SELECT rate( count(*), 1 minute )  as 'result' FROM BrowserInteraction`,
+        lookup: 'result',
+      },
+    },
+    {
       title: 'Response Time (s): Mobile',
       query: {
         nrql: `SELECT percentile(responseTime, 50) as 'percentile' from MobileRequest`,
+        lookup: 'percentile',
+      },
+    },
+    {
+      title: 'SPA Load Time (s)',
+      query: {
+        nrql: `SELECT percentile(duration, 50) as 'percentile' FROM BrowserInteraction`,
         lookup: 'percentile',
       },
     },

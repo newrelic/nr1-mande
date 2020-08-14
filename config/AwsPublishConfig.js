@@ -1,5 +1,5 @@
 export default {
-  title: 'Publish',
+  title: 'Publish Workflow',
   eventTypes: [
     {
       event: 'DatastoreSample',

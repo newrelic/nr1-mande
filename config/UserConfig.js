@@ -5,7 +5,7 @@ export default {
       title: '# of Active Viewers',
       invertCompareTo: 'true',
       query: {
-        nrql: `SELECT uniqueCount(session) as 'result' FROM PageAction WHERE actionName LIKE 'CONTENT_%' AND actionName not in ('CONTENT_END','CONTENT_ERROR')`,
+        nrql: `SELECT uniqueCount(userId) as 'result' FROM PageAction`,
         lookup: 'result',
       },
     },

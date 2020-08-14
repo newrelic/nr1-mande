@@ -23,8 +23,16 @@ export default {
       },
     },
     {
-      title: 'Total View Time',
-      query: '',
+      title: 'Total View Time (m)',
+      threshold: {
+        critical: 200,
+        warning: 300,
+        type: 'below'
+      },
+      query: {
+        nrql: `SELECT sum(playtimeSinceLastEvent)/60000 as 'result' from PageAction`,
+        lookup: 'result',
+      }
     },
     {
       title: 'User Error Rate',

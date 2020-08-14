@@ -1,5 +1,5 @@
 export default {
-  title: 'Ingest',
+  title: 'Ingest Workflow',
   eventTypes: [
     {
       event: 'DatastoreSample',

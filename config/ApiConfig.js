@@ -1,5 +1,5 @@
 export default {
-  title: 'APIs',
+  title: 'Backend - APIs and Services',
   metrics: [
     {
       title: '5xx Error Rate',

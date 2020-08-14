@@ -13,9 +13,9 @@ import cdnConfigs from './AwsCdnConfig'
 export default [
   userConfigs,
   deviceConfigs,
-  apiConfigs,
   videoConfigs,
   adConfigs,
+  apiConfigs,
   cdnConfigs,
   originConfigs,
   publishConfigs,

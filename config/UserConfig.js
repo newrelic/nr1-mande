@@ -5,7 +5,7 @@ export default {
       title: '# of Active Viewers',
       invertCompareTo: 'true',
       query: {
-        nrql: `SELECT uniqueCount(userId) as 'result' FROM PageAction`,
+        nrql: `SELECT uniqueCount(userId) as 'result' FROM PageAction where actionName = 'CONTENT_START'`,
         lookup: 'result',
       },
     },
@@ -41,7 +41,7 @@ export default {
         warning: 1,
       },
       query: {
-        nrql: `SELECT filter(uniqueCount(session), WHERE actionName = 'CONTENT_ERROR') / filter(uniqueCount(session), WHERE eventType() = 'PageAction' AND actionName like 'CONTENT_*') * 100  as 'result' FROM PageAction`,
+        nrql: `SELECT filter(uniqueCount(userId), WHERE actionName = 'CONTENT_ERROR') / filter(uniqueCount(session), WHERE eventType() = 'PageAction' AND actionName like 'CONTENT_*') * 100  as 'result' FROM PageAction`,
         lookup: 'result',
       },
     },

@@ -35,13 +35,38 @@ export default {
       }
     },
     {
-      title: 'User Error Rate',
+      title: 'Crash-free User % (Mobile)',
       threshold: {
-        critical: 2,
-        warning: 1,
+        critical: 98,
+        warning: 96,
+        type: 'below'
       },
       query: {
-        nrql: `SELECT filter(uniqueCount(userId), WHERE actionName = 'CONTENT_ERROR') / filter(uniqueCount(session), WHERE eventType() = 'PageAction' AND actionName like 'CONTENT_*') * 100  as 'result' FROM PageAction`,
+        nrql: `SELECT (1-(uniqueCount(MobileCrash.uuid) / uniqueCount(MobileSession.uuid))) * 100 AS 'result' FROM MobileCrash, MobileSession`,
+        lookup: 'result',
+      },
+    },
+    {
+      title: 'Error-free User %',
+      threshold: {
+        critical: 98,
+        warning: 96,
+        type: 'below'
+      },
+      query: {
+        nrql: `FROM PageAction SELECT (1- (filter(uniqueCount(userId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(userId))) * 100 as 'result'`,
+        lookup: 'result',
+      },
+    },
+    {
+      title: 'Rebuffer-free User %',
+      threshold: {
+        critical: 98,
+        warning: 96,
+        type: 'below'
+      },
+      query: {
+        nrql: `FROM PageAction SELECT (1- (filter(uniqueCount(userId), WHERE actionName = 'CONTENT_BUFFER_START' and contentPlayhead = 0) / uniqueCount(userId))) * 100 as 'result'`,
         lookup: 'result',
       },
     },

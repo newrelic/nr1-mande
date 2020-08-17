@@ -3,6 +3,11 @@ export default {
   metrics: [
     {
       title: '# of Active Viewers',
+      threshold: {
+        critical: 1500,
+        warning: 1800,
+        type: 'below',
+      },
       invertCompareTo: 'true',
       query: {
         nrql: `SELECT uniqueCount(userId) as 'result' FROM PageAction where actionName = 'CONTENT_START'`,
@@ -24,9 +29,10 @@ export default {
     },
     {
       title: 'Total View Time (m)',
+      invertCompareTo: 'true',
       threshold: {
-        critical: 200,
-        warning: 300,
+        critical: 150,
+        warning: 175,
         type: 'below'
       },
       query: {
@@ -36,6 +42,7 @@ export default {
     },
     {
       title: 'Crash-free User % (Mobile)',
+      invertCompareTo: 'true',
       threshold: {
         critical: 98,
         warning: 96,
@@ -48,6 +55,7 @@ export default {
     },
     {
       title: 'Error-free User %',
+      invertCompareTo: 'true',
       threshold: {
         critical: 98,
         warning: 96,
@@ -60,6 +68,7 @@ export default {
     },
     {
       title: 'Rebuffer-free User %',
+      invertCompareTo: 'true',
       threshold: {
         critical: 98,
         warning: 96,

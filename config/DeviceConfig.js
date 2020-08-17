@@ -36,6 +36,7 @@ export default {
     },
     {
       title: 'Web HTTP: Error Free Sessions',
+      invertCompareTo: 'true',
       query: {
         nrql: `SELECT (1 - uniqueCount(JavaScriptError.session) / uniqueCount(PageView.session)) * 100 as 'result' FROM JavaScriptError, PageView`,
         lookup: 'result',

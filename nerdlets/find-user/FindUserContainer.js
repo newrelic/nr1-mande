@@ -2,27 +2,42 @@ import React from 'react'
 import { Stack, StackItem, HeadingText } from 'nr1'
 import SearchBar from './components/search-bar/SearchBar'
 import SessionContainer from './components/session/SessionContainer'
+import ViewContainer from './components/view/ViewContainer'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 
 export default class FindUserContainer extends React.Component {
   state = {
     user: '',
+    session: null,
   }
 
   onSelectUser = async user => {
-    if (this.state.user !== user) this.setState({ user })
+    if (user === null) this.setState({ user, session: null })
+    if (user && this.state.user !== user) this.setState({ user })
   }
 
   onChooseSession = (item, scope) => {
     scope = scope ? scope : 'all'
+    let views = []
     console.info(`handleChooseSession triggered`, item, scope)
+    if (scope !== 'all') views = item[scope]
+
+    this.setState({ session: { session: item, filter: views, scope } })
+  }
+
+  onClearSession = () => {
+    console.info('findUserContainer.clearSession triggered')
+    this.setState({ session: null })
   }
 
   render() {
-    const { user } = this.state
+    console.info('**** findUserContainer.render')
+    const { user, session } = this.state
     const { timeRange } = this.props.launcherUrlState
     const { accountId } = this.props.nerdletUrlState
     const duration = formatSinceAndCompare(timeRange)
+
+    console.info('>>>> findUserContainer.render session', session)
 
     return (
       <Stack
@@ -65,14 +80,30 @@ export default class FindUserContainer extends React.Component {
         )}
 
         {user && (
-          <StackItem style={{ height: '100%' }}>
-            <SessionContainer
-              accountId={accountId}
-              duration={duration}
-              user={this.state.user}
-              chooseSession={this.onChooseSession}
-            />
-          </StackItem>
+          <React.Fragment>
+            {!session && (
+              <StackItem style={{ height: '100%' }}>
+                <SessionContainer
+                  accountId={accountId}
+                  duration={duration}
+                  user={user}
+                  chooseSession={this.onChooseSession}
+                />
+              </StackItem>
+            )}
+
+            {session && (
+              <StackItem style={{ height: '100%' }}>
+                <ViewContainer
+                  accountId={accountId}
+                  duration={duration}
+                  user={user}
+                  selected={session}
+                  clearSession={this.onClearSession}
+                />
+              </StackItem>
+            )}
+          </React.Fragment>
         )}
       </Stack>
     )

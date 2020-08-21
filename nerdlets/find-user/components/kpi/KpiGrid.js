@@ -1,14 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
+import { isEqual } from 'lodash'
 import { Stack, Grid, GridItem } from 'nr1'
 import { roundToTwoDigits } from '../../../../utils/number-formatter'
 import MetricValue from '../../../../components/metric/MetricValue'
 
-export default class UserKpis extends React.Component {
-  render() {
-    const { sessionViews, userKpis } = this.props
+export default class KpiGrid extends React.Component {
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(nextProps.kpis, this.props.kpis)) return true
+    else return false
+  }
+
+  render() {
+    console.debug('**** kpiGrid.render')
+    const { qualityScore, kpis } = this.props
     const qosThreshold = {
       critical: 80,
       warning: 90,
@@ -17,17 +23,17 @@ export default class UserKpis extends React.Component {
 
     return (
       <React.Fragment>
-        {userKpis && (
+        {kpis && (
           <Grid className="session-user-kpis">
             <GridItem columnStart={1} columnEnd={4}>
               <div className="session-qos-base sessionSectionBase">
                 <div className="metric-chart">
                   <div className="chart-title">
                     Aggregate View Quality Score
-                    </div>
+                  </div>
                   <MetricValue
                     threshold={qosThreshold}
-                    value={sessionViews.qualityScore}
+                    value={qualityScore}
                     greenLight={true}
                     decoration=" %"
                   />
@@ -36,7 +42,7 @@ export default class UserKpis extends React.Component {
             </GridItem>
             <GridItem columnStart={5} columnEnd={12}>
               <Stack className="session-kpi-group" fullWidth>
-                {userKpis.map((kpi, idx) => {
+                {kpis.map((kpi, idx) => {
                   return (
                     <div key={kpi.name + idx} className="sessionSectionBase">
                       <div className="metric-chart">
@@ -61,7 +67,7 @@ export default class UserKpis extends React.Component {
   }
 }
 
-UserKpis.propTypes = {
-  sessionViews: PropTypes.array.isRequired,
-  userKpis: PropTypes.array.isRequired,
+KpiGrid.propTypes = {
+  qualityScore: PropTypes.number.isRequired,
+  kpis: PropTypes.array.isRequired,
 }

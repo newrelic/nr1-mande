@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import numeral from 'numeral'
+import { isEqual } from 'lodash'
 import {
   Spinner,
   NrqlQuery,
@@ -64,15 +64,25 @@ export default class SessionTable extends React.Component {
   }
 
   onViewSession = (evt, { item, index }, scope) => {
-    this.props.chooseSession(item, scope)
+    const session = this.props.sessionViews.find(
+      s => s.session === item.session
+    )
+    this.props.chooseSession(session, scope)
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(nextProps.sessionViews, this.props.sessionViews)) return true
+    else return false
   }
 
   render() {
+    console.debug('**** sessionTable.render')
+
     const { accountId, duration, user, sessionViews } = this.props
     const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp), max(timestamp) WHERE userId = '${user}' LIMIT MAX ${duration.since} facet viewSession`
-    console.info('renderSessionList nrql', nrql)
 
-    console.info('sessionTable.render sessionViews', sessionViews)
+    console.info('renderSessionList nrql', nrql)
+    // console.info('sessionTable.render sessionViews', sessionViews)
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
@@ -101,9 +111,9 @@ export default class SessionTable extends React.Component {
             const timedSession = {
               session: s.session,
               qualityScore: s.qualityScore,
-              totalViews: s.views.length,
-              goodViews: this.getViewQualityCount(s.views, 90, true),
-              badViews: this.getViewQualityCount(s.views, 90, false),
+              totalViews: s.views.reduce((acc, v) => { acc.push(v.id); return acc }, []),
+              good: this.getViewQualityCount(s.views, 90, true),
+              bad: this.getViewQualityCount(s.views, 90, false),
               minTime,
               maxTime,
               duration: maxTime - minTime,
@@ -163,13 +173,13 @@ export default class SessionTable extends React.Component {
                     {item.qualityScore + ' %'}
                   </TableRowCell>
                   <TableRowCell className="session-table__row">
-                    {item.totalViews}
+                    {item.totalViews.length}
                   </TableRowCell>
                   <TableRowCell className="session-table__row">
-                    {item.goodViews.count}
+                    {item.good.count}
                   </TableRowCell>
                   <TableRowCell className="session-table__row">
-                    {item.badViews.count}
+                    {item.bad.count}
                   </TableRowCell>
                 </TableRow>
               )}

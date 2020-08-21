@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
+import { isEqual } from 'lodash'
 import { Stack, StackItem, HeadingText, Spinner } from 'nr1'
 import { dateFormatter } from '../../../../utils/date-formatter'
 import { roundToTwoDigits } from '../../../../utils/number-formatter'
@@ -10,15 +10,13 @@ import {
 } from '../../../../utils/metric-data-loader'
 import videoConfig from '../../../../config/VideoConfig'
 import { metricQualityScore, viewQualityScore } from './quality-score'
+import KpiGrid from '../kpi/KpiGrid'
 import SessionTable from './SessionTable'
-import UserKpis from './UserKpis'
 
 export default class SessionContainer extends React.Component {
   state = {
     sessionViews: null,
-    sessionKpis: null,
     userKpis: null,
-    session: null,
     loading: true,
   }
 
@@ -35,8 +33,6 @@ export default class SessionContainer extends React.Component {
       facetParser,
       'findUser'
     )
-
-    // console.info('sessionContainer.loadData metricDefs', metricDefs)
 
     return metricDefs
   }
@@ -68,43 +64,6 @@ export default class SessionContainer extends React.Component {
     return sessionViews
   }
 
-  collectSessionKpis = (sessions, session, view) => {
-    const found = sessions.find(s => s.session === session)
-    const metricName = view.def.title
-
-    if (found) {
-      const kpi = found.kpis.find(k => k.name === metricName)
-      if (kpi) {
-        kpi.viewCount += 1
-        kpi.value = (kpi.value + view.value) / kpi.viewCount
-      } else {
-        found.kpis.push({
-          id: view.def.id,
-          name: metricName,
-          threshold: view.def.threshold,
-          viewCount: 1,
-          value: view.value,
-        })
-      }
-    } else {
-      sessions.push({
-        session: session,
-        kpis: [
-          {
-            id: view.def.id,
-            name: metricName,
-            threshold: view.def.threshold,
-            viewCount: 1,
-            value: view.value,
-            qualityScoreStrategy: view.def.qualityScoreStrategy,
-          },
-        ],
-      })
-    }
-
-    return sessions
-  }
-
   collectUserKpis = (kpis, view) => {
     const metricName = view.def.title
     const found = kpis.find(k => k.name === metricName)
@@ -130,7 +89,6 @@ export default class SessionContainer extends React.Component {
     const data = await this.loadData()
 
     let sessionViews = []
-    let sessionKpis = []
     let userKpis = []
 
     data.forEach(d => {
@@ -146,12 +104,6 @@ export default class SessionContainer extends React.Component {
 
             sessionViews = this.collectSessionViews(
               sessionViews,
-              viewSession,
-              view
-            )
-
-            sessionKpis = this.collectSessionKpis(
-              sessionKpis,
               viewSession,
               view
             )
@@ -183,24 +135,25 @@ export default class SessionContainer extends React.Component {
       return acc
     }, 0)
 
-    console.info('sessionContainer.sessionViews', sessionViews)
+    // console.info('sessionContainer.sessionViews', sessionViews)
 
-    return { sessionViews, sessionKpis, userKpis }
+    return { sessionViews, userKpis }
   }
 
   async componentDidMount() {
-    console.debug('**** sessionContainer.componentDidMount')
-    const { sessionViews, sessionKpis, userKpis } = await this.loadSessions()
+    console.info('**** sessionContainer.componentDidMount')
+    const { sessionViews, userKpis } = await this.loadSessions()
 
-    this.setState({ loading: false, sessionViews, sessionKpis, userKpis })
+    this.setState({ loading: false, sessionViews, userKpis })
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    console.debug('**** sessionContainer.componentDidUdpate')
-    if (prevProps !== this.props) {
+    console.info('**** sessionContainer.componentDidUdpate')
+    if (!isEqual(prevProps, this.props)) {
+      console.info('**** sessionContainer.componentDidUdpate props mismatch', prevProps, this.props)
       this.setState({ loading: true })
-      const { sessionViews, sessionKpis, userKpis } = await this.loadSessions()
-      this.setState({ loading: false, sessionViews, sessionKpis, userKpis })
+      const { sessionViews, userKpis } = await this.loadSessions()
+      this.setState({ loading: false, sessionViews, userKpis })
     }
   }
 
@@ -231,11 +184,14 @@ export default class SessionContainer extends React.Component {
                       type={HeadingText.TYPE.HEADING_4}
                     >
                       Sessions for User <strong>{user}</strong>
-                      <span className="date-header">{formattedDuration}</span>
+                      <div className="date-header">{formattedDuration}</div>
                     </HeadingText>
                   </StackItem>
 
-                  <UserKpis sessionViews={sessionViews} userKpis={userKpis} />
+                  <KpiGrid
+                    qualityScore={sessionViews.qualityScore}
+                    kpis={userKpis}
+                  />
 
                   <div className="session-table">
                     <SessionTable

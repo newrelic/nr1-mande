@@ -30,7 +30,7 @@ export default class SessionContainer extends React.Component {
       duration,
       accountId,
       querySuffix,
-      facetParser,
+      { parser: facetParser, parserName: 'facetParser' },
       'findUser'
     )
 

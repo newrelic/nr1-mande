@@ -62,17 +62,19 @@ export const loadMetric = async (
   duration,
   accountId,
   filters,
-  parser,
+  parserConfig,
   queryCategory
 ) => {
   // defaults for backwards compatibility
-  if (!parser) parser = compareParser
+  if (!parserConfig) parserConfig = { parser: compareParser, parserName: 'compareParser' }
   if (!queryCategory || !metric[queryCategory]) queryCategory = 'query'
+
+  const { parser, parserName } = parserConfig
 
   let nrql =
     metric[queryCategory].nrql +
     duration.since +
-    (parser.name === 'compareParser' ? duration.compare : '')
+    (parserName === 'compareParser' ? duration.compare : '')
 
   if (filters) nrql = nrql + (filters.double ? filters.double : filters)
 

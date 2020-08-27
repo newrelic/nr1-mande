@@ -1,9 +1,9 @@
 @import '../shared/scss/layout-base.scss';
 @import '../shared/scss/empty-view.scss';
 @import '../shared/scss/metric-base.scss';
-@import './components/search-bar/styles.scss';
-@import './components/session/styles.scss';
+@import './components/view/styles.scss';
 
-.find-user-container {
+.user-view-container {
   height: 100%;
 }
+

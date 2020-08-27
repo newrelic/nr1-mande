@@ -9,8 +9,8 @@ import {
   facetParser,
 } from '../../../../utils/metric-data-loader'
 import videoConfig from '../../../../config/VideoConfig'
-import { metricQualityScore, viewQualityScore } from './quality-score'
-import KpiGrid from '../kpi/KpiGrid'
+import { metricQualityScore, viewQualityScore } from '../../../../utils/quality-score'
+import KpiGrid from '../../../shared/components/kpi-grid/KpiGrid'
 import SessionTable from './SessionTable'
 
 export default class SessionContainer extends React.Component {

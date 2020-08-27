@@ -1,4 +1,6 @@
-@import "./common.scss";
+@import '../shared/scss/layout-base.scss';
+@import '../shared/scss/empty-view.scss';
+@import '../shared/scss/metric-base.scss';
 @import "../../components/category-menu/style.scss";
 @import "../../components/metric-sidebar/style.scss";
 @import "../../components/dashboard/styles";
@@ -8,10 +10,6 @@
 // ==============================================================
 // Mande Common and Nerdlet Styles
 // ==============================================================
-
-* {
-  box-sizing: border-box;
-}
 
 .options-bar-parent {
   height: 58px;
@@ -43,6 +41,7 @@
 
 .container {
   height: 100%;
+  width: 100%;
   // overflow: hidden;
 }
 

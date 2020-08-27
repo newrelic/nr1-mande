@@ -12,10 +12,8 @@ import {
 } from 'nr1'
 import videoConfig from '../../../../config/VideoConfig'
 import { formatTimestampAsDate } from '../../../../utils/date-formatter'
-import { forEach } from 'lodash'
 
 export default class ViewTable extends React.Component {
-
   openView = (evt, { item, idx }) => {
     console.info('item', item)
     navigation.openStackedNerdlet({
@@ -29,14 +27,8 @@ export default class ViewTable extends React.Component {
   }
 
   render() {
-    const {
-      accountId,
-      duration,
-      user,
-      selected: { session },
-    } = this.props
-    const sessionId = session.session
-    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT latest(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${sessionId}' and actionName = 'CONTENT_REQUEST' LIMIT MAX ${duration.since} facet viewId`
+    const { accountId, duration, session, views, scope } = this.props
+    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT latest(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName = 'CONTENT_REQUEST' LIMIT MAX ${duration.since} facet viewId`
 
     console.info('view data session', session)
     console.info('view data nrql', nrql)
@@ -50,7 +42,7 @@ export default class ViewTable extends React.Component {
           if (!data) return <div></div>
           // console.info('view data', data)
 
-          const decoratedViews = session.views.map(v => {
+          const decoratedViews = views.map(v => {
             const viewData = data.filter(
               d => d.metadata.groups[1].value === v.id
             )
@@ -72,8 +64,8 @@ export default class ViewTable extends React.Component {
             }
 
             videoConfig.qualityScore.include.forEach(qs => {
-              const viewDetails = v.details.find(d => d.def.id === qs)
-              decoratedView[qs] = viewDetails ? viewDetails.value : 0
+              const kpis = v.kpis.find(k => k.defId === qs)
+              decoratedView[qs] = kpis ? kpis.value : 0
             })
 
             return decoratedView
@@ -127,7 +119,6 @@ export default class ViewTable extends React.Component {
                     {item.qualityScore + ' %'}
                   </TableRowCell>
                   {videoConfig.qualityScore.include.map((qs, idx) => {
-                    const value = item[qs] ? item[qs].value : 0
                     return (
                       <TableRowCell key={idx} className="session-table__row">
                         {item[qs]}
@@ -147,5 +138,7 @@ export default class ViewTable extends React.Component {
 ViewTable.propTypes = {
   duration: PropTypes.object.isRequired,
   accountId: PropTypes.number.isRequired,
-  selected: PropTypes.object.isRequired,
+  session: PropTypes.object.isRequired,
+  views: PropTypes.array.isRequired,
+  scope: PropTypes.string.isRequired,
 }

@@ -13,6 +13,7 @@ import {
   Button,
   navigation,
 } from 'nr1'
+
 import CategoryMenu from '../../components/category-menu/CategoryMenu'
 import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
 import MetricDashboard from '../../components/dashboard/MetricDashboard'
@@ -38,10 +39,11 @@ export default class MandeContainer extends React.Component {
       threshold: 'All',
       selectedMetric: null,
       selectedStack: null,
+      selectedUser: '',
       activeFilters: [],
       facets: [],
       showFacetSidebar: true,
-      showFindUser: false,
+      showFindUserButton: false,
       metricData: [],
       metricCategories,
       metricRefreshInterval: 180000,
@@ -274,25 +276,25 @@ export default class MandeContainer extends React.Component {
       null
     )
 
-    const showFindUser = await this.loadUserFlag(accountId, duration)
+    const showFindUserButton = await this.loadUserFlag(accountId, duration)
 
     // reset all state if an accountId was saved, otherwise, just set the default accountId state
     if (savedState) {
       let savedStack = selectedMetric
         ? this.onToggleMetric(selectedMetric, true)
         : selectedStack
-        ? this.onToggleDetailView(selectedStack, true)
-        : null
+          ? this.onToggleDetailView(selectedStack, true)
+          : null
       this.setState({
         accountId,
         threshold,
         selectedMetric,
         selectedStack: savedStack,
         metricData,
-        showFindUser,
+        showFindUserButton,
       })
     } else {
-      this.setState({ accountId, metricData, showFindUser })
+      this.setState({ accountId, metricData, showFindUserButton })
     }
 
     this.setupInterval(this.state.metricRefreshInterval)
@@ -364,9 +366,9 @@ export default class MandeContainer extends React.Component {
         accountId,
         null
       )
-      const showFindUser = await this.loadUserFlag(accountId, duration)
+      const showFindUserButton = await this.loadUserFlag(accountId, duration)
 
-      this.setState({ metricData, showFindUser })
+      this.setState({ metricData, showFindUserButton })
     }
   }
 
@@ -426,7 +428,7 @@ export default class MandeContainer extends React.Component {
                   </Select>
                 </Stack>
               </StackItem>
-              {this.state.showFindUser && (
+              {this.state.showFindUserButton && (
                 <StackItem style={{ alignSelf: 'center', marginLeft: 'auto' }}>
                   <Button
                     type={Button.TYPE.PRIMARY}
@@ -497,137 +499,164 @@ export default class MandeContainer extends React.Component {
     const facetClause = formatFacets(facets)
 
     return (
-      <Grid
-        className="container"
-        spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}
-      >
-        {accountId && (
-          <GridItem
-            className="category-menu-grid-item"
-            columnSpan={2}
-            collapseGapAfter
-          >
-            <CategoryMenu
-              accountId={accountId}
-              threshold={threshold}
-              duration={duration}
-              metricDefs={metricData}
-              metricCategories={metricCategories}
-              selectedStack={selectedStack}
-              toggleMetric={this.onToggleMetric}
-              toggleDetails={this.onToggleDetailView}
-            />
-          </GridItem>
-        )}
-        <GridItem
-          className="primary-content-grid-container"
-          columnSpan={selectedStack ? 8 : 10}
+      <>
+        <Grid
+          className="container"
+          spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}
         >
-          <div className="primary-content-grid">
-            {this.renderOptionsBar()}
-            {accountId && (
-              <Stack
-                fullWidth={true}
-                directionType={Stack.DIRECTION_TYPE.VERTICAL}
-                horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
-                gapType={Stack.GAP_TYPE.SMALL}
-                className="main-panel"
-              >
-                {!selectedStack && (
-                  <StackItem grow>
-                    <MetricDashboard
-                      accountId={accountId}
-                      threshold={threshold}
-                      duration={duration}
-                      metricDefs={metricData}
-                      metricCategories={metricCategories}
-                      toggleMetric={this.onToggleMetric}
-                      toggleDetails={this.onToggleDetailView}
-                    />
-                  </StackItem>
-                )}
-                {selectedStack && (
-                  <StackItem grow>
-                    <CategoryDetail
-                      accountId={accountId}
-                      duration={duration}
-                      threshold={threshold}
-                      metricRefreshInterval={metricRefreshInterval}
-                      activeMetric={selectedMetric}
-                      toggleMetric={this.onToggleMetric}
-                      stack={selectedStack}
-                      activeFilters={filters}
-                      facets={facetClause}
-                    />
-                  </StackItem>
-                )}
-              </Stack>
-            )}
-          </div>
-        </GridItem>
-        {accountId && selectedStack && (
-          <GridItem
-            className="filters-list-grid-item"
-            columnSpan={2}
-            collapseGapBefore
-          >
-            <div onClick={this.onSidebarToggle}>
-              <Stack
-                fullWidth
-                directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
-                verticalType={Stack.VERTICAL_TYPE.CENTER}
-                gapType={Stack.GAP_TYPE.NONE}
-              >
-                <StackItem
-                  grow
-                  className={
-                    showFacetSidebar
-                      ? 'filter-visibility-control selected'
-                      : 'filter-visibility-control notSelected'
-                  }
-                >
-                  Choose Facets
-                </StackItem>
-                <StackItem
-                  grow
-                  className={
-                    !showFacetSidebar
-                      ? 'filter-visibility-control selected'
-                      : 'filter-visibility-control notSelected'
-                  }
-                >
-                  Choose Filters
-                </StackItem>
-              </Stack>
-            </div>
-            <Stack
-              grow
-              fullHeight
-              fullWidth
-              directionType={Stack.DIRECTION_TYPE.VERTICAL}
-              className="detail-filter"
+          {accountId && (
+            <GridItem
+              className="category-menu-grid-item"
+              columnSpan={2}
+              collapseGapAfter
             >
-              {facets && facets.length > 0 && (
-                <React.Fragment>
-                  <StackItem className="sidebar-selected-title">
-                    Facets
-                  </StackItem>
-                  {this.renderSelectedSidebar(true)}
-                </React.Fragment>
+              <CategoryMenu
+                accountId={accountId}
+                threshold={threshold}
+                duration={duration}
+                metricDefs={metricData}
+                metricCategories={metricCategories}
+                selectedStack={selectedStack}
+                toggleMetric={this.onToggleMetric}
+                toggleDetails={this.onToggleDetailView}
+              />
+            </GridItem>
+          )}
+
+          {!accountId && (
+            <GridItem
+              className="category-menu-grid-item"
+              columnSpan={2}
+              collapseGapAfter
+            >
+              <Stack
+                fullHeight
+                fullWidth
+                className="category-menu"
+                directionType={Stack.DIRECTION_TYPE.VERTICAL}
+              >
+                <Stack
+                  className="category-menu-title"
+                  fullWidth
+                  directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+                  verticalType={Stack.VERTICAL_TYPE.CENTER}
+                >
+                  <StackItem>""</StackItem>
+                </Stack>
+              </Stack>
+            </GridItem>
+          )}
+
+          <GridItem
+            className="primary-content-grid-container"
+            columnSpan={selectedStack ? 8 : 10}
+          >
+            <div className="primary-content-grid">
+              {this.renderOptionsBar()}
+              {accountId && (
+                <Stack
+                  fullWidth={true}
+                  directionType={Stack.DIRECTION_TYPE.VERTICAL}
+                  horizontalType={Stack.HORIZONTAL_TYPE.CENTER}
+                  gapType={Stack.GAP_TYPE.SMALL}
+                  className="main-panel"
+                >
+                  {!selectedStack && (
+                    <StackItem grow>
+                      <MetricDashboard
+                        accountId={accountId}
+                        threshold={threshold}
+                        duration={duration}
+                        metricDefs={metricData}
+                        metricCategories={metricCategories}
+                        toggleMetric={this.onToggleMetric}
+                        toggleDetails={this.onToggleDetailView}
+                      />
+                    </StackItem>
+                  )}
+                  {selectedStack && (
+                    <StackItem grow>
+                      <CategoryDetail
+                        accountId={accountId}
+                        duration={duration}
+                        threshold={threshold}
+                        metricRefreshInterval={metricRefreshInterval}
+                        activeMetric={selectedMetric}
+                        toggleMetric={this.onToggleMetric}
+                        stack={selectedStack}
+                        activeFilters={filters}
+                        facets={facetClause}
+                      />
+                    </StackItem>
+                  )}
+                </Stack>
               )}
-              {activeFilters && activeFilters.length > 0 && (
-                <React.Fragment>
-                  <StackItem className="sidebar-selected-title">
-                    Filters
-                  </StackItem>
-                  {this.renderSelectedSidebar(false)}
-                </React.Fragment>
-              )}
-              {this.renderSidebar(duration)}
-            </Stack>
+            </div>
           </GridItem>
-        )}
-      </Grid>
+          {accountId && selectedStack && (
+            <GridItem
+              className="filters-list-grid-item"
+              columnSpan={2}
+              collapseGapBefore
+            >
+              <div onClick={this.onSidebarToggle}>
+                <Stack
+                  fullWidth
+                  directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+                  verticalType={Stack.VERTICAL_TYPE.CENTER}
+                  gapType={Stack.GAP_TYPE.NONE}
+                >
+                  <StackItem
+                    grow
+                    className={
+                      showFacetSidebar
+                        ? 'filter-visibility-control selected'
+                        : 'filter-visibility-control notSelected'
+                    }
+                  >
+                    Choose Facets
+                </StackItem>
+                  <StackItem
+                    grow
+                    className={
+                      !showFacetSidebar
+                        ? 'filter-visibility-control selected'
+                        : 'filter-visibility-control notSelected'
+                    }
+                  >
+                    Choose Filters
+                </StackItem>
+                </Stack>
+              </div>
+              <Stack
+                grow
+                fullHeight
+                fullWidth
+                directionType={Stack.DIRECTION_TYPE.VERTICAL}
+                className="detail-filter"
+              >
+                {facets && facets.length > 0 && (
+                  <React.Fragment>
+                    <StackItem className="sidebar-selected-title">
+                      Facets
+                    </StackItem>
+                    {this.renderSelectedSidebar(true)}
+                  </React.Fragment>
+                )}
+                {activeFilters && activeFilters.length > 0 && (
+                  <React.Fragment>
+                    <StackItem className="sidebar-selected-title">
+                      Filters
+                    </StackItem>
+                    {this.renderSelectedSidebar(false)}
+                  </React.Fragment>
+                )}
+                {this.renderSidebar(duration)}
+              </Stack>
+            </GridItem>
+          )}
+        </Grid>
+      </>
     )
   }
 }

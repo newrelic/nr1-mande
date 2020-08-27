@@ -1,43 +1,88 @@
 import React from 'react'
-import { Stack, StackItem, HeadingText } from 'nr1'
+import { Stack, StackItem, HeadingText, navigation } from 'nr1'
 import SearchBar from './components/search-bar/SearchBar'
 import SessionContainer from './components/session/SessionContainer'
-import ViewContainer from './components/view/ViewContainer'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 
 export default class FindUserContainer extends React.Component {
   state = {
     user: '',
-    session: null,
   }
 
   onSelectUser = async user => {
-    if (user === null) this.setState({ user, session: null })
+    if (user === null) this.setState({ user })
     if (user && this.state.user !== user) this.setState({ user })
   }
 
-  onChooseSession = (item, scope) => {
-    scope = scope ? scope : 'all'
-    let views = []
-    console.info(`handleChooseSession triggered`, item, scope)
-    if (scope !== 'all') views = item[scope]
+  compressViews = views => {
+    let compressed = []
+    views.forEach(view => {
+      console.log('compressing view', view)
 
-    this.setState({ session: { session: item, filter: views, scope } })
+      view.details.forEach(d => {
+        console.info('compressing view detail', d)
+
+        const viewId = view.id
+        const found = compressed.find(c => c.id === viewId)
+
+        if (found) {
+          found.kpiCount += 1
+          found.kpis.push({
+            defId: d.def.id,
+            defTitle: d.def.title,
+            value: d.value,
+            qualityScore: d.qualityScore,
+          })
+        } else {
+          compressed.push({
+            id: viewId,
+            qualityScore: view.qualityScore,
+            kpis: [
+              {
+                defId: d.def.id,
+                defTitle: d.def.title,
+                value: d.value,
+                qualityScore: d.qualityScore,
+              },
+            ],
+            kpiCount: 1,
+          })
+        }
+      })
+    })
+
+    return compressed
   }
 
-  onClearSession = () => {
-    console.info('findUserContainer.clearSession triggered')
-    this.setState({ session: null })
+  onChooseSession = (item, scope) => {
+    console.info(`handleChooseSession triggered`, item, scope)
+
+    const { accountId, user } = this.props.nerdletUrlState
+    scope = scope ? scope : 'all'
+
+    let views = []
+    if (scope !== 'all') views = item[scope]
+
+    navigation.openStackedNerdlet({
+      id: 'user-video-view',
+      urlState: {
+        accountId: accountId,
+        user: user,
+        session: { id: item.session, qualityScore: item.qualityScore },
+        views: this.compressViews(item.views),
+        scope,
+      },
+    })
   }
 
   render() {
     console.info('**** findUserContainer.render')
-    const { user, session } = this.state
+    const { user } = this.state
     const { timeRange } = this.props.launcherUrlState
     const { accountId } = this.props.nerdletUrlState
     const duration = formatSinceAndCompare(timeRange)
 
-    console.info('>>>> findUserContainer.render session', session)
+    console.info('>>>> findUserContainer.render')
 
     return (
       <Stack
@@ -80,30 +125,14 @@ export default class FindUserContainer extends React.Component {
         )}
 
         {user && (
-          <React.Fragment>
-            {!session && (
-              <StackItem style={{ height: '100%' }}>
-                <SessionContainer
-                  accountId={accountId}
-                  duration={duration}
-                  user={user}
-                  chooseSession={this.onChooseSession}
-                />
-              </StackItem>
-            )}
-
-            {session && (
-              <StackItem style={{ height: '100%' }}>
-                <ViewContainer
-                  accountId={accountId}
-                  duration={duration}
-                  user={user}
-                  selected={session}
-                  clearSession={this.onClearSession}
-                />
-              </StackItem>
-            )}
-          </React.Fragment>
+          <StackItem style={{ height: '100%' }}>
+            <SessionContainer
+              accountId={accountId}
+              duration={duration}
+              user={user}
+              chooseSession={this.onChooseSession}
+            />
+          </StackItem>
         )}
       </Stack>
     )

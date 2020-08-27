@@ -1,0 +1,94 @@
+import React from 'react'
+import { Stack, StackItem, HeadingText } from 'nr1'
+import { formatSinceAndCompare } from '../../utils/query-formatter'
+import { dateFormatter } from '../../utils/date-formatter'
+import KpiGrid from '../shared/components/kpi-grid/KpiGrid'
+import videoConfig from '../../config/VideoConfig'
+import ViewTable from './components/view/ViewTable'
+
+export default class UserViewContainer extends React.Component {
+  collectViewKpis = views => {
+    let kpis = []
+    views.forEach(view => {
+      // console.log('view', view)
+
+      view.kpis.forEach(k => {
+        const config = videoConfig.metrics.find(m => m.id === k.defId)
+        const metricName = k.defTitle
+        const found = kpis.find(k => k.name === metricName)
+
+        if (found) {
+          found.viewCount += 1
+          found.value += k.value
+        } else {
+          kpis.push({
+            defId: k.defId,
+            name: metricName,
+            threshold: config.threshold,
+            viewCount: 1,
+            value: k.value,
+          })
+        }
+      })
+    })
+
+    return kpis
+  }
+
+  render() {
+    console.info('**** userViewContainer.render')
+    const { timeRange } = this.props.launcherUrlState
+    const {
+      accountId,
+      user,
+      session,
+      views,
+      scope,
+    } = this.props.nerdletUrlState
+    const duration = formatSinceAndCompare(timeRange)
+
+    console.info('>>>> userViewContainer.render session', session)
+    console.info('>>>> userViewContainer.render views', views)
+
+    return (
+      <>
+        {session && (
+          <Stack
+            fullWidth
+            horizontalType={Stack.HORIZONTAL_TYPE.FILL}
+            directionType={Stack.DIRECTION_TYPE.VERTICAL}
+            style={{ height: '100%' }}
+            className="user-view-container"
+          >
+            <div className="session-container">
+              <StackItem className="view-header">
+                <HeadingText
+                  className="panel-header"
+                  type={HeadingText.TYPE.HEADING_4}
+                >
+                  Views for Session <strong>{session.id}</strong>
+                  <div className="date-header">{dateFormatter(timeRange)}</div>
+                </HeadingText>
+              </StackItem>
+
+              <KpiGrid
+                qualityScore={session.qualityScore}
+                kpis={this.collectViewKpis(views)}
+              />
+
+              <div className="session-table">
+                <ViewTable
+                  accountId={accountId}
+                  duration={duration}
+                  session={session}
+                  views={views}
+                  scope={scope}
+                />
+              </div>
+            </div>
+          </Stack>
+        )}
+      </>
+    )
+  }
+}

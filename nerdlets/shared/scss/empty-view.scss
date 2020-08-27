@@ -1,0 +1,28 @@
+
+.empty-state {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  border: 3px dashed #e3e4e4;
+  text-align: center;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: none;
+}
+
+.empty-state-header {
+  margin-bottom: 1rem;
+  color: #464e4e;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.empty-state-desc {
+  margin: 0 auto;
+  color: #8e9494;
+  line-height: 1.25rem;
+}

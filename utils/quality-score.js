@@ -1,4 +1,4 @@
-import { roundToTwoDigits } from '../../../../utils/number-formatter'
+import { roundToTwoDigits } from './number-formatter'
 
 export const metricQualityScore = (metric, threshold, strategy) => {
   switch (strategy) {

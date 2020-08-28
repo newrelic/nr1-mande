@@ -2,7 +2,7 @@ import React from 'react'
 import { Stack, StackItem, HeadingText } from 'nr1'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 import { dateFormatter } from '../../utils/date-formatter'
-import KpiGrid from '../shared/components/kpi-grid/KpiGrid'
+import QosKpiGrid from '../shared/components/qos/QosKpiGrid'
 import videoConfig from '../../config/VideoConfig'
 import ViewTable from './components/view/ViewTable'
 
@@ -68,9 +68,10 @@ export default class UserViewContainer extends React.Component {
                 </HeadingText>
               </StackItem>
 
-              <KpiGrid
+              <QosKpiGrid
                 qualityScore={session.qualityScore}
                 kpis={this.collectViewKpis(views)}
+                threshold={videoConfig.qualityScore.threshold}
               />
 
               <div className="session-table">

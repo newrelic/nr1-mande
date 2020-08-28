@@ -9,8 +9,11 @@ import {
   facetParser,
 } from '../../../../utils/metric-data-loader'
 import videoConfig from '../../../../config/VideoConfig'
-import { metricQualityScore, viewQualityScore } from '../../../../utils/quality-score'
-import KpiGrid from '../../../shared/components/kpi-grid/KpiGrid'
+import {
+  metricQualityScore,
+  viewQualityScore,
+} from '../../../../utils/quality-score'
+import QosKpiGrid from '../../../shared/components/qos/QosKpiGrid'
 import SessionTable from './SessionTable'
 
 export default class SessionContainer extends React.Component {
@@ -150,7 +153,11 @@ export default class SessionContainer extends React.Component {
   async componentDidUpdate(prevProps, prevState) {
     console.info('**** sessionContainer.componentDidUdpate')
     if (!isEqual(prevProps, this.props)) {
-      console.info('**** sessionContainer.componentDidUdpate props mismatch', prevProps, this.props)
+      console.info(
+        '**** sessionContainer.componentDidUdpate props mismatch',
+        prevProps,
+        this.props
+      )
       this.setState({ loading: true })
       const { sessionViews, userKpis } = await this.loadSessions()
       this.setState({ loading: false, sessionViews, userKpis })
@@ -188,9 +195,10 @@ export default class SessionContainer extends React.Component {
                     </HeadingText>
                   </StackItem>
 
-                  <KpiGrid
+                  <QosKpiGrid
                     qualityScore={sessionViews.qualityScore}
                     kpis={userKpis}
+                    threshold={videoConfig.qualityScore.threshold}
                   />
 
                   <div className="session-table">

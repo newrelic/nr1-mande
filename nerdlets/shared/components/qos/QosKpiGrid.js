@@ -5,7 +5,7 @@ import { Stack, Grid, GridItem } from 'nr1'
 import { roundToTwoDigits } from '../../../../utils/number-formatter'
 import MetricValue from '../../../../components/metric/MetricValue'
 
-export default class KpiGrid extends React.Component {
+export default class QosKpiGrid extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (!isEqual(nextProps.kpis, this.props.kpis)) return true
@@ -14,12 +14,7 @@ export default class KpiGrid extends React.Component {
 
   render() {
     console.debug('**** kpiGrid.render')
-    const { qualityScore, kpis } = this.props
-    const qosThreshold = {
-      critical: 80,
-      warning: 90,
-      type: 'below',
-    }
+    const { qualityScore, kpis, threshold } = this.props
 
     return (
       <React.Fragment>
@@ -32,7 +27,7 @@ export default class KpiGrid extends React.Component {
                     Aggregate View Quality Score
                   </div>
                   <MetricValue
-                    threshold={qosThreshold}
+                    threshold={threshold}
                     value={qualityScore}
                     greenLight={true}
                     decoration=" %"
@@ -67,7 +62,8 @@ export default class KpiGrid extends React.Component {
   }
 }
 
-KpiGrid.propTypes = {
+QosKpiGrid.propTypes = {
   qualityScore: PropTypes.number.isRequired,
   kpis: PropTypes.array.isRequired,
+  threshold: PropTypes.object.isRequired,
 }

@@ -580,7 +580,6 @@ export default {
   qualityScore: {
     include: ['VSF', 'VST', 'CI', 'CRR', 'ER'],
     formula: metrics => {
-      // console.info('qualityScore.formula metrics', metrics)
       const vsf = defaultToOne(metrics.VSF)
       const rest =
         (defaultToOne(metrics.VST) +
@@ -588,9 +587,13 @@ export default {
           defaultToOne(metrics.CRR) +
           defaultToOne(metrics.ER)) *
         25
-      // console.info('vsf rest', vsf, rest)
       return vsf * rest
-    }
+    },
+    threshold: {
+      critical: 80,
+      warning: 90,
+      type: 'below',
+    },
   },
 }
 

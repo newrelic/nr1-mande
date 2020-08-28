@@ -21,5 +21,5 @@ export default [
   publishConfigs,
   processConfigs,
   ingestConfigs,
-  sourceConfigs
+  sourceConfigs,
 ]

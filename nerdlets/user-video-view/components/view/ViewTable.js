@@ -12,6 +12,7 @@ import {
 import videoConfig from '../../../../config/VideoConfig'
 import { formatTimestampAsDate } from '../../../../utils/date-formatter'
 import { openVideoSession } from '../../../../utils/navigation'
+import { getThresholdClass } from '../../../../utils/threshold'
 
 export default class ViewTable extends React.Component {
   openView = (evt, { item, idx }) => {
@@ -29,7 +30,6 @@ export default class ViewTable extends React.Component {
           if (error) return <BlockText>{error.message}</BlockText>
 
           if (!data) return <div></div>
-          // console.info('view data', data)
 
           const decoratedViews = views.map(v => {
             const viewData = data.filter(
@@ -103,7 +103,12 @@ export default class ViewTable extends React.Component {
                   <TableRowCell className="session-table__row">
                     {item.contentTitle}
                   </TableRowCell>
-                  <TableRowCell className="session-table__row">
+                  <TableRowCell
+                    className={`session-table__row bold ${getThresholdClass(
+                      videoConfig.qualityScore.threshold,
+                      item.qualityScore,
+                      'greenLight'
+                    )}`}>
                     {item.qualityScore + ' %'}
                   </TableRowCell>
                   {videoConfig.qualityScore.include.map((qs, idx) => {

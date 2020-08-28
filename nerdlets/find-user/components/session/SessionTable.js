@@ -15,6 +15,8 @@ import {
   formatTimeAsString,
   milliseconds,
 } from '../../../../utils/date-formatter'
+import { getThresholdClass } from '../../../../utils/threshold'
+import videoConfig from '../../../../config/VideoConfig'
 
 export default class SessionTable extends React.Component {
   getTableActions = () => {
@@ -117,7 +119,6 @@ export default class SessionTable extends React.Component {
               maxTime,
               duration: maxTime - minTime,
             }
-            // console.info('timedSession', timedSession)
 
             return timedSession
           })
@@ -168,7 +169,13 @@ export default class SessionTable extends React.Component {
                   <TableRowCell className="session-table__row">
                     {formatTimeAsString(item.duration, milliseconds)}
                   </TableRowCell>
-                  <TableRowCell className="session-table__row">
+                  <TableRowCell
+                    className={`session-table__row bold ${getThresholdClass(
+                      videoConfig.qualityScore.threshold,
+                      item.qualityScore,
+                      'greenLight'
+                    )}`}
+                  >
                     {item.qualityScore + ' %'}
                   </TableRowCell>
                   <TableRowCell className="session-table__row">

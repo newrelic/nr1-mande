@@ -31,6 +31,7 @@ export default class QosKpiGrid extends React.Component {
                     value={qualityScore}
                     greenLight={true}
                     decoration=" %"
+                    baseStyle="greenLight"
                   />
                 </div>
               </div>

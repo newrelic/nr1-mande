@@ -20,29 +20,29 @@ export default class SessionTable extends React.Component {
   getTableActions = () => {
     return [
       {
-        label: 'View All Streams',
+        label: 'View Streams',
         iconType:
           TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER,
         onClick: (evt, { item, index }) => {
           this.onViewSession(evt, { item, index }, 'all')
         },
       },
-      {
-        label: 'View High Quality Streams',
-        iconType:
-          TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER__A_CHECKED,
-        onClick: (evt, { item, index }) => {
-          this.onViewSession(evt, { item, index }, 'good')
-        },
-      },
-      {
-        label: 'View Low Quality Streams',
-        iconType:
-          TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER__S_ERROR,
-        onClick: (evt, { item, index }) => {
-          this.onViewSession(evt, { item, index }, 'bad')
-        },
-      },
+      // {
+      //   label: 'View High Quality Streams',
+      //   iconType:
+      //     TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER__A_CHECKED,
+      //   onClick: (evt, { item, index }) => {
+      //     this.onViewSession(evt, { item, index }, 'good')
+      //   },
+      // },
+      // {
+      //   label: 'View Low Quality Streams',
+      //   iconType:
+      //     TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER__S_ERROR,
+      //   onClick: (evt, { item, index }) => {
+      //     this.onViewSession(evt, { item, index }, 'bad')
+      //   },
+      // },
     ]
   }
 
@@ -67,6 +67,7 @@ export default class SessionTable extends React.Component {
     const session = this.props.sessionViews.find(
       s => s.session === item.session
     )
+
     this.props.chooseSession(session, scope)
   }
 
@@ -82,7 +83,6 @@ export default class SessionTable extends React.Component {
     const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp), max(timestamp) WHERE userId = '${user}' LIMIT MAX ${duration.since} facet viewSession`
 
     console.info('renderSessionList nrql', nrql)
-    // console.info('sessionTable.render sessionViews', sessionViews)
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
@@ -91,7 +91,6 @@ export default class SessionTable extends React.Component {
           if (error) return <BlockText>{error.message}</BlockText>
 
           if (!data) return <div></div>
-          // console.info('renderSessionList data', data)
 
           const timedSessions = sessionViews.map(s => {
             const timedResults = data.filter(

@@ -1,8 +1,10 @@
 import React from 'react'
-import { Stack, StackItem, HeadingText, navigation } from 'nr1'
+import { Stack, StackItem, HeadingText } from 'nr1'
 import SearchBar from './components/search-bar/SearchBar'
 import SessionContainer from './components/session/SessionContainer'
+import videoConfig from '../../config/VideoConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
+import { openUserVideoViews, openVideoSession } from '../../utils/navigation'
 
 export default class FindUserContainer extends React.Component {
   state = {
@@ -56,23 +58,21 @@ export default class FindUserContainer extends React.Component {
     const { accountId, user } = this.props.nerdletUrlState
     scope = scope ? scope : 'all'
 
-    let views = []
-    if (scope !== 'all') views = item[scope]
-
-    navigation.openStackedNerdlet({
-      id: 'user-video-view',
-      urlState: {
-        accountId: accountId,
-        user: user,
-        session: { id: item.session, qualityScore: item.qualityScore },
-        views: this.compressViews(item.views),
-        scope,
-      },
-    })
+    if (item.views.length === 1) {
+      openVideoSession(accountId, item.views[0].id, videoConfig.title)
+    } else {
+      openUserVideoViews(
+        accountId,
+        user,
+        { id: item.session, qualityScore: item.qualityScore },
+        this.compressViews(item.views),
+        scope
+      )
+    }
   }
 
   render() {
-    console.info('**** findUserContainer.render')
+    console.debug('**** findUserContainer.render')
     const { user } = this.state
     const { timeRange } = this.props.launcherUrlState
     const { accountId } = this.props.nerdletUrlState

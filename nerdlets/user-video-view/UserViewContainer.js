@@ -36,7 +36,7 @@ export default class UserViewContainer extends React.Component {
   }
 
   render() {
-    console.info('**** userViewContainer.render')
+    console.debug('**** userViewContainer.render')
     const { timeRange } = this.props.launcherUrlState
     const {
       accountId,

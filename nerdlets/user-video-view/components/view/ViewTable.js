@@ -8,22 +8,14 @@ import {
   TableHeaderCell,
   TableRow,
   TableRowCell,
-  navigation,
 } from 'nr1'
 import videoConfig from '../../../../config/VideoConfig'
 import { formatTimestampAsDate } from '../../../../utils/date-formatter'
+import { openVideoSession } from '../../../../utils/navigation'
 
 export default class ViewTable extends React.Component {
   openView = (evt, { item, idx }) => {
-    console.info('item', item)
-    navigation.openStackedNerdlet({
-      id: 'video-session',
-      urlState: {
-        accountId: this.props.accountId,
-        session: item.id,
-        stackName: videoConfig.title,
-      },
-    })
+    openVideoSession(this.props.accountId, item.id, videoConfig.title)
   }
 
   render() {

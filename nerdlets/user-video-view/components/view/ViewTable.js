@@ -30,9 +30,6 @@ export default class ViewTable extends React.Component {
     const { accountId, duration, session, views, scope } = this.props
     const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT latest(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName = 'CONTENT_REQUEST' LIMIT MAX ${duration.since} facet viewId`
 
-    console.info('view data session', session)
-    console.info('view data nrql', nrql)
-
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
         {({ data, error, loading }) => {
@@ -71,7 +68,6 @@ export default class ViewTable extends React.Component {
             return decoratedView
           })
 
-          console.info('decoratedViews', decoratedViews)
           return (
             <Table items={decoratedViews}>
               <TableHeader>

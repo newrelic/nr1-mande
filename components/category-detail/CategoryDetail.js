@@ -11,8 +11,6 @@ export default class CategoryDetail extends React.Component {
   }
 
   loadMetricData = async () => {
-    console.debug('>>>> categoryDetail.loadMetricData')
-
     const { accountId, duration, stack, activeFilters } = this.props
     let metricDefs = await loadMetricsForConfig(
       stack,
@@ -54,7 +52,6 @@ export default class CategoryDetail extends React.Component {
         />
       )
 
-    console.debug('categoryDetail.detailView view', view)
     return view
   }
 
@@ -65,30 +62,24 @@ export default class CategoryDetail extends React.Component {
 
     const { stack, metricRefreshInterval } = this.props
     this.interval = setInterval(async () => {
-      console.debug('**** categoryDetail.interval reset metrics to loading')
-
       let loadingMetrics = []
       loadingMetrics = loadingMetrics.concat(
         stack.metrics.map(metric => {
           return { def: metric, category: stack.title, loading: true }
         })
       )
-
       this.setState({ metricDefs: loadingMetrics })
 
-      console.debug('**** categoryDetail.interval reset metrics to loaded')
       await this.loadMetricData()
     }, metricRefreshInterval)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (!isEqual(this.props, nextProps)) {
-      console.debug('**** categoryDetail.componentShouldUpdate props mismatch')
       return true
     }
 
     if (!isEqual(this.state, nextState)) {
-      console.debug('**** categoryDetail.componentShouldUpdate state mismatch')
       return true
     }
 
@@ -104,9 +95,6 @@ export default class CategoryDetail extends React.Component {
       prevProps.stack !== this.props.stack ||
       prevProps.accountId !== this.props.accountId
     ) {
-      console.debug(
-        '**** categoryDetail.componentDidUpdate triggering data refresh'
-      )
       await this.loadMetricData()
     }
   }

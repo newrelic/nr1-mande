@@ -106,10 +106,10 @@ export const loadMetric = async (
 
 export const compareParser = (metric, data, lookup) => {
   if (data) {
-    console.debug(
-      `>>>> metric-data-loader.compareParser ${metric.title} data`,
-      data
-    )
+    // console.debug(
+    //   `>>>> metric-data-loader.compareParser ${metric.title} data`,
+    //   data
+    // )
 
     if (data.actor.account.nrql.results.length === 0)
       return { value: 0, difference: 0, change: 0 }
@@ -154,10 +154,10 @@ export const compareParser = (metric, data, lookup) => {
 
 export const facetParser = (metric, data, lookup) => {
   if (data) {
-    console.debug(
-      `>>>> metric-data-loader.facetParser ${metric.title} data`,
-      data
-    )
+    // console.debug(
+    //   `>>>> metric-data-loader.facetParser ${metric.title} data`,
+    //   data
+    // )
     if (data.actor.account.nrql.results.length === 0) return {}
 
     const results = data.actor.account.nrql.results.map(r => {

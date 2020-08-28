@@ -17,11 +17,7 @@ export default class FindUserContainer extends React.Component {
   compressViews = views => {
     let compressed = []
     views.forEach(view => {
-      console.log('compressing view', view)
-
       view.details.forEach(d => {
-        console.info('compressing view detail', d)
-
         const viewId = view.id
         const found = compressed.find(c => c.id === viewId)
 
@@ -55,7 +51,7 @@ export default class FindUserContainer extends React.Component {
   }
 
   onChooseSession = (item, scope) => {
-    console.info(`handleChooseSession triggered`, item, scope)
+    console.debug(`handleChooseSession triggered`, item, scope)
 
     const { accountId, user } = this.props.nerdletUrlState
     scope = scope ? scope : 'all'
@@ -81,8 +77,6 @@ export default class FindUserContainer extends React.Component {
     const { timeRange } = this.props.launcherUrlState
     const { accountId } = this.props.nerdletUrlState
     const duration = formatSinceAndCompare(timeRange)
-
-    console.info('>>>> findUserContainer.render')
 
     return (
       <Stack

@@ -88,7 +88,6 @@ export default class MandeContainer extends React.Component {
     }
 
     if (data) {
-      console.debug('mandeContainer.loadUserFlag', data)
       userFound = data.actor.account.nrql.results[0]['latest.userId'] !== null
     }
 
@@ -117,7 +116,6 @@ export default class MandeContainer extends React.Component {
   }
 
   onToggleMetric = (selected, init) => {
-    console.debug('mandeContainer.onToggleMetric', selected)
     const currentMetric = this.state.selectedMetric
 
     if (currentMetric && currentMetric === selected)

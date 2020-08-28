@@ -47,9 +47,6 @@ export default class UserViewContainer extends React.Component {
     } = this.props.nerdletUrlState
     const duration = formatSinceAndCompare(timeRange)
 
-    console.info('>>>> userViewContainer.render session', session)
-    console.info('>>>> userViewContainer.render views', views)
-
     return (
       <>
         {session && (

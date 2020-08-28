@@ -1,22 +1,11 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
+import { getThresholdClass } from '../../utils/threshold'
 
 const metricValue = props => {
-  const getThresholdClass = (threshold, value, greenLight) => {
-    const baseStyle = greenLight ? 'greenLight' : ''
-    if (!threshold) return baseStyle
-    if (threshold.type === 'below') {
-      if (value > threshold.warning) return baseStyle
-      if (value <= threshold.critical) return 'redLight'
-      return 'yellowLight'
-    } else {
-      if (value < threshold.warning) return baseStyle
-      if (value >= threshold.critical) return 'redLight'
-      return 'yellowLight'
-    }
-  }
-
-  const { threshold, value, minify, greenLight, decoration } = props
-  const classes = ['value', getThresholdClass(threshold, value, greenLight)]
+  const { threshold, value, minify, baseStyle, decoration } = props
+  const classes = ['value', getThresholdClass(threshold, value, baseStyle)]
 
   return (
     <React.Fragment>
@@ -25,6 +14,14 @@ const metricValue = props => {
       </p>
     </React.Fragment>
   )
+}
+
+metricValue.propTypes = {
+  threshold: PropTypes.object.isRequired,
+  value: PropTypes.number.isRequired,
+  minify: PropTypes.bool,
+  baseStyle: PropTypes.string,
+  decoration: PropTypes.string,
 }
 
 export default metricValue

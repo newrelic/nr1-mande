@@ -20,6 +20,7 @@ import MetricDashboard from '../../components/dashboard/MetricDashboard'
 import CategoryDetail from '../../components/category-detail/CategoryDetail'
 import Selected from '../../components/metric-sidebar/Selected'
 import metricConfigs from '../../config/MetricConfig'
+import { FIND_USER_ATTRIBUTE } from '../../config/MetricConfig'
 import {
   formatFilters,
   formatFacets,
@@ -73,7 +74,7 @@ export default class MandeContainer extends React.Component {
     const query = `{
       actor {
         account(id: ${accountId}) {
-          nrql(query: "FROM PageAction, MobileVideo, RokuVideo SELECT latest(userId) ${duration.since}") {
+          nrql(query: "FROM PageAction, MobileVideo, RokuVideo SELECT latest(${FIND_USER_ATTRIBUTE}) ${duration.since}") {
             results
           }
         }
@@ -88,7 +89,9 @@ export default class MandeContainer extends React.Component {
     }
 
     if (data) {
-      userFound = data.actor.account.nrql.results[0]['latest.userId'] !== null
+      userFound =
+        data.actor.account.nrql.results[0][`latest.${FIND_USER_ATTRIBUTE}`] !==
+        null
     }
 
     return userFound

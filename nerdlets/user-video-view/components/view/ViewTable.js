@@ -15,13 +15,24 @@ import { openVideoSession } from '../../../../utils/navigation'
 import { getThresholdClass } from '../../../../utils/threshold'
 
 export default class ViewTable extends React.Component {
+  state = {
+    column_0: TableHeaderCell.SORTING_TYPE.ASCENDING,
+    column_1: TableHeaderCell.SORTING_TYPE.ASCENDING,
+    column_2: TableHeaderCell.SORTING_TYPE.ASCENDING,
+    column_3: TableHeaderCell.SORTING_TYPE.ASCENDING,
+  }
+
+  onSortTable(key, event, sortingData) {
+    this.setState({ [key]: sortingData.nextSortingType })
+  }
+
   openView = (evt, { item, idx }) => {
     openVideoSession(this.props.accountId, item.id, videoConfig.title)
   }
 
   render() {
     const { accountId, duration, session, views, scope } = this.props
-    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT latest(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName = 'CONTENT_REQUEST' LIMIT MAX ${duration.since} facet viewId`
+    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
@@ -63,16 +74,44 @@ export default class ViewTable extends React.Component {
           return (
             <Table items={decoratedViews}>
               <TableHeader>
-                <TableHeaderCell className="session-table__table-header">
+                <TableHeaderCell
+                  className="session-table__table-header"
+                  value={({ item }) => item.id}
+                  sortable
+                  sortingType={this.state.column_0}
+                  sortingOrder={0}
+                  onClick={this.onSortTable.bind(this, 'column_0')}
+                >
                   View Id
                 </TableHeaderCell>
-                <TableHeaderCell className="session-table__table-header">
+                <TableHeaderCell
+                  className="session-table__table-header"
+                  value={({ item }) => item.startTime}
+                  sortable
+                  sortingType={this.state.column_1}
+                  sortingOrder={2}
+                  onClick={this.onSortTable.bind(this, 'column_1')}
+                >
                   Start Time
                 </TableHeaderCell>
-                <TableHeaderCell className="session-table__table-header">
+                <TableHeaderCell
+                  className="session-table__table-header"
+                  value={({ item }) => item.contentTitle}
+                  sortable
+                  sortingType={this.state.column_2}
+                  sortingOrder={3}
+                  onClick={this.onSortTable.bind(this, 'column_2')}
+                >
                   Title
                 </TableHeaderCell>
-                <TableHeaderCell className="session-table__table-header">
+                <TableHeaderCell
+                  className="session-table__table-header"
+                  value={({ item }) => item.qualityScore}
+                  sortable
+                  sortingType={this.state.column_3}
+                  sortingOrder={1}
+                  onClick={this.onSortTable.bind(this, 'column_3')}
+                >
                   Quality Score
                 </TableHeaderCell>
                 {videoConfig.qualityScore.include.map((qs, idx) => {

@@ -17,35 +17,12 @@ import {
 } from '../../../../utils/date-formatter'
 import { getThresholdClass } from '../../../../utils/threshold'
 import videoConfig from '../../../../config/VideoConfig'
+import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
 
 export default class SessionTable extends React.Component {
-  getTableActions = () => {
-    return [
-      {
-        label: 'View Streams',
-        iconType:
-          TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER,
-        onClick: (evt, { item, index }) => {
-          this.onViewSession(evt, { item, index }, 'all')
-        },
-      },
-      // {
-      //   label: 'View High Quality Streams',
-      //   iconType:
-      //     TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER__A_CHECKED,
-      //   onClick: (evt, { item, index }) => {
-      //     this.onViewSession(evt, { item, index }, 'good')
-      //   },
-      // },
-      // {
-      //   label: 'View Low Quality Streams',
-      //   iconType:
-      //     TableRow.ACTIONS_ICON_TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__BROWSER__S_ERROR,
-      //   onClick: (evt, { item, index }) => {
-      //     this.onViewSession(evt, { item, index }, 'bad')
-      //   },
-      // },
-    ]
+  state = {
+    column_1: TableHeaderCell.SORTING_TYPE.ASCENDING,
+    column_4: TableHeaderCell.SORTING_TYPE.ASCENDING,
   }
 
   getViewQualityCount = (views, threshold, above) => {
@@ -73,8 +50,16 @@ export default class SessionTable extends React.Component {
     this.props.chooseSession(session, scope)
   }
 
+  onSortTable(key, event, sortingData) {
+    this.setState({ [key]: sortingData.nextSortingType })
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
-    if (!isEqual(nextProps.sessionViews, this.props.sessionViews)) return true
+    if (
+      !isEqual(nextProps.sessionViews, this.props.sessionViews) ||
+      this.state != nextState
+    )
+      return true
     else return false
   }
 
@@ -82,9 +67,7 @@ export default class SessionTable extends React.Component {
     console.debug('**** sessionTable.render')
 
     const { accountId, duration, user, sessionViews } = this.props
-    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp), max(timestamp) WHERE userId = '${user}' LIMIT MAX ${duration.since} facet viewSession`
-
-    console.info('renderSessionList nrql', nrql)
+    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp), max(timestamp) WHERE ${FIND_USER_ATTRIBUTE} = '${user}' LIMIT MAX ${duration.since} facet viewSession`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
@@ -129,7 +112,13 @@ export default class SessionTable extends React.Component {
                 <TableHeaderCell className="session-table__table-header">
                   Session Id
                 </TableHeaderCell>
-                <TableHeaderCell className="session-table__table-header">
+                <TableHeaderCell
+                  className="session-table__table-header"
+                  value={({ item }) => item.minTime}
+                  sortable
+                  sortingType={this.state.column_1}
+                  onClick={this.onSortTable.bind(this, 'column_1')}
+                >
                   Start Time
                 </TableHeaderCell>
                 <TableHeaderCell className="session-table__table-header">
@@ -138,7 +127,14 @@ export default class SessionTable extends React.Component {
                 <TableHeaderCell className="session-table__table-header">
                   Duration
                 </TableHeaderCell>
-                <TableHeaderCell className="session-table__table-header">
+                <TableHeaderCell
+                  className="session-table__table-header"
+                  value={({ item }) => item.qualityScore}
+                  sortable
+                  sortingType={this.state.column_4}
+                  sortingOrder={0}
+                  onClick={this.onSortTable.bind(this, 'column_4')}
+                >
                   Quality Score
                 </TableHeaderCell>
                 <TableHeaderCell className="session-table__table-header">
@@ -153,10 +149,7 @@ export default class SessionTable extends React.Component {
               </TableHeader>
 
               {({ item }) => (
-                <TableRow
-                  onClick={this.onViewSession}
-                  actions={this.getTableActions()}
-                >
+                <TableRow onClick={this.onViewSession}>
                   <TableRowCell className="session-table__row">
                     {item.session}
                   </TableRowCell>

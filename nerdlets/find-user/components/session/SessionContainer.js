@@ -15,6 +15,7 @@ import {
 } from '../../../../utils/quality-score'
 import QosKpiGrid from '../../../shared/components/qos/QosKpiGrid'
 import SessionTable from './SessionTable'
+import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
 
 export default class SessionContainer extends React.Component {
   state = {
@@ -26,7 +27,7 @@ export default class SessionContainer extends React.Component {
   loadData = async () => {
     const { accountId, duration, user } = this.props
 
-    const querySuffix = `WHERE userId = '${user}' FACET viewSession, viewId LIMIT MAX`
+    const querySuffix = `WHERE ${FIND_USER_ATTRIBUTE} = '${user}' FACET viewSession, viewId LIMIT MAX`
 
     let metricDefs = await loadMetricsForConfig(
       videoConfig,
@@ -144,16 +145,16 @@ export default class SessionContainer extends React.Component {
   }
 
   async componentDidMount() {
-    console.info('**** sessionContainer.componentDidMount')
+    console.debug('**** sessionContainer.componentDidMount')
     const { sessionViews, userKpis } = await this.loadSessions()
 
     this.setState({ loading: false, sessionViews, userKpis })
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    console.info('**** sessionContainer.componentDidUdpate')
+    console.debug('**** sessionContainer.componentDidUdpate')
     if (!isEqual(prevProps, this.props)) {
-      console.info(
+      console.debug(
         '**** sessionContainer.componentDidUdpate props mismatch',
         prevProps,
         this.props
@@ -169,7 +170,7 @@ export default class SessionContainer extends React.Component {
     const { loading, userKpis, sessionViews } = this.state
     const formattedDuration = dateFormatter(duration.timeRange)
 
-    console.info('**** sessionContainer.render')
+    console.debug('**** sessionContainer.render')
 
     return (
       <React.Fragment>

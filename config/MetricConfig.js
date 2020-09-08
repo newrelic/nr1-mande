@@ -23,3 +23,5 @@ export default [
   ingestConfigs,
   sourceConfigs,
 ]
+
+export const FIND_USER_ATTRIBUTE = 'tvAccount'

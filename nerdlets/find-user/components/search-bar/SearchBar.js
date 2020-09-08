@@ -4,13 +4,14 @@ import AsyncSelect from 'react-select/async'
 import { sortBy } from 'lodash'
 
 import { HeadingText, NerdGraphQuery, Stack, StackItem } from 'nr1'
+import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
 
 const searchBar = props => {
   const loadData = async searchTerm => {
     console.debug('searchBar.loadData')
 
     const { duration, accountId } = props
-    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT uniques(userId) WHERE userId like '%${searchTerm}%' ${duration.since} `
+    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT uniques(${FIND_USER_ATTRIBUTE}) WHERE userId like '%${searchTerm}%' ${duration.since} `
 
     console.debug('searchBar.loadData nrql', nrql)
 
@@ -37,7 +38,7 @@ const searchBar = props => {
     }
 
     if (rawData)
-      results = rawData.actor.account.nrql.results[0][`uniques.userId`]
+      results = rawData.actor.account.nrql.results[0][`uniques.${FIND_USER_ATTRIBUTE}`]
 
     results = sortBy(results)
     results = results.map(r => {
@@ -50,7 +51,6 @@ const searchBar = props => {
   }
 
   const handleChange = selectedItem => {
-    console.info('handling change', selectedItem)
     const val = selectedItem ? selectedItem.value : null
     props.selectUser(val)
   }

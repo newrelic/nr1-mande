@@ -17,7 +17,7 @@ const metricValue = props => {
 }
 
 metricValue.propTypes = {
-  threshold: PropTypes.object.isRequired,
+  threshold: PropTypes.object,
   value: PropTypes.number.isRequired,
   minify: PropTypes.bool,
   baseStyle: PropTypes.string,

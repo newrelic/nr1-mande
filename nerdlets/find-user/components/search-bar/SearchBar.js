@@ -11,7 +11,17 @@ const searchBar = props => {
     console.debug('searchBar.loadData')
 
     const { duration, accountId } = props
-    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT uniques(${FIND_USER_ATTRIBUTE}) WHERE userId like '%${searchTerm}%' ${duration.since} `
+
+    let userClause = ''
+    let userCondition = ''
+    FIND_USER_ATTRIBUTE.forEach(u => {
+      if (userClause) userClause += ' OR '
+      if (userCondition) userCondition += ','
+
+      userCondition += `uniques(${u})`
+      userClause += `${u} like '%${searchTerm}%'`
+    })
+    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT ${userCondition} WHERE ${userClause} ${duration.since} LIMIT MAX `
 
     console.debug('searchBar.loadData nrql', nrql)
 
@@ -37,15 +47,17 @@ const searchBar = props => {
       }
     }
 
-    if (rawData)
-      results = rawData.actor.account.nrql.results[0][`uniques.${FIND_USER_ATTRIBUTE}`]
+    if (rawData) {
+      const uniques = rawData.actor.account.nrql.results[0]
+      FIND_USER_ATTRIBUTE.forEach(u => {
+        results = results.concat(uniques[`uniques.${u}`])
+      })
+    }
 
     results = sortBy(results)
     results = results.map(r => {
       return { label: r, value: r }
     })
-
-    console.debug('searchBarContainer.loadData results', results)
 
     return results
   }

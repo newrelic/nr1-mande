@@ -71,10 +71,16 @@ export default class MandeContainer extends React.Component {
   loadUserFlag = async (accountId, duration) => {
     let userFound = false
 
+    let userClause = ''
+    FIND_USER_ATTRIBUTE.forEach(u => {
+      if (userClause) userClause += ' OR '
+      userClause += `${u} IS NOT NULL`
+    })
+
     const query = `{
       actor {
         account(id: ${accountId}) {
-          nrql(query: "FROM PageAction, MobileVideo, RokuVideo SELECT latest(${FIND_USER_ATTRIBUTE}) ${duration.since}") {
+          nrql(query: "FROM PageAction, MobileVideo, RokuVideo SELECT count(*) WHERE ${userClause} ${duration.since}") {
             results
           }
         }
@@ -88,11 +94,7 @@ export default class MandeContainer extends React.Component {
       return false
     }
 
-    if (data) {
-      userFound =
-        data.actor.account.nrql.results[0][`latest.${FIND_USER_ATTRIBUTE}`] !==
-        null
-    }
+    if (data) userFound = data.actor.account.nrql.results[0].count > 0
 
     return userFound
   }

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import {
+  BlockText,
   Spinner,
   NrqlQuery,
   Table,
@@ -67,7 +68,14 @@ export default class SessionTable extends React.Component {
     console.debug('**** sessionTable.render')
 
     const { accountId, duration, user, sessionViews } = this.props
-    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp), max(timestamp) WHERE ${FIND_USER_ATTRIBUTE} = '${user}' LIMIT MAX ${duration.since} facet viewSession`
+
+    let userClause = ''
+    FIND_USER_ATTRIBUTE.forEach(u => {
+      if (userClause) userClause += ' OR '
+      userClause += `${u} = '${user}'`
+    })
+    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
+    console.info('sessionTable query', nrql)
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>

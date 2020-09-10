@@ -27,7 +27,12 @@ export default class SessionContainer extends React.Component {
   loadData = async () => {
     const { accountId, duration, user } = this.props
 
-    const querySuffix = `WHERE ${FIND_USER_ATTRIBUTE} = '${user}' FACET viewSession, viewId LIMIT MAX`
+    let userClause = ''
+    FIND_USER_ATTRIBUTE.forEach(u => {
+      if (userClause) userClause += ' OR '
+      userClause += `${u} = '${user}'`
+    })
+    const querySuffix = `WHERE ${userClause} FACET viewSession, viewId LIMIT MAX`
 
     let metricDefs = await loadMetricsForConfig(
       videoConfig,

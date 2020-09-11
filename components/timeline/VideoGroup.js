@@ -50,6 +50,7 @@ const groups = [
       'CONTENT_SEEK_START',
       'CONTENT_SEEK_END',
       'CONTENT_DROPPED_FRAMES',
+      'CONTENT_NEXT',
     ],
   },
   {

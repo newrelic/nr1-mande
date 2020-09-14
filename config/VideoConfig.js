@@ -1,3 +1,10 @@
+export const activeEvents = () => {
+  return ' PageAction, MobileVideo, RokuVideo, BrowserVideo '
+}
+const defaultToOne = metric => {
+  return metric !== undefined ? metric : 1
+}
+
 export default {
   title: 'Video',
   eventTypes: [
@@ -55,12 +62,26 @@ export default {
         ['errorMessage', 'Error'],
       ],
     },
+    {
+      event: 'BrowserVideo',
+      eventSelector: { attribute: 'Delivery Type', value: 'Web' },
+      attributes: [
+        ['userAgentName', 'Platform'],
+        ['userAgentOS', 'Platform'],
+        ['userAgentVersion', 'Platform'],
+        ['isAd', 'Content'],
+        // ['asnOrganization', 'Geography'],
+        // ['city', 'Geography'],
+        // ['regionCode', 'Geography'],
+        ['message', 'Error'],
+      ],
+    },
   ],
   overviewConfig: [
     {
       nrql: `SELECT filter(average(timeSinceLoad), WHERE actionName = 'CONTENT_REQUEST') as 'Time to Content Request', 
       filter(average(timeSinceRequested)/1000, WHERE actionName='CONTENT_START') as 'Time To First Frame'
-      FROM PageAction TIMESERIES `,
+      FROM ${activeEvents()} TIMESERIES `,
       columnStart: 1,
       columnEnd: 6,
       chartSize: 'medium',
@@ -71,7 +92,7 @@ export default {
     {
       nrql: `SELECT filter(count(*), WHERE actionName = 'CONTENT_REQUEST') as 'Total Requests', 
       filter(count(*), WHERE actionName = 'CONTENT_START') as 'Total Starts' 
-      FROM PageAction TIMESERIES `,
+      FROM ${activeEvents()} TIMESERIES `,
       columnStart: 7,
       columnEnd: 12,
       chartSize: 'medium',
@@ -81,7 +102,7 @@ export default {
     },
     {
       nrql: `SELECT filter(count(*), WHERE actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(count(*), WHERE actionName = 'CONTENT_REQUEST') as 'In-stream Errors', 
-      filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0) AS 'Failures Before Start' FROM PageAction, MobileVideo, RokuVideo TIMESERIES `,
+      filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0) AS 'Failures Before Start' FROM ${activeEvents()} TIMESERIES `,
       columnStart: 1,
       columnEnd: 4,
       chartSize: 'medium',
@@ -90,7 +111,7 @@ export default {
       useSince: true,
     },
     {
-      nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as 'Rebuffer Ratio' TIMESERIES `,
+      nrql: `FROM ${activeEvents()} SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as 'Rebuffer Ratio' TIMESERIES `,
       columnStart: 5,
       columnEnd: 8,
       chartSize: 'medium',
@@ -99,7 +120,7 @@ export default {
       useSince: true,
     },
     {
-      nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection')/filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) as 'Interruption Rate' TIMESERIES `,
+      nrql: `FROM ${activeEvents()} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection')/filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) as 'Interruption Rate' TIMESERIES `,
       columnStart: 9,
       columnEnd: 12,
       chartSize: 'medium',
@@ -117,13 +138,13 @@ export default {
         warning: 1,
       },
       query: {
-        nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0))/filter(uniqueCount(viewId), where actionName != 'PLAYER_READY') * 100 as 'result'`,
+        nrql: `FROM ${activeEvents()} SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0))/filter(uniqueCount(viewId), where actionName != 'PLAYER_READY') * 100 as 'result'`,
         lookup: 'result',
       },
       qualityScoreStrategy: 'zeroOrOne',
       detailConfig: [
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0))/filter(uniqueCount(viewId), where actionName != 'PLAYER_READY') * 100 as '%'`,
+          nrql: `FROM ${activeEvents()} SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0))/filter(uniqueCount(viewId), where actionName != 'PLAYER_READY') * 100 as '%'`,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -132,7 +153,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead = 0 facet viewId LIMIT 25`,
+          nrql: `FROM ${activeEvents()} SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead = 0 facet viewId LIMIT 25`,
           noFacet: 'true',
           columnStart: 4,
           columnEnd: 12,
@@ -143,7 +164,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0))/filter(uniqueCount(viewId), where actionName != 'PLAYER_READY') * 100 as '%' TIMESERIES MAX `,
+          nrql: `FROM ${activeEvents()} SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0))/filter(uniqueCount(viewId), where actionName != 'PLAYER_READY') * 100 as '%' TIMESERIES MAX `,
           columnStart: 1,
           columnEnd: 12,
           chartSize: 'small',
@@ -152,7 +173,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead = 0 LIMIT 25 `,
+          nrql: `FROM ${activeEvents()} SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead = 0 LIMIT 25 `,
           facets: 'message',
           columnStart: 1,
           columnEnd: 12,
@@ -171,17 +192,17 @@ export default {
         warning: 0.1,
       },
       query: {
-        nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as 'result'`,
+        nrql: `FROM ${activeEvents()} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as 'result'`,
         lookup: 'result',
       },
       findUser: {
-        nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(clamp_max(count(*), 1), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(clamp_max(count(*), 1), where actionName = 'CONTENT_REQUEST') * 100 as 'result' `,
+        nrql: `FROM ${activeEvents()} SELECT filter(clamp_max(count(*), 1), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(clamp_max(count(*), 1), where actionName = 'CONTENT_REQUEST') * 100 as 'result' `,
         lookup: 'result',
       },
       qualityScoreStrategy: 'clampMinZeroMaxOne',
       detailConfig: [
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '%' `,
+          nrql: `FROM ${activeEvents()} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -190,7 +211,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead > 0 facet viewId LIMIT 25`,
+          nrql: `FROM ${activeEvents()} SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead > 0 facet viewId LIMIT 25`,
           noFacet: true,
           columnStart: 4,
           columnEnd: 12,
@@ -201,7 +222,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM PageAction SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '%' TIMESERIES MAX `,
+          nrql: `FROM ${activeEvents()} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '%' TIMESERIES MAX `,
           facets: 'deviceType',
           columnStart: 1,
           columnEnd: 6,
@@ -211,7 +232,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead > 0 `,
+          nrql: `FROM ${activeEvents()} SELECT count(*) where actionName = 'CONTENT_ERROR' and contentPlayhead > 0 `,
           facets: 'message',
           columnStart: 7,
           columnEnd: 12,
@@ -230,18 +251,18 @@ export default {
         warning: 3.5,
       },
       query: {
-        nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'percentile' `,
+        nrql: `FROM ${activeEvents()} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'percentile' `,
         lookup: 'percentile',
         title: 'Video Start Time (Median)',
       },
       findUser: {
-        nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT (clamp_min(filter(sum(timeSinceRequested/1000), WHERE actionName = 'CONTENT_START'), 0) - clamp_min(filter(sum(timeSinceAdBreakBegin/1000), where actionName = 'AD_BREAK_END' and adPosition = 'pre'), 0))/filter(uniqueCount(viewId), where actionName='CONTENT_START') as 'result' `,
+        nrql: `FROM ${activeEvents()} SELECT (clamp_min(filter(sum(timeSinceRequested/1000), WHERE actionName = 'CONTENT_START'), 0) - clamp_min(filter(sum(timeSinceAdBreakBegin/1000), where actionName = 'AD_BREAK_END' and adPosition = 'pre'), 0))/filter(uniqueCount(viewId), where actionName='CONTENT_START') as 'result' `,
         lookup: 'result',
       },
       qualityScoreStrategy: 'clampMinZeroMaxOne',
       detailConfig: [
         {
-          nrql: `SELECT filter(uniqueCount(viewId), WHERE timeSinceRequested > 4000 and actionName = 'CONTENT_START')/uniqueCount(viewId) * 100 as '%' FROM PageAction, MobileVideo, RokuVideo `,
+          nrql: `SELECT filter(uniqueCount(viewId), WHERE timeSinceRequested > 4000 and actionName = 'CONTENT_START')/uniqueCount(viewId) * 100 as '%' FROM ${activeEvents()} `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -250,7 +271,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `SELECT filter(sum(timeSinceRequested)/1000, WHERE actionName = 'CONTENT_START') - filter(sum(timeSinceAdBreakBegin)/1000, where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'Time To First Frame (Average)' FROM PageAction, MobileVideo, RokuVideo FACET viewId LIMIT 25`,
+          nrql: `SELECT filter(sum(timeSinceRequested)/1000, WHERE actionName = 'CONTENT_START') - filter(sum(timeSinceAdBreakBegin)/1000, where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'Time To First Frame (Average)' FROM ${activeEvents()} FACET viewId LIMIT 25`,
           noFacet: true,
           columnStart: 4,
           columnEnd: 12,
@@ -261,7 +282,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as '50th Percentile' `,
+          nrql: `FROM ${activeEvents()} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as '50th Percentile' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -270,7 +291,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as '50th Percentile' TIMESERIES MAX `,
+          nrql: `FROM ${activeEvents()} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as '50th Percentile' TIMESERIES MAX `,
           facets: 'deviceType',
           columnStart: 4,
           columnEnd: 12,
@@ -280,7 +301,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT percentile(timeSinceLoad, 50) as 'seconds' WHERE actionName = 'CONTENT_START' `,
+          nrql: `FROM ${activeEvents()} SELECT percentile(timeSinceLoad, 50) as 'seconds' WHERE actionName = 'CONTENT_START' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -289,7 +310,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT percentile(timeSinceLoad, 50) as 'seconds' WHERE actionName = 'CONTENT_START' TIMESERIES MAX `,
+          nrql: `FROM ${activeEvents()} SELECT percentile(timeSinceLoad, 50) as 'seconds' WHERE actionName = 'CONTENT_START' TIMESERIES MAX `,
           facets: 'deviceType',
           columnStart: 4,
           columnEnd: 12,
@@ -299,7 +320,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000,50) as 'seconds' where actionName = 'AD_START' and adPosition = 'pre'`,
+          nrql: `FROM ${activeEvents()} SELECT percentile(timeSinceRequested/1000,50) as 'seconds' where actionName = 'AD_START' and adPosition = 'pre'`,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -308,7 +329,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceRequested/1000,50) as 'seconds' where actionName = 'AD_START' and adPosition = 'pre' TIMESERIES MAX `,
+          nrql: `FROM ${activeEvents()} SELECT percentile(timeSinceRequested/1000,50) as 'seconds' where actionName = 'AD_START' and adPosition = 'pre' TIMESERIES MAX `,
           facets: 'deviceType',
           columnStart: 4,
           columnEnd: 12,
@@ -327,13 +348,13 @@ export default {
         warning: 2,
       },
       query: {
-        nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as 'result'`,
+        nrql: `FROM ${activeEvents()} SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as 'result'`,
         lookup: 'result',
       },
       qualityScoreStrategy: 'clampMinZeroMaxOne',
       detailConfig: [
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as '%' `,
+          nrql: `FROM ${activeEvents()} SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -342,7 +363,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT sum(timeSinceBufferBegin)/1000 as 'Total Buffering' WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection' FACET viewId LIMIT 25 `,
+          nrql: `FROM ${activeEvents()} SELECT sum(timeSinceBufferBegin)/1000 as 'Total Buffering' WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection' FACET viewId LIMIT 25 `,
           noFacet: true,
           columnStart: 4,
           columnEnd: 12,
@@ -353,7 +374,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as '%' TIMESERIES MAX `,
+          nrql: `FROM ${activeEvents()} SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as '%' TIMESERIES MAX `,
           facets: `deviceType`,
           columnStart: 1,
           columnEnd: 12,
@@ -363,7 +384,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceBufferBegin/1000, 50) as 'seconds', percentile(timeSinceBufferBegin/1000, 90) as 'seconds', percentile(timeSinceBufferBegin/1000, 95) as 'seconds', percentile(timeSinceBufferBegin/1000, 99) as 'seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead = 0 `,
+          nrql: `FROM ${activeEvents()} SELECT percentile(timeSinceBufferBegin/1000, 50) as 'seconds', percentile(timeSinceBufferBegin/1000, 90) as 'seconds', percentile(timeSinceBufferBegin/1000, 95) as 'seconds', percentile(timeSinceBufferBegin/1000, 99) as 'seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead = 0 `,
           columnStart: 1,
           columnEnd: 4,
           chartSize: 'medium',
@@ -372,7 +393,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT percentile(timeSinceBufferBegin/1000, 50) as 'seconds', percentile(timeSinceBufferBegin/1000, 90) as 'seconds', percentile(timeSinceBufferBegin/1000, 95) as 'seconds', percentile(timeSinceBufferBegin/1000, 99) as 'seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead = 0 TIMESERIES MAX `,
+          nrql: `FROM ${activeEvents()} SELECT percentile(timeSinceBufferBegin/1000, 50) as 'seconds', percentile(timeSinceBufferBegin/1000, 90) as 'seconds', percentile(timeSinceBufferBegin/1000, 95) as 'seconds', percentile(timeSinceBufferBegin/1000, 99) as 'seconds' WHERE actionName = 'CONTENT_BUFFER_END' and contentPlayhead = 0 TIMESERIES MAX `,
           facets: '',
           columnStart: 5,
           columnEnd: 12,
@@ -393,12 +414,12 @@ export default {
       },
       invertCompareTo: 'true',
       query: {
-        nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT average(contentBitrate)/1000000 as 'result' where contentBitrate is not null and actionName like 'CONTENT%' `,
+        nrql: `FROM ${activeEvents()} SELECT average(contentBitrate)/1000000 as 'result' where contentBitrate is not null and actionName like 'CONTENT%' `,
         lookup: 'result',
       },
       detailConfig: [
         {
-          nrql: `SELECT percentage(count(*), WHERE avgBitrate < 4000000) as '' FROM ( SELECT average(contentBitrate) as avgBitrate FROM PageAction, MobileVideo, RokuVideo FACET viewId WHERE contentBitrate IS NOT NULL AND actionName like 'CONTENT%' LIMIT MAX) `,
+          nrql: `SELECT percentage(count(*), WHERE avgBitrate < 4000000) as '' FROM ( SELECT average(contentBitrate) as avgBitrate FROM ${activeEvents()} FACET viewId WHERE contentBitrate IS NOT NULL AND actionName like 'CONTENT%' LIMIT MAX) `,
           noFacet: true,
           columnStart: 1,
           columnEnd: 4,
@@ -408,7 +429,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `SELECT average(mbps)/1000000 FROM (FROM PageAction, RokuVideo, MobileVideo SELECT average(contentBitrate) as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' facet viewId LIMIT MAX) WHERE mbps < 4000000 FACET viewId LIMIT 25`,
+          nrql: `SELECT average(mbps)/1000000 FROM (FROM ${activeEvents()} SELECT average(contentBitrate) as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' facet viewId LIMIT MAX) WHERE mbps < 4000000 FACET viewId LIMIT 25`,
           noFacet: true,
           columnStart: 5,
           columnEnd: 12,
@@ -419,7 +440,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT percentile(contentBitrate, 50)/1000000, percentile(contentBitrate, 90)/1000000, percentile(contentBitrate, 95)/1000000, percentile(contentBitrate, 99)/1000000 where contentBitrate is not null and actionName like 'CONTENT%' `,
+          nrql: `FROM ${activeEvents()} SELECT percentile(contentBitrate, 50)/1000000, percentile(contentBitrate, 90)/1000000, percentile(contentBitrate, 95)/1000000, percentile(contentBitrate, 99)/1000000 where contentBitrate is not null and actionName like 'CONTENT%' `,
           columnStart: 1,
           columnEnd: 6,
           chartSize: 'medium',
@@ -428,7 +449,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT percentile(contentBitrate, 50)/1000000 as '', percentile(contentBitrate, 90)/1000000 as '', percentile(contentBitrate, 95)/1000000 as '', percentile(contentBitrate, 99)/1000000 as '' where contentBitrate is not null and actionName like 'CONTENT%' `,
+          nrql: `FROM ${activeEvents()} SELECT percentile(contentBitrate, 50)/1000000 as '', percentile(contentBitrate, 90)/1000000 as '', percentile(contentBitrate, 95)/1000000 as '', percentile(contentBitrate, 99)/1000000 as '' where contentBitrate is not null and actionName like 'CONTENT%' `,
           facets: 'deviceType',
           columnStart: 7,
           columnEnd: 12,
@@ -438,7 +459,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, RokuVideo, MobileVideo SELECT percentile(contentBitrate, 50)/1000000, percentile(contentBitrate, 90)/1000000, percentile(contentBitrate, 95)/1000000, percentile(contentBitrate, 99)/1000000 where contentBitrate is not null and actionName like 'CONTENT%' TIMESERIES MAX `,
+          nrql: `FROM ${activeEvents()} SELECT percentile(contentBitrate, 50)/1000000, percentile(contentBitrate, 90)/1000000, percentile(contentBitrate, 95)/1000000, percentile(contentBitrate, 99)/1000000 where contentBitrate is not null and actionName like 'CONTENT%' TIMESERIES MAX `,
           columnStart: 1,
           columnEnd: 12,
           chartSize: 'small',
@@ -456,13 +477,13 @@ export default {
         warning: 20,
       },
       query: {
-        nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) as 'result'`,
+        nrql: `FROM ${activeEvents()} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) as 'result'`,
         lookup: 'result',
       },
       qualityScoreStrategy: 'clampMinZeroMaxOne',
       detailConfig: [
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(uniqueCount(viewId), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
+          nrql: `FROM ${activeEvents()} SELECT filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(uniqueCount(viewId), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -471,7 +492,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT count(*) WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection' FACET viewId LIMIT 25 `,
+          nrql: `FROM ${activeEvents()} SELECT count(*) WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection' FACET viewId LIMIT 25 `,
           noFacet: true,
           columnStart: 4,
           columnEnd: 12,
@@ -482,7 +503,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
+          nrql: `FROM ${activeEvents()} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -491,7 +512,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM PageAction, MobileVideo, RokuVideo SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' timeseries MAX `,
+          nrql: `FROM ${activeEvents()} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' timeseries MAX `,
           facets: `deviceType`,
           columnStart: 4,
           columnEnd: 12,
@@ -521,8 +542,4 @@ export default {
       type: 'below',
     },
   },
-}
-
-const defaultToOne = metric => {
-  return metric !== undefined ? metric : 1
 }

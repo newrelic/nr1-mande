@@ -21,6 +21,7 @@ import CategoryDetail from '../../components/category-detail/CategoryDetail'
 import Selected from '../../components/metric-sidebar/Selected'
 import metricConfigs from '../../config/MetricConfig'
 import { FIND_USER_ATTRIBUTE } from '../../config/MetricConfig'
+import { activeEvents } from '../../config/VideoConfig'
 import {
   formatFilters,
   formatFacets,
@@ -80,7 +81,7 @@ export default class MandeContainer extends React.Component {
     const query = `{
       actor {
         account(id: ${accountId}) {
-          nrql(query: "FROM PageAction, MobileVideo, RokuVideo SELECT count(*) WHERE ${userClause} ${duration.since}") {
+          nrql(query: "FROM ${activeEvents()} SELECT count(*) WHERE ${userClause} ${duration.since}") {
             results
           }
         }

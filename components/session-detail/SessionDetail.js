@@ -1,6 +1,8 @@
 import React from 'react'
 import { Grid, GridItem, Stack, StackItem, NrqlQuery, Spinner } from 'nr1'
 import MetricValue from '../metric/MetricValue'
+import { roundToTwoDigits } from '../../utils/number-formatter'
+import { activeEvents } from '../../config/VideoConfig'
 
 export default class SessionDetail extends React.PureComponent {
   composeNrqlQuery = (query, dataHandler, handlerParams) => {
@@ -61,7 +63,7 @@ export default class SessionDetail extends React.PureComponent {
     return (
       <MetricValue
         threshold={metric.threshold}
-        value={Math.round(value * 100) / 100}
+        value={roundToTwoDigits(value)}
       />
     )
   }
@@ -77,9 +79,9 @@ export default class SessionDetail extends React.PureComponent {
         <Stack fullWidth={true} fullHeight={true}>
           <StackItem grow className="sessionStackItem sessionSectionBase">
             <div className="chart-container">
-              <div className="chart-title">View Details</div>
+              <div className="chart-title">Stream Details</div>
               {this.composeNrqlQuery(
-                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM PageAction, MobileVideo, RokuVideo WHERE viewId='${session}'`,
+                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM ${activeEvents()} WHERE viewId='${session}'`,
                 this.buildSessionDetailGrid
               )}
             </div>

@@ -5,6 +5,7 @@ import { sortBy } from 'lodash'
 
 import { HeadingText, NerdGraphQuery, Stack, StackItem } from 'nr1'
 import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
+import { activeEvents } from '../../../../config/VideoConfig'
 
 const searchBar = props => {
   const loadData = async searchTerm => {
@@ -21,7 +22,7 @@ const searchBar = props => {
       userCondition += `uniques(${u})`
       userClause += `${u} like '%${searchTerm}%'`
     })
-    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT ${userCondition} WHERE ${userClause} ${duration.since} LIMIT MAX `
+    const nrql = `FROM ${activeEvents()} SELECT ${userCondition} WHERE ${userClause} ${duration.since} LIMIT MAX `
 
     console.debug('searchBar.loadData nrql', nrql)
 

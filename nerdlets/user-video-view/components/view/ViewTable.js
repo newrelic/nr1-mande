@@ -14,6 +14,7 @@ import videoConfig from '../../../../config/VideoConfig'
 import { formatTimestampAsDate } from '../../../../utils/date-formatter'
 import { openVideoSession } from '../../../../utils/navigation'
 import { getThresholdClass } from '../../../../utils/threshold'
+import { activeEvents } from '../../../../config/VideoConfig'
 
 export default class ViewTable extends React.Component {
   state = {
@@ -33,7 +34,7 @@ export default class ViewTable extends React.Component {
 
   render() {
     const { accountId, duration, session, views, scope } = this.props
-    const nrql = `FROM PageAction, MobileVideo, RokuVideo SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
+    const nrql = `FROM ${activeEvents()} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>

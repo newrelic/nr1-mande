@@ -24,4 +24,4 @@ export default [
   sourceConfigs,
 ]
 
-export const FIND_USER_ATTRIBUTE = 'tvAccount'
+export const FIND_USER_ATTRIBUTE = ['userId'] // ['tvAccount', 'aisuid']

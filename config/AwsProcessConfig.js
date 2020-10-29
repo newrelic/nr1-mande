@@ -1,5 +1,5 @@
 export default {
-  title: 'Process',
+  title: 'Process Workflow',
   eventTypes: [
     {
       event: 'DatastoreSample',

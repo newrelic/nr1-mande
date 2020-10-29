@@ -3,9 +3,14 @@ export default {
   metrics: [
     {
       title: '# of Active Viewers',
+      threshold: {
+        critical: 1500,
+        warning: 1800,
+        type: 'below',
+      },
       invertCompareTo: 'true',
       query: {
-        nrql: `SELECT uniqueCount(session) as 'result' FROM PageAction WHERE actionName LIKE 'CONTENT_%' AND actionName not in ('CONTENT_END','CONTENT_ERROR')`,
+        nrql: `SELECT uniqueCount(userId) as 'result' FROM PageAction where actionName = 'CONTENT_START'`,
         lookup: 'result',
       },
     },
@@ -23,17 +28,54 @@ export default {
       },
     },
     {
-      title: 'Total View Time',
-      query: '',
-    },
-    {
-      title: 'User Error Rate',
+      title: 'Total View Time (m)',
+      invertCompareTo: 'true',
       threshold: {
-        critical: 2,
-        warning: 1,
+        critical: 150,
+        warning: 175,
+        type: 'below'
       },
       query: {
-        nrql: `SELECT filter(uniqueCount(session), WHERE actionName = 'CONTENT_ERROR') / filter(uniqueCount(session), WHERE eventType() = 'PageAction' AND actionName like 'CONTENT_*') * 100  as 'result' FROM PageAction`,
+        nrql: `SELECT sum(playtimeSinceLastEvent)/60000 as 'result' from PageAction`,
+        lookup: 'result',
+      }
+    },
+    {
+      title: 'Crash-free User % (Mobile)',
+      invertCompareTo: 'true',
+      threshold: {
+        critical: 98,
+        warning: 96,
+        type: 'below'
+      },
+      query: {
+        nrql: `SELECT (1-(uniqueCount(MobileCrash.uuid) / uniqueCount(MobileSession.uuid))) * 100 AS 'result' FROM MobileCrash, MobileSession`,
+        lookup: 'result',
+      },
+    },
+    {
+      title: 'Error-free User %',
+      invertCompareTo: 'true',
+      threshold: {
+        critical: 98,
+        warning: 96,
+        type: 'below'
+      },
+      query: {
+        nrql: `FROM PageAction SELECT (1- (filter(uniqueCount(userId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(userId))) * 100 as 'result'`,
+        lookup: 'result',
+      },
+    },
+    {
+      title: 'Rebuffer-free User %',
+      invertCompareTo: 'true',
+      threshold: {
+        critical: 98,
+        warning: 96,
+        type: 'below'
+      },
+      query: {
+        nrql: `FROM PageAction SELECT (1- (filter(uniqueCount(userId), WHERE actionName = 'CONTENT_BUFFER_START' and contentPlayhead = 0) / uniqueCount(userId))) * 100 as 'result'`,
         lookup: 'result',
       },
     },

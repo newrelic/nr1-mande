@@ -1,5 +1,5 @@
 import apiConfigs from './ApiConfig'
-import clientConfigs from './ClientConfig'
+import deviceConfigs from './DeviceConfig'
 import userConfigs from './UserConfig'
 import videoConfigs from './VideoConfig'
 import adConfigs from './AdConfig'
@@ -12,10 +12,10 @@ import cdnConfigs from './AwsCdnConfig'
 
 export default [
   userConfigs,
-  clientConfigs,
-  apiConfigs,
+  deviceConfigs,
   videoConfigs,
   adConfigs,
+  apiConfigs,
   cdnConfigs,
   originConfigs,
   publishConfigs,

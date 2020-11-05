@@ -87,6 +87,10 @@ h4 {
   }
 }
 
+[class*="wnd-GridItem"] {
+  overflow: visible;
+}
+
 .redLight {
   color: #bf0016;
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { roundToTwoDigits } from '../../utils/number-formatter'
 
 const compare = props => {
   const statusClasses = {
@@ -27,7 +28,7 @@ const compare = props => {
   return (
     <React.Fragment>
       <p className={classes.join(' ')}>
-        {props.difference !== Infinity ? `${props.difference} %` : 'N/A'}
+        {props.difference !== Infinity ? `${Math.round(props.difference)} %` : 'N/A'}
       </p>
     </React.Fragment>
   )

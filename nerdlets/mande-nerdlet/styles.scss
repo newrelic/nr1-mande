@@ -3,10 +3,10 @@
 @import '../shared/scss/layout-base.scss';
 @import '../shared/scss/empty-view.scss';
 @import "../shared/components/metric/styles.scss";
-@import "../../components/category-menu/style.scss";
+@import "./components/category-menu/style.scss";
 @import "../../components/metric-sidebar/style.scss";
 @import "../../components/dashboard/styles";
-@import "../../components/category-detail/styles";
+@import "./components/category-detail/styles";
 
 // ==============================================================
 // Mande Common and Nerdlet Styles

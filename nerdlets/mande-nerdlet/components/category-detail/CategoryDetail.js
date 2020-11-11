@@ -1,10 +1,9 @@
 import React from 'react'
 import { Stack, StackItem } from 'nr1'
 import { isEqual } from 'lodash'
-// import { Metric } from '../metric/Metric'
-import Metric from '../../nerdlets/shared/components/metric/Metric'
 import ChartGrid from './ChartGrid'
-import { loadMetricsForConfig } from '../../utils/metric-data-loader'
+import Metric from '../../../shared/components/metric/Metric'
+import { loadMetricsForConfig } from '../../../../utils/metric-data-loader'
 
 export default class CategoryDetail extends React.Component {
   state = {

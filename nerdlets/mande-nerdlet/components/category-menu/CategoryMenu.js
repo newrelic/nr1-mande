@@ -1,6 +1,6 @@
 import React from 'react'
 import { Stack, StackItem, Icon } from 'nr1'
-import Metric from '../../nerdlets/shared/components/metric/Metric'
+import Metric from '../../../shared/components/metric/Metric'
 
 const CategoryMenu = props => {
   const {

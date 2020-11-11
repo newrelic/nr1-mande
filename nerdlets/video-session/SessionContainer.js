@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid, GridItem, HeadingText } from 'nr1'
 import SessionDetail from './components/session-detail/SessionDetail'
 import TimelineDetail from './components/timeline/TimelineDetail'
-import metricConfig from '../../config/MetricConfig'
+import metricConfig from '../shared/config/MetricConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 
 const sessionContainer = props => {

@@ -2,7 +2,7 @@ import React from 'react'
 import { Stack, StackItem, HeadingText } from 'nr1'
 import SearchBar from './components/search-bar/SearchBar'
 import SessionContainer from './components/session/SessionContainer'
-import videoConfig from '../../config/VideoConfig'
+import videoConfig from '../shared/config/VideoConfig'
 import { formatSinceAndCompare } from '../../utils/query-formatter'
 import { openUserVideoViews, openVideoSession } from '../../utils/navigation'
 

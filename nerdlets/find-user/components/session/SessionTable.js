@@ -17,9 +17,9 @@ import {
   milliseconds,
 } from '../../../../utils/date-formatter'
 import { getThresholdClass } from '../../../../utils/threshold'
-import videoConfig from '../../../../config/VideoConfig'
-import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
-import { activeEvents } from '../../../../config/VideoConfig'
+import videoConfig from '../../../shared/config/VideoConfig'
+import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
+import { activeEvents } from '../../../shared/config/VideoConfig'
 
 export default class SessionTable extends React.Component {
   state = {

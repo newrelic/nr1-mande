@@ -8,14 +8,14 @@ import {
   loadMetricsForConfig,
   facetParser,
 } from '../../../../utils/metric-data-loader'
-import videoConfig from '../../../../config/VideoConfig'
+import videoConfig from '../../../shared/config/VideoConfig'
 import {
   metricQualityScore,
   viewQualityScore,
 } from '../../../../utils/quality-score'
 import QosKpiGrid from '../../../shared/components/qos/QosKpiGrid'
 import SessionTable from './SessionTable'
-import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
+import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
 
 export default class SessionContainer extends React.Component {
   state = {

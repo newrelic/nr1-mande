@@ -10,11 +10,11 @@ import {
   TableRow,
   TableRowCell,
 } from 'nr1'
-import videoConfig from '../../../../config/VideoConfig'
+import videoConfig from '../../../shared/config/VideoConfig'
 import { formatTimestampAsDate } from '../../../../utils/date-formatter'
 import { openVideoSession } from '../../../../utils/navigation'
 import { getThresholdClass } from '../../../../utils/threshold'
-import { activeEvents } from '../../../../config/VideoConfig'
+import { activeEvents } from '../../../shared/config/VideoConfig'
 
 export default class ViewTable extends React.Component {
   state = {

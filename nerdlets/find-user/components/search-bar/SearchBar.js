@@ -4,8 +4,8 @@ import AsyncSelect from 'react-select/async'
 import { sortBy } from 'lodash'
 
 import { HeadingText, NerdGraphQuery, Stack, StackItem } from 'nr1'
-import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
-import { activeEvents } from '../../../../config/VideoConfig'
+import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
+import { activeEvents } from '../../../shared/config/VideoConfig'
 
 const searchBar = props => {
   const loadData = async searchTerm => {

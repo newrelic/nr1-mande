@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, GridItem, Stack, StackItem, NrqlQuery, Spinner } from 'nr1'
 import Metric from '../../../shared/components/metric/Metric'
-import { activeEvents } from '../../../../config/VideoConfig'
+import { activeEvents } from '../../../shared/config/VideoConfig'
 
 export default class SessionDetail extends React.PureComponent {
   composeNrqlQuery = (query, dataHandler, handlerParams) => {

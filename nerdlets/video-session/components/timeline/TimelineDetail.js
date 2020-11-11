@@ -4,7 +4,7 @@ import { NrqlQuery } from 'nr1'
 import EventStream from './EventStream'
 import Timeline from '../timeline/Timeline'
 import videoGroup from './VideoGroup'
-import { activeEvents } from '../../../../config/VideoConfig'
+import { activeEvents } from '../../../shared/config/VideoConfig'
 
 export default class TimelineDetail extends React.Component {
   state = {

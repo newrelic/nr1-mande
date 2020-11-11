@@ -16,7 +16,7 @@ import {
 } from 'nr1'
 import { dateFormatter } from '../../../../utils/date-formatter'
 import { formatFacets } from '../../../../utils/query-formatter'
-import { getHook } from '../../../../config/Hooks'
+import { getHook } from '../../../shared/config/Hooks'
 
 const chartGrid = props => {
   const {

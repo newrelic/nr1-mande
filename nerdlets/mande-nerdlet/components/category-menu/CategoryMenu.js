@@ -32,7 +32,7 @@ const CategoryMenu = props => {
                     value: metricDef.value,
                     title: metricDef.def.title,
                   }}
-                  threshold={{...metricDef.def.threshold}}
+                  threshold={{ ...metricDef.def.threshold }}
                   showCompare={true}
                   compare={{
                     difference: metricDef.difference,

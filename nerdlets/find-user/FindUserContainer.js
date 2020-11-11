@@ -56,8 +56,6 @@ export default class FindUserContainer extends React.Component {
   }
 
   onChooseSession = (item, scope) => {
-    console.debug(`handleChooseSession triggered`, item, scope)
-
     const { accountId, user } = this.props.nerdletUrlState
     scope = scope ? scope : 'all'
 
@@ -75,7 +73,6 @@ export default class FindUserContainer extends React.Component {
   }
 
   render() {
-    console.debug('**** findUserContainer.render')
     const { user } = this.state
     const { timeRange } = this.props.launcherUrlState
     const { accountId } = this.props.nerdletUrlState

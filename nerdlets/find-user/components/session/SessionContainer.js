@@ -144,26 +144,17 @@ export default class SessionContainer extends React.Component {
       return acc
     }, 0)
 
-    // console.info('sessionContainer.sessionViews', sessionViews)
-
     return { sessionViews, userKpis }
   }
 
   async componentDidMount() {
-    console.debug('**** sessionContainer.componentDidMount')
     const { sessionViews, userKpis } = await this.loadSessions()
 
     this.setState({ loading: false, sessionViews, userKpis })
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    console.debug('**** sessionContainer.componentDidUdpate')
     if (!isEqual(prevProps, this.props)) {
-      console.debug(
-        '**** sessionContainer.componentDidUdpate props mismatch',
-        prevProps,
-        this.props
-      )
       this.setState({ loading: true })
       const { sessionViews, userKpis } = await this.loadSessions()
       this.setState({ loading: false, sessionViews, userKpis })
@@ -174,8 +165,6 @@ export default class SessionContainer extends React.Component {
     const { user, duration, accountId, chooseSession } = this.props
     const { loading, userKpis, sessionViews } = this.state
     const formattedDuration = dateFormatter(duration.timeRange)
-
-    console.debug('**** sessionContainer.render')
 
     return (
       <React.Fragment>

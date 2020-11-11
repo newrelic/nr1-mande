@@ -9,8 +9,6 @@ import { activeEvents } from '../../../shared/config/VideoConfig'
 
 const searchBar = props => {
   const loadData = async searchTerm => {
-    console.debug('searchBar.loadData')
-
     const { duration, accountId } = props
 
     let userClause = ''
@@ -23,8 +21,6 @@ const searchBar = props => {
       userClause += `${u} like '%${searchTerm}%'`
     })
     const nrql = `FROM ${activeEvents()} SELECT ${userCondition} WHERE ${userClause} ${duration.since} LIMIT MAX `
-
-    console.debug('searchBar.loadData nrql', nrql)
 
     const query = `{
       actor {

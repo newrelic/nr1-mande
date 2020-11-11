@@ -10,7 +10,6 @@ export default class UserViewContainer extends React.Component {
   collectViewKpis = views => {
     let kpis = []
     views.forEach(view => {
-      // console.log('view', view)
 
       view.kpis.forEach(k => {
         const config = videoConfig.metrics.find(m => m.id === k.defId)
@@ -36,7 +35,6 @@ export default class UserViewContainer extends React.Component {
   }
 
   render() {
-    console.debug('**** userViewContainer.render')
     const { timeRange } = this.props.launcherUrlState
     const {
       accountId,

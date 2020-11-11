@@ -13,8 +13,6 @@ const metricDashboard = props => {
     toggleDetails,
   } = props
 
-  console.debug('**** metricDashboard.render')
-
   const getEmptyCategoryContents = title => {
     return (
       <div className="empty-state">

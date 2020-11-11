@@ -43,7 +43,6 @@ const chartGrid = props => {
       }
     }
 
-    console.debug('videoDetail.query', query)
     return query
   }
 

@@ -15,10 +15,10 @@ import {
 } from 'nr1'
 
 import CategoryMenu from './components/category-menu/CategoryMenu'
-import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
-import MetricDashboard from '../../components/dashboard/MetricDashboard'
+import MetricSidebar from './components/metric-sidebar/MetricSidebar'
+import MetricDashboard from './components/dashboard/MetricDashboard'
 import CategoryDetail from './components/category-detail/CategoryDetail'
-import Selected from '../../components/metric-sidebar/Selected'
+import Selected from './components/metric-sidebar/Selected'
 import metricConfigs from '../../config/MetricConfig'
 import { FIND_USER_ATTRIBUTE } from '../../config/MetricConfig'
 import { activeEvents } from '../../config/VideoConfig'

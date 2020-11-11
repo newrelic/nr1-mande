@@ -1,6 +1,6 @@
 import React from 'react'
 import { Stack } from 'nr1'
-import Metric from '../../nerdlets/shared/components/metric/Metric'
+import Metric from '../../../shared/components/metric/Metric'
 
 const metricDashboard = props => {
   const {

@@ -121,8 +121,9 @@ export default class MandeContainer extends React.Component {
     this.setState({ metricRefreshInterval: value })
   }
 
-  onToggleMetric = (selected, init) => {
+  onToggleMetric = (metric, init) => {
     const currentMetric = this.state.selectedMetric
+    const selected = metric.id ? metric.id : metric.title
 
     if (currentMetric && currentMetric === selected)
       this.setState({ selectedMetric: null })

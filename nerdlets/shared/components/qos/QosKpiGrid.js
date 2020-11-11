@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
-import { Stack, Grid, GridItem } from 'nr1'
-import { roundToTwoDigits } from '../../../../utils/number-formatter'
-import MetricValue from '../../../../components/metric/MetricValue'
+import { Grid, GridItem } from 'nr1'
+import Metric from '../metric/Metric'
 
 export default class QosKpiGrid extends React.Component {
 
@@ -13,7 +12,6 @@ export default class QosKpiGrid extends React.Component {
   }
 
   render() {
-    console.debug('**** kpiGrid.render')
     const { qualityScore, kpis, threshold } = this.props
 
     return (
@@ -21,40 +19,38 @@ export default class QosKpiGrid extends React.Component {
         {kpis && (
           <Grid className="session-user-kpis">
             <GridItem columnStart={1} columnEnd={4}>
-              <div className="session-qos-base sessionSectionBase">
-                <div className="metric-chart">
-                  <div className="chart-title">
-                    Aggregate View Quality Score
-                  </div>
-                  <MetricValue
-                    threshold={threshold}
-                    value={qualityScore}
-                    greenLight={true}
-                    decoration=" %"
-                    baseStyle="greenLight"
-                  />
-                </div>
+              <div className="session-qos-base">
+                <Metric
+                  metric={{
+                    value: qualityScore,
+                    title: 'Aggregate View Quality Score',
+                    decoration: ' %',
+                  }}
+                  threshold={{ ...threshold, showGreenLight: true }}
+                  showTooltip={true}
+                  valueSize="large"
+                />
               </div>
             </GridItem>
             <GridItem columnStart={5} columnEnd={12}>
-              <Stack className="session-kpi-group" fullWidth>
+              <div className="session-kpi-group">
                 {kpis.map((kpi, idx) => {
+                  const value = kpi.value / kpi.viewCount
                   return (
-                    <div key={kpi.name + idx} className="sessionSectionBase">
-                      <div className="metric-chart">
-                        <div className="chart-title">{kpi.name}</div>
-                        <MetricValue
-                          threshold={kpi.threshold}
-                          value={
-                            // eslint-disable-next-line prettier/prettier
-                            roundToTwoDigits(kpi.value / kpi.viewCount)
-                          }
-                        />
-                      </div>
+                    <div key={kpi.name + idx} className="session-kpi">
+                      <Metric
+                        metric={{
+                          value: value,
+                          title: kpi.name,
+                        }}
+                        threshold={kpi.threshold}
+                        showTooltip={true}
+                        valueSize="large"
+                      />
                     </div>
                   )
                 })}
-              </Stack>
+              </div>
             </GridItem>
           </Grid>
         )}

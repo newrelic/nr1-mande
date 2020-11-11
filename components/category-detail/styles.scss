@@ -2,7 +2,7 @@
   width: 100%;
   height: 100%;
 
-  >.detail-filter {
+  > .detail-filter {
     width: 100%;
     height: 100%;
     max-width: 12%;
@@ -13,15 +13,15 @@
     overflow-y: auto;
   }
 
-  >.detail-content {
+  > .detail-content {
     // margin-top: 5px;
     width: 100%;
     height: 100%;
-    overflow-y: auto;  
+    overflow-y: auto;
     padding: 0 4px;
     overflow-x: hidden;
 
-    >.detail-kpis {
+    > .detail-kpis {
       // overflow: scroll;
       padding-bottom: 10px;
       width: 100%;
@@ -30,17 +30,29 @@
       align-items: flex-start;
       flex-wrap: wrap;
 
-      >.detail-kpis-stack {
-        flex-wrap: wrap;
+      .metric-chart {
+        width: 166.6px;
       }
+      .metric-chart.loading {
+        min-height: 127px;
+        display: flex;
+        align-items: center;
+      }
+
     }
 
-    >.detail-main {
+    > .detail-main {
       width: 100%;
       height: 100%;
       border-top: 1px transparent #d5d7d7;
     }
 
+    .detail-kpis {
+      .metric-chart {
+        margin-top: 5px;
+        margin-left: 4px;
+      }
+    }
   }
 }
 
@@ -78,13 +90,13 @@
       }
 
       &:hover {
-        >.chart-title-tooltip {
+        > .chart-title-tooltip {
           visibility: visible;
           opacity: 1;
           transition: 0.25s opacity ease;
-          transition-delay: .75s;
+          transition-delay: 0.75s;
           z-index: 10;
-        }  
+        }
       }
     }
 
@@ -100,7 +112,7 @@
     .detail-chart {
       box-sizing: border-box;
       padding: 16px;
-    
+
       &.small {
         height: 250px;
       }

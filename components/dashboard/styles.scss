@@ -12,6 +12,13 @@
     border-bottom: 1px solid #edeeee;
   }
 
+  .metric.maximized {
+    .metric-chart {
+      transition: unset;
+      transform: unset;  
+    }
+  }
+
   @media (min-width: 1850px) {
     grid-template-rows: repeat(2,50%);
   }
@@ -64,20 +71,12 @@
 
 .metric-block {
   width: 100%;
-  min-height: calc(100% - 21px);
+  min-height: calc(100% - 27px);
   display: grid;
   grid-template-columns: 50% 50%;
-  grid-template-rows: repeat(auto-fill, 110px);
+  grid-template-rows: repeat(auto-fill, 7rem);
   overflow: scroll;
 
-  .metric:hover {
-    background-color: #fafbfb;
-  }
-
-  & .metric.maximized .metric-chart {
-    width: auto;
-    background-color: transparent;
-  }
   ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 6px;
@@ -87,14 +86,5 @@
     border-radius: 50px;
     background-color: rgba(0,0,0,.5);
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
-  }
-}
-
-.under-performing-kpi {
-  border: 2px solid #bf0015;
-  
-  .metric.title {
-    background-color: #bf0015;
-    color: #fff;
   }
 }

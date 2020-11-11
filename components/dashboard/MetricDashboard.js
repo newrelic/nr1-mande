@@ -1,6 +1,6 @@
 import React from 'react'
-import { Stack, HeadingText } from 'nr1'
-import { Metric, BlankMetric } from '../metric/Metric'
+import { Stack } from 'nr1'
+import Metric from '../../nerdlets/shared/components/metric/Metric'
 
 const metricDashboard = props => {
   const {
@@ -68,13 +68,27 @@ const metricDashboard = props => {
           <React.Fragment key={metricDef.def.title + idx}>
             {metricDef && (
               <Metric
-                classes="metric maximized"
+                loading={metricDef.loading}
                 accountId={accountId}
-                metric={metricDef}
-                duration={duration}
-                threshold={threshold}
-                minify={false}
+                metric={{
+                  id: metricDef.def.title,
+                  value: metricDef.value,
+                  title: metricDef.def.query.title
+                    ? metricDef.def.query.title
+                    : metricDef.def.title,
+                }}
+                threshold={{ ...metricDef.def.threshold, showGreenLight: true }}
+                showCompare={true}
+                compare={{
+                  difference: metricDef.difference,
+                  invertCompare: metricDef.def.invertCompareTo,
+                  change: metricDef.change,
+                }}
+                showSparkline={true}
+                query={metricDef.def.query.nrql + duration.since}
                 click={toggleMetric}
+                visibleThreshold={threshold}
+                valueAlign="left"
               />
             )}
           </React.Fragment>

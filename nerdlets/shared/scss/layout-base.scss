@@ -1,3 +1,5 @@
+@import './variables.scss';
+
 * {
   box-sizing: border-box;
 }
@@ -8,19 +10,6 @@ h4 {
   line-height: 24px;
   color: #464e4e;
   text-transform: none;
-}
-
-@mixin defaultPanel {
-  background-color: #fff;
-  padding: 1rem;
-  border: 1px solid #e3e4e4;
-  box-shadow: 0 1px 3px 0 rgba(203, 226, 226, 0.34);
-}
-
-@mixin defaultContainer {
-  @include defaultPanel;
-  margin: auto;
-  width: 98%;
 }
 
 .empty-state-container {
@@ -92,13 +81,13 @@ h4 {
 }
 
 .redLight {
-  color: #bf0016;
+  color: $redlight-color;
 }
 
 .yellowLight {
-  color: #f1cf50;
+  color: $yellowlight-color;
 }
 
 .greenLight {
-  color: #11a600;
+  color: $greenlight-color;
 }

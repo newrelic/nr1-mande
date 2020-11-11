@@ -1,7 +1,6 @@
 import React from 'react'
 import { Grid, GridItem, Stack, StackItem, NrqlQuery, Spinner } from 'nr1'
-import MetricValue from '../metric/MetricValue'
-import { roundToTwoDigits } from '../../utils/number-formatter'
+import Metric from '../../nerdlets/shared/components/metric/Metric'
 import { activeEvents } from '../../config/VideoConfig'
 
 export default class SessionDetail extends React.PureComponent {
@@ -61,9 +60,13 @@ export default class SessionDetail extends React.PureComponent {
   buildKpiStackItem = (results, metric) => {
     let value = results[0].data[0][metric.query.lookup]
     return (
-      <MetricValue
+      <Metric
+        metric={{
+          value: value,
+          title: metric.title,
+        }}
         threshold={metric.threshold}
-        value={roundToTwoDigits(value)}
+        valueSize="large"
       />
     )
   }
@@ -92,16 +95,12 @@ export default class SessionDetail extends React.PureComponent {
           <div className="session-kpi-grid">
             {stack.metrics.map((metric, idx) => {
               return (
-                <div key={metric.title + idx} className="sessionSectionBase">
-                  <div className="metric-chart">
-                    <div className="chart-title">{metric.title}</div>
-                    <div className="chart-title-tooltip">{metric.title}</div>
-                    {this.composeNrqlQuery(
-                      metric.query.nrql + ` WHERE viewId='${session}'`,
-                      this.buildKpiStackItem,
-                      metric
-                    )}
-                  </div>
+                <div key={metric.title + idx} className="session-kpi">
+                  {this.composeNrqlQuery(
+                    metric.query.nrql + ` WHERE viewId='${session}'`,
+                    this.buildKpiStackItem,
+                    metric
+                  )}
                 </div>
               )
             })}

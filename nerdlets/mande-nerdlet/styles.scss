@@ -1,10 +1,11 @@
+@import '../shared/scss/variables.scss';
+@import '../shared/scss/mixins.scss';
 @import '../shared/scss/layout-base.scss';
 @import '../shared/scss/empty-view.scss';
-@import '../shared/scss/metric-base.scss';
+@import "../shared/components/metric/styles.scss";
 @import "../../components/category-menu/style.scss";
 @import "../../components/metric-sidebar/style.scss";
 @import "../../components/dashboard/styles";
-@import "../../components/metric/styles";
 @import "../../components/category-detail/styles";
 
 // ==============================================================

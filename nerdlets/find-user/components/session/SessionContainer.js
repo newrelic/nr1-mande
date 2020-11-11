@@ -2,17 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import { Stack, StackItem, HeadingText, Spinner } from 'nr1'
-import { dateFormatter } from '../../../../utils/date-formatter'
-import { roundToTwoDigits } from '../../../../utils/number-formatter'
+import { dateFormatter } from '../../../shared/utils/date-formatter'
+import { roundToTwoDigits } from '../../../shared/utils/number-formatter'
 import {
   loadMetricsForConfig,
   facetParser,
-} from '../../../../utils/metric-data-loader'
+} from '../../../shared/utils/metric-data-loader'
 import videoConfig from '../../../shared/config/VideoConfig'
 import {
   metricQualityScore,
   viewQualityScore,
-} from '../../../../utils/quality-score'
+} from '../../../shared/utils/quality-score'
 import QosKpiGrid from '../../../shared/components/qos/QosKpiGrid'
 import SessionTable from './SessionTable'
 import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'

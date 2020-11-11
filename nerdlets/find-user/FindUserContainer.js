@@ -3,8 +3,11 @@ import { Stack, StackItem, HeadingText } from 'nr1'
 import SearchBar from './components/search-bar/SearchBar'
 import SessionContainer from './components/session/SessionContainer'
 import videoConfig from '../shared/config/VideoConfig'
-import { formatSinceAndCompare } from '../../utils/query-formatter'
-import { openUserVideoViews, openVideoSession } from '../../utils/navigation'
+import { formatSinceAndCompare } from '../shared/utils/query-formatter'
+import {
+  openUserVideoViews,
+  openVideoSession,
+} from '../shared/utils/navigation'
 
 export default class FindUserContainer extends React.Component {
   state = {

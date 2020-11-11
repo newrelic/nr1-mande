@@ -26,8 +26,8 @@ import {
   formatFilters,
   formatFacets,
   formatSinceAndCompare,
-} from '../../utils/query-formatter'
-import { loadMetricsForConfigs } from '../../utils/metric-data-loader'
+} from '../shared/utils/query-formatter'
+import { loadMetricsForConfigs } from '../shared/utils/metric-data-loader'
 
 export default class MandeContainer extends React.Component {
   constructor(props) {

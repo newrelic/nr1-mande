@@ -3,7 +3,7 @@ import { Grid, GridItem, HeadingText } from 'nr1'
 import SessionDetail from './components/session-detail/SessionDetail'
 import TimelineDetail from './components/timeline/TimelineDetail'
 import metricConfig from '../shared/config/MetricConfig'
-import { formatSinceAndCompare } from '../../utils/query-formatter'
+import { formatSinceAndCompare } from '../shared/utils/query-formatter'
 
 const sessionContainer = props => {
   const { timeRange } = props.launcherUrlState

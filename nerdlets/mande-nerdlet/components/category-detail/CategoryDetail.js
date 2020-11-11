@@ -3,7 +3,7 @@ import { Stack, StackItem } from 'nr1'
 import { isEqual } from 'lodash'
 import ChartGrid from './ChartGrid'
 import Metric from '../../../shared/components/metric/Metric'
-import { loadMetricsForConfig } from '../../../../utils/metric-data-loader'
+import { loadMetricsForConfig } from '../../../shared/utils/metric-data-loader'
 
 export default class CategoryDetail extends React.Component {
   state = {

@@ -11,9 +11,9 @@ import {
   TableRowCell,
 } from 'nr1'
 import videoConfig from '../../../shared/config/VideoConfig'
-import { formatTimestampAsDate } from '../../../../utils/date-formatter'
-import { openVideoSession } from '../../../../utils/navigation'
-import { getThresholdClass } from '../../../../utils/threshold'
+import { formatTimestampAsDate } from '../../../shared/utils/date-formatter'
+import { openVideoSession } from '../../../shared/utils/navigation'
+import { getThresholdClass } from '../../../shared/utils/threshold'
 import { activeEvents } from '../../../shared/config/VideoConfig'
 
 export default class ViewTable extends React.Component {

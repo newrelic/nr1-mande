@@ -15,8 +15,8 @@ import {
   formatTimestampAsDate,
   formatTimeAsString,
   milliseconds,
-} from '../../../../utils/date-formatter'
-import { getThresholdClass } from '../../../../utils/threshold'
+} from '../../../shared/utils/date-formatter'
+import { getThresholdClass } from '../../../shared/utils/threshold'
 import videoConfig from '../../../shared/config/VideoConfig'
 import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
 import { activeEvents } from '../../../shared/config/VideoConfig'

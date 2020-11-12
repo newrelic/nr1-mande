@@ -114,9 +114,6 @@ export const formatFilters = filters => {
     }
   }
 
-  // console.debug(`filterNrql.filters ${JSON.stringify(singleEscapedFilters)}`)
-  // console.debug(`filterNrql.filters ${JSON.stringify(doubleEscapedFilters)}`)
-
   return {
     single: singleEscapedFilters.join(' '),
     double: doubleEscapedFilters.join(' '),

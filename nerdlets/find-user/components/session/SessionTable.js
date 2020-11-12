@@ -15,11 +15,11 @@ import {
   formatTimestampAsDate,
   formatTimeAsString,
   milliseconds,
-} from '../../../../utils/date-formatter'
-import { getThresholdClass } from '../../../../utils/threshold'
-import videoConfig from '../../../../config/VideoConfig'
-import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
-import { activeEvents } from '../../../../config/VideoConfig'
+} from '../../../shared/utils/date-formatter'
+import { getThresholdClass } from '../../../shared/utils/threshold'
+import videoConfig from '../../../shared/config/VideoConfig'
+import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
+import { activeEvents } from '../../../shared/config/VideoConfig'
 
 export default class SessionTable extends React.Component {
   state = {
@@ -66,7 +66,6 @@ export default class SessionTable extends React.Component {
   }
 
   render() {
-    console.debug('**** sessionTable.render')
 
     const { accountId, duration, user, sessionViews } = this.props
 
@@ -76,7 +75,6 @@ export default class SessionTable extends React.Component {
       userClause += `${u} = '${user}'`
     })
     const nrql = `FROM ${activeEvents()} SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
-    console.info('sessionTable query', nrql)
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>

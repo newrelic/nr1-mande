@@ -2,9 +2,12 @@ import React from 'react'
 import { Stack, StackItem, HeadingText } from 'nr1'
 import SearchBar from './components/search-bar/SearchBar'
 import SessionContainer from './components/session/SessionContainer'
-import videoConfig from '../../config/VideoConfig'
-import { formatSinceAndCompare } from '../../utils/query-formatter'
-import { openUserVideoViews, openVideoSession } from '../../utils/navigation'
+import videoConfig from '../shared/config/VideoConfig'
+import { formatSinceAndCompare } from '../shared/utils/query-formatter'
+import {
+  openUserVideoViews,
+  openVideoSession,
+} from '../shared/utils/navigation'
 
 export default class FindUserContainer extends React.Component {
   state = {
@@ -53,8 +56,6 @@ export default class FindUserContainer extends React.Component {
   }
 
   onChooseSession = (item, scope) => {
-    console.debug(`handleChooseSession triggered`, item, scope)
-
     const { accountId, user } = this.props.nerdletUrlState
     scope = scope ? scope : 'all'
 
@@ -72,7 +73,6 @@ export default class FindUserContainer extends React.Component {
   }
 
   render() {
-    console.debug('**** findUserContainer.render')
     const { user } = this.state
     const { timeRange } = this.props.launcherUrlState
     const { accountId } = this.props.nerdletUrlState

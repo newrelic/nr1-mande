@@ -14,20 +14,20 @@ import {
   navigation,
 } from 'nr1'
 
-import CategoryMenu from '../../components/category-menu/CategoryMenu'
-import MetricSidebar from '../../components/metric-sidebar/MetricSidebar'
-import MetricDashboard from '../../components/dashboard/MetricDashboard'
-import CategoryDetail from '../../components/category-detail/CategoryDetail'
-import Selected from '../../components/metric-sidebar/Selected'
-import metricConfigs from '../../config/MetricConfig'
-import { FIND_USER_ATTRIBUTE } from '../../config/MetricConfig'
-import { activeEvents } from '../../config/VideoConfig'
+import CategoryMenu from './components/category-menu/CategoryMenu'
+import MetricSidebar from './components/metric-sidebar/MetricSidebar'
+import MetricDashboard from './components/dashboard/MetricDashboard'
+import CategoryDetail from './components/category-detail/CategoryDetail'
+import Selected from './components/metric-sidebar/Selected'
+import metricConfigs from '../shared/config/MetricConfig'
+import { FIND_USER_ATTRIBUTE } from '../shared/config/MetricConfig'
+import { activeEvents } from '../shared/config/VideoConfig'
 import {
   formatFilters,
   formatFacets,
   formatSinceAndCompare,
-} from '../../utils/query-formatter'
-import { loadMetricsForConfigs } from '../../utils/metric-data-loader'
+} from '../shared/utils/query-formatter'
+import { loadMetricsForConfigs } from '../shared/utils/metric-data-loader'
 
 export default class MandeContainer extends React.Component {
   constructor(props) {
@@ -53,7 +53,6 @@ export default class MandeContainer extends React.Component {
   }
 
   loadAccounts = async () => {
-    console.debug('**** loading accounts')
     const { data } = await NerdGraphQuery.query({
       query: `{
           actor {
@@ -65,7 +64,6 @@ export default class MandeContainer extends React.Component {
         }`,
     })
     const { accounts } = data.actor
-    console.debug('**** accounts loaded')
     return accounts
   }
 
@@ -121,8 +119,9 @@ export default class MandeContainer extends React.Component {
     this.setState({ metricRefreshInterval: value })
   }
 
-  onToggleMetric = (selected, init) => {
+  onToggleMetric = (metric, init) => {
     const currentMetric = this.state.selectedMetric
+    const selected = metric.id ? metric.id : metric.title
 
     if (currentMetric && currentMetric === selected)
       this.setState({ selectedMetric: null })
@@ -153,7 +152,6 @@ export default class MandeContainer extends React.Component {
   }
 
   onToggleDetailView = (stackTitle, init) => {
-    console.debug('mandeContainer.onToggleDetailView', stackTitle, init)
     const currentStack = this.state.selectedStack
 
     if (currentStack && currentStack.title === stackTitle) {
@@ -220,7 +218,6 @@ export default class MandeContainer extends React.Component {
   }
 
   setupInterval = interval => {
-    console.debug('**** mandeContainer.interval', interval)
     this.interval = setInterval(async () => {
       const duration = formatSinceAndCompare(
         this.props.launcherUrlState.timeRange
@@ -238,7 +235,6 @@ export default class MandeContainer extends React.Component {
         }
       }
 
-      console.debug('**** mandeContainer.interval reset metrics to loading')
       this.setState({ metricData })
 
       metricData = await loadMetricsForConfigs(
@@ -248,13 +244,11 @@ export default class MandeContainer extends React.Component {
         null
       )
 
-      console.debug('**** mandeContainer.interval reset metrics to loaded')
       this.setState({ metricData })
     }, interval)
   }
 
   async componentDidMount() {
-    console.debug('**** mandeContainer.componentDidMount')
     const { timeRange } = this.props.launcherUrlState
     const duration = formatSinceAndCompare(timeRange)
 
@@ -306,16 +300,12 @@ export default class MandeContainer extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (!isEqual(this.state, nextState)) {
-      console.debug('**** mandeContainer.shouldComponentUpdate state mismatch')
       return true
     }
 
     const { launcherUrlState } = this.props
     const nextLauncherState = nextProps.launcherUrlState
     if (!isEqual(launcherUrlState, nextLauncherState)) {
-      console.debug(
-        '**** mandeContainer.shouldComponentUpdate launcher state mismatch'
-      )
       return true
     }
 
@@ -323,8 +313,6 @@ export default class MandeContainer extends React.Component {
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    console.debug('**** mandeContainer.componentDidUpdate')
-
     const {
       accountId,
       threshold,
@@ -344,9 +332,6 @@ export default class MandeContainer extends React.Component {
       selectedMetric != prevState.selectedMetric ||
       !isEqual(selectedStack, prevState.selectedStack)
     ) {
-      console.debug(
-        '**** mandeContainer.componentDidUpdate updating nerdletUrlState'
-      )
       nerdlet.setUrlState({
         accountId: accountId,
         threshold: threshold,
@@ -481,8 +466,6 @@ export default class MandeContainer extends React.Component {
   }
 
   render() {
-    console.debug('**** mandeContainer.render')
-
     const { timeRange } = this.props.launcherUrlState
     const duration = formatSinceAndCompare(timeRange)
 

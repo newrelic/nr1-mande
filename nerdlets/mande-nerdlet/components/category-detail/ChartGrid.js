@@ -14,9 +14,9 @@ import {
   PieChart,
   FunnelChart,
 } from 'nr1'
-import { dateFormatter } from '../../utils/date-formatter'
-import { formatFacets } from '../../utils/query-formatter'
-import { getHook } from '../../config/Hooks'
+import { dateFormatter } from '../../../shared/utils/date-formatter'
+import { formatFacets } from '../../../shared/utils/query-formatter'
+import { getHook } from '../../../shared/config/Hooks'
 
 const chartGrid = props => {
   const {
@@ -43,7 +43,6 @@ const chartGrid = props => {
       }
     }
 
-    console.debug('videoDetail.query', query)
     return query
   }
 

@@ -1,13 +1,10 @@
 import React from 'react'
 import { Stack, StackItem, Icon } from 'nr1'
-import metricConfigs from '../../config/MetricConfig'
-import { Metric } from '../metric/Metric'
+import Metric from '../../../shared/components/metric/Metric'
 
 const CategoryMenu = props => {
   const {
-    accountId,
     threshold,
-    duration,
     metricDefs,
     metricCategories,
     selectedStack,
@@ -28,13 +25,25 @@ const CategoryMenu = props => {
             {metricDef && (
               <li>
                 <Metric
-                  classes="metric minified"
-                  accountId={accountId}
-                  metric={metricDef}
-                  duration={duration}
-                  threshold={threshold}
+                  loading={metricDef.loading}
                   minify={true}
+                  metric={{
+                    id: metricDef.def.title,
+                    value: metricDef.value,
+                    title: metricDef.def.title,
+                  }}
+                  threshold={{
+                    ...metricDef.def.threshold,
+                    showGreenLight: true,
+                  }}
+                  showCompare={true}
+                  compare={{
+                    difference: metricDef.difference,
+                    invertCompare: metricDef.def.invertCompareTo,
+                    change: metricDef.change,
+                  }}
                   click={toggleMetric}
+                  visibleThreshold={threshold}
                 />
               </li>
             )}

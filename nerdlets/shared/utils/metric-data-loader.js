@@ -78,9 +78,9 @@ export const loadMetric = async (
 
   if (filters) nrql = nrql + (filters.double ? filters.double : filters)
 
-  console.debug(
-    `>>>> metric-data-loader.loadMetric ${metric.title} nrql ${nrql}`
-  )
+  // console.debug(
+  //   `>>>> metric-data-loader.loadMetric ${metric.title} nrql ${nrql}`
+  // )
 
   const query = `{
       actor {
@@ -116,11 +116,6 @@ export const compareParser = (metric, data, lookup) => {
 
     let current = data.actor.account.nrql.results[0][lookup]
     let previous = data.actor.account.nrql.results[1][lookup]
-    console.debug(
-      `>>>> metric-data-loader.compareParser ${metric.title} current vs previous`,
-      current,
-      previous
-    )
 
     if (isNaN(current) && lookup === 'percentile') {
       current = Object.values(current)[0]

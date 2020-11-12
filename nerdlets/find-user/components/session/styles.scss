@@ -6,41 +6,37 @@
 
 .session-user-kpis {
   @include defaultPanel;
-  @include metricChartBasic;
 
   width: 100%;
   margin-left: 0;
 }
 
 .session-qos-base {
-  // margin-right: 8px;
-  // width: 250px;
-  height: 95%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;  
-}
+  height: 100%;
 
-.sessionSectionBase.session-qos-base {
-
-  >.metric-chart {
-    >.chart-title {
-      font-size: 20px;
+  .metric.maximized {
+    height: calc(100% - .25rem);
+    .metric-chart {
+      .name {
+        text-align: center;
+        font-size: 1rem;
+      }
     }
-  
-    >.value {
-      font-size: 60px;
-    }
-  
   }
+
 }
 
 .session-kpi-group {
+  display: flex;
   flex-wrap: wrap;
-  padding-bottom: 4px;
+  height: 100%;
+  
+  .session-kpi {
+    margin-right: .25rem;
+    margin-bottom: .25rem;
 
-  .sessionSectionBase {
-    margin-right: 8px;
-    width: 250px;
+    .metric {
+      width: 11rem;
+    }
   }
 }

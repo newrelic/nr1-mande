@@ -14,7 +14,6 @@ export default class Filter extends React.Component {
     } = this.props
 
     const query = `SELECT uniques(${attribute}) FROM ${eventTypes} ${since}`
-    // console.debug(`filterAttributes.loadValues query=${query}`)
 
     const { data, error } = await NrqlQuery.query({ accountId, query })
     if (error) console.error(error)

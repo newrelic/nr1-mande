@@ -2,20 +2,20 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import { Stack, StackItem, HeadingText, Spinner } from 'nr1'
-import { dateFormatter } from '../../../../utils/date-formatter'
-import { roundToTwoDigits } from '../../../../utils/number-formatter'
+import { dateFormatter } from '../../../shared/utils/date-formatter'
+import { roundToTwoDigits } from '../../../shared/utils/number-formatter'
 import {
   loadMetricsForConfig,
   facetParser,
-} from '../../../../utils/metric-data-loader'
-import videoConfig from '../../../../config/VideoConfig'
+} from '../../../shared/utils/metric-data-loader'
+import videoConfig from '../../../shared/config/VideoConfig'
 import {
   metricQualityScore,
   viewQualityScore,
-} from '../../../../utils/quality-score'
+} from '../../../shared/utils/quality-score'
 import QosKpiGrid from '../../../shared/components/qos/QosKpiGrid'
 import SessionTable from './SessionTable'
-import { FIND_USER_ATTRIBUTE } from '../../../../config/MetricConfig'
+import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
 
 export default class SessionContainer extends React.Component {
   state = {
@@ -144,26 +144,17 @@ export default class SessionContainer extends React.Component {
       return acc
     }, 0)
 
-    // console.info('sessionContainer.sessionViews', sessionViews)
-
     return { sessionViews, userKpis }
   }
 
   async componentDidMount() {
-    console.debug('**** sessionContainer.componentDidMount')
     const { sessionViews, userKpis } = await this.loadSessions()
 
     this.setState({ loading: false, sessionViews, userKpis })
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    console.debug('**** sessionContainer.componentDidUdpate')
     if (!isEqual(prevProps, this.props)) {
-      console.debug(
-        '**** sessionContainer.componentDidUdpate props mismatch',
-        prevProps,
-        this.props
-      )
       this.setState({ loading: true })
       const { sessionViews, userKpis } = await this.loadSessions()
       this.setState({ loading: false, sessionViews, userKpis })
@@ -174,8 +165,6 @@ export default class SessionContainer extends React.Component {
     const { user, duration, accountId, chooseSession } = this.props
     const { loading, userKpis, sessionViews } = this.state
     const formattedDuration = dateFormatter(duration.timeRange)
-
-    console.debug('**** sessionContainer.render')
 
     return (
       <React.Fragment>

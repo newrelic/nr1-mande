@@ -4,8 +4,7 @@ import { Spinner, SparklineChart, Tooltip } from 'nr1'
 
 const getThresholdClass = (threshold, value, baseStyle) => {
   baseStyle = baseStyle ? baseStyle : ''
-  if (!threshold || (!threshold.warning && !threshold.critical))
-    return baseStyle
+  if (!threshold || (!threshold.warning && !threshold.critical)) return ''
   if (threshold.type === 'below') {
     if (value > threshold.warning) return baseStyle
     if (value <= threshold.critical) return 'redLight'

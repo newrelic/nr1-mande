@@ -138,7 +138,7 @@ export default class CategoryDetail extends React.Component {
                   }}
                   threshold={{
                     ...metricDef.def.threshold,
-                    showGreenLight: true,
+                    showGreenLight: false,
                   }}
                   showCompare={true}
                   compare={{

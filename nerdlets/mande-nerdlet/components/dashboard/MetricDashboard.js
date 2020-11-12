@@ -77,7 +77,7 @@ const metricDashboard = props => {
                 }}
                 threshold={{
                   ...metricDef.def.threshold,
-                  showGreenLight: true,
+                  showGreenLight: false,
                 }}
                 showCompare={true}
                 compare={{

@@ -136,7 +136,10 @@ export default class CategoryDetail extends React.Component {
                       ? metricDef.def.query.title
                       : metricDef.def.title,
                   }}
-                  threshold={{ ...metricDef.def.threshold }}
+                  threshold={{
+                    ...metricDef.def.threshold,
+                    showGreenLight: true,
+                  }}
                   showCompare={true}
                   compare={{
                     difference: metricDef.difference,

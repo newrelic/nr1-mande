@@ -1,5 +1,5 @@
 import React from 'react'
-import { uniq } from 'lodash'
+import uniq from 'lodash.uniq'
 import { StackItem } from 'nr1'
 import Filter from './Filter'
 import Facet from './Facet'

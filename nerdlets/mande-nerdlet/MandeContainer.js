@@ -1,5 +1,7 @@
 import React from 'react'
-import { uniq, cloneDeep, isEqual } from 'lodash'
+import uniq from 'lodash.uniq'
+import cloneDeep from 'lodash.clonedeep'
+import isEqual from 'lodash.isequal'
 import {
   AccountPicker,
   NerdGraphQuery,

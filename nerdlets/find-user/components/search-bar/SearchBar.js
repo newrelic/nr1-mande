@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import AsyncSelect from 'react-select/async'
-import { sortBy } from 'lodash'
+import sortBy from 'lodash.sortby'
 
 import { HeadingText, NerdGraphQuery, Stack, StackItem } from 'nr1'
 import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'

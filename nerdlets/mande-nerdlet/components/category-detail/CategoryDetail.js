@@ -1,6 +1,6 @@
 import React from 'react'
 import { Stack, StackItem } from 'nr1'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash.isequal'
 import ChartGrid from './ChartGrid'
 import Metric from '../../../shared/components/metric/Metric'
 import { loadMetricsForConfig } from '../../../shared/utils/metric-data-loader'

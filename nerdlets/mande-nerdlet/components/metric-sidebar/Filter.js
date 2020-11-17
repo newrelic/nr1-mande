@@ -1,5 +1,6 @@
 import React from 'react'
-import { startCase, map } from 'lodash'
+import startCase from 'lodash.startcase'
+import map from 'lodash.map'
 import { Icon, NrqlQuery, Spinner, Checkbox } from 'nr1'
 
 export default class Filter extends React.Component {

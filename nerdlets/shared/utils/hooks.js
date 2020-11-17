@@ -1,4 +1,4 @@
-import { openVideoSession } from '../utils/navigation'
+import { openVideoSession } from './navigation'
 
 const hooks = [
   {

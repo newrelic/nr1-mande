@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash.isequal'
 import { Grid, GridItem } from 'nr1'
 import Metric from '../metric/Metric'
 

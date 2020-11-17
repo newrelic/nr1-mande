@@ -1,5 +1,5 @@
 import React from 'react'
-import { uniq } from 'lodash'
+import uniq from 'lodash.uniq'
 import {
   Grid,
   GridItem,
@@ -16,7 +16,7 @@ import {
 } from 'nr1'
 import { dateFormatter } from '../../../shared/utils/date-formatter'
 import { formatFacets } from '../../../shared/utils/query-formatter'
-import { getHook } from '../../../shared/config/Hooks'
+import { getHook } from '../../../shared/utils/hooks'
 
 const chartGrid = props => {
   const {

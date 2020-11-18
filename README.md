@@ -1,10 +1,12 @@
 [![Experimental Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Experimental.png)](https://opensource.newrelic.com/oss-category/#experimental)
 
-# Media and Entertainment Observability
+# Media and Entertainment Observability (MandE)
 
 Understand the health of your end-to-end Video Streaming workflow, and troubleshoot issues in specific user video sessions.
 
 # Usage
+
+Before starting to use the app, make sure you have the necessary video agents deployed to your web sites and mobile apps.
 
 ## Screenshot
 

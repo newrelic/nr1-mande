@@ -6,7 +6,7 @@ import Timeline from '../timeline/Timeline'
 import videoGroup from './VideoGroup'
 import { activeEvents } from '../../../shared/config/VideoConfig'
 
-export default class TimelineDetail extends React.Component {
+export default class TimelineDetail extends React.PureComponent {
   state = {
     sessionData: [],
     loading: true,

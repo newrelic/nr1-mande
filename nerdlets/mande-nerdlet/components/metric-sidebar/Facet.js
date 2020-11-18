@@ -1,5 +1,5 @@
 import React from 'react'
-import { startCase } from 'lodash'
+import startCase from 'lodash.startcase'
 import { Checkbox } from 'nr1'
 
 const facet = props => {

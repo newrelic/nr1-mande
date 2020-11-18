@@ -13,7 +13,7 @@
 // ==============================================================
 
 .options-bar-parent {
-  height: 58px;
+  height: 62px;
 
   > [class*="StackItem"] {
     width: 100%;
@@ -28,14 +28,17 @@
   border-bottom: 1px solid #e3e4e4;
   height: 100%;
 
+  :not(:first-child) {
+    margin-left: 1.5rem;
+  }
+
   & > [class*="StackItem"] {
-    padding: 4px 0 4px;
-    margin-left: 20px;
+    padding: 8px 0;
   }
 }
 
 .options-bar-label {
-  padding: 3px 0 5px;
+  padding-top: .25rem;
   text-transform: uppercase;
   color: #8e94a3;
 }

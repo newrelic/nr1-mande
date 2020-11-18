@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash.isequal'
 import { Stack, StackItem, HeadingText, Spinner } from 'nr1'
 import { dateFormatter } from '../../../shared/utils/date-formatter'
 import { roundToTwoDigits } from '../../../shared/utils/number-formatter'

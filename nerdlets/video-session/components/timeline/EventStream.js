@@ -2,7 +2,7 @@ import React from 'react'
 import { NrqlQuery, Spinner, Button, Icon, Stack, StackItem } from 'nr1'
 import Moment from 'react-moment'
 
-export default class EventStream extends React.Component {
+export default class EventStream extends React.PureComponent {
   state = {
     expandedTimelineItem: null,
   }

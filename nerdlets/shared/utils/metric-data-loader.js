@@ -1,5 +1,5 @@
 import { NerdGraphQuery } from 'nr1'
-import { flatten } from 'lodash'
+import flatten from 'lodash.flatten'
 import { roundToTwoDigits } from './number-formatter'
 
 export const loadMetricsForConfigs = async (

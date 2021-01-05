@@ -109,7 +109,7 @@ export default class MandeContainer extends React.Component {
     })
   }
 
-  onChangeAccount = value => {
+  onChangeAccount = (event, value) => {
     this.setState({ accountId: value })
   }
 

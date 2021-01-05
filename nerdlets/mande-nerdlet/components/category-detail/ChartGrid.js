@@ -13,6 +13,7 @@ import {
   HistogramChart,
   PieChart,
   FunnelChart,
+  TableChart,
 } from 'nr1'
 import { dateFormatter } from '../../../shared/utils/date-formatter'
 import { formatFacets } from '../../../shared/utils/query-formatter'
@@ -87,11 +88,13 @@ const chartGrid = props => {
       case 'funnel':
         return <FunnelChart accountId={accountId} query={getQuery(config)} />
       case 'scatter':
+        return <ScatterChart accountId={accountId} query={getQuery(config)} />
+      case 'table': // need to pass the facets for data matching
         return (
-          <ScatterChart
+          <TableChart
             accountId={accountId}
             query={getQuery(config)}
-            onClickScatter={
+            onClickTable={
               config.click ? getHook(config.click).bind(props) : () => null
             }
           />

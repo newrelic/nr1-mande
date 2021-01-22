@@ -78,10 +78,12 @@ export default class CategoryDetail extends React.Component {
     const { accountId, duration, stack, activeMetric } = this.props
     let view = <div />
     if (activeMetric) {
-      const metric = stack.metrics.filter(m => m.title === activeMetric)
-      const detailConfig = metric[0].detailConfig
+      const metric = stack.metrics.find(m => m.title === activeMetric)
+      const detailDashboardId =
+        stack.detailDashboards &&
+        stack.detailDashboards.find(d => d.id === metric.detailDashboardId)
 
-      if (detailConfig)
+      if (detailDashboardId)
         view = (
           <ChartGrid
             accountId={accountId}
@@ -90,17 +92,17 @@ export default class CategoryDetail extends React.Component {
             activeMetric={activeMetric}
             filters={filters}
             facets={facetClause}
-            chartDefs={detailConfig}
+            chartDefs={detailDashboardId.config}
           />
         )
-    } else if (stack.overviewConfig)
+    } else if (stack.overviewDashboard)
       view = (
         <ChartGrid
           accountId={accountId}
           duration={duration}
           filters={filters}
           facets={facetClause}
-          chartDefs={stack.overviewConfig}
+          chartDefs={stack.overviewDashboard}
         />
       )
 

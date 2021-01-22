@@ -77,7 +77,103 @@ export default {
       ],
     },
   ],
-  overviewConfig: [
+  metrics: [
+    {
+      id: 'VSF',
+      title: 'Video Start Failures',
+      threshold: {
+        critical: 100,
+        warning: 50,
+      },
+      query: {
+        nrql: `FROM ${activeEvents()} SELECT uniqueCount(viewId) as 'result' where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 `,
+        lookup: 'result',
+      },
+      qualityScoreStrategy: 'zeroOrOne',
+      detailDashboardId: 'VSF-Detail',
+    },
+    {
+      id: 'ER',
+      title: 'In-Stream Error Ratio (%)',
+      threshold: {
+        critical: 0.15,
+        warning: 0.1,
+      },
+      query: {
+        nrql: `FROM ${activeEvents()} SELECT uniqueCount(viewId) as 'result' WHERE actionName like 'CONTENT_ERROR'and totalPlaytime >= 1000 `,
+        lookup: 'result',
+      },
+      findUser: {
+        nrql: `FROM ${activeEvents()} SELECT filter(clamp_max(count(*), 1), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(clamp_max(count(*), 1), where actionName = 'CONTENT_REQUEST') * 100 as 'result' `,
+        lookup: 'result',
+      },
+      qualityScoreStrategy: 'clampMinZeroMaxOne',
+      detailDashboardId: 'ER-Detail',
+    },
+    {
+      id: 'VST',
+      title: 'Video Start Time',
+      threshold: {
+        critical: 4,
+        warning: 3.5,
+      },
+      query: {
+        nrql: `FROM ${activeEvents()} SELECT filter(average(timeSinceContentManifestRequest/1000), where actionName = 'CONTENT_START') as 'result' `,
+        lookup: 'result',
+        title: 'Video Start Time (Avg)',
+      },
+      findUser: {
+        nrql: `FROM ${activeEvents()} SELECT (clamp_min(filter(sum(timeSinceRequested/1000), WHERE actionName = 'CONTENT_START'), 0) - clamp_min(filter(sum(timeSinceAdBreakBegin/1000), where actionName = 'AD_BREAK_END' and adPosition = 'pre'), 0))/filter(uniqueCount(viewId), where actionName='CONTENT_START') as 'result' `,
+        lookup: 'result',
+      },
+      qualityScoreStrategy: 'clampMinZeroMaxOne',
+      detailDashboardId: 'VST-Detail',
+    },
+    {
+      id: 'CRR',
+      title: 'Rebuffering Ratio (%)',
+      threshold: {
+        critical: 2.12,
+        warning: 2,
+      },
+      query: {
+        nrql: `FROM ${activeEvents()} SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as 'result'`,
+        lookup: 'result',
+      },
+      qualityScoreStrategy: 'clampMinZeroMaxOne',
+      detailDashboardId: 'CRR-Detail',
+    },
+    {
+      id: 'BR',
+      title: 'Average Bitrate (mbps)',
+      threshold: {
+        critical: 4,
+        warning: 4.5,
+        type: 'below',
+      },
+      invertCompareTo: 'true',
+      query: {
+        nrql: `FROM ${activeEvents()} SELECT average(contentBitrate)/1000000 as 'result' where contentBitrate is not null and actionName like 'CONTENT%' `,
+        lookup: 'result',
+      },
+      detailDashboardId: 'BR-Detail',
+    },
+    {
+      id: 'CI',
+      title: 'Interruption Rate',
+      threshold: {
+        critical: 23,
+        warning: 20,
+      },
+      query: {
+        nrql: `FROM ${activeEvents()} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) as 'result'`,
+        lookup: 'result',
+      },
+      qualityScoreStrategy: 'clampMinZeroMaxOne',
+      detailDashboardId: 'CI-Detail',
+    },
+  ],
+  overviewDashboard: [
     {
       nrql: `SELECT filter(average(timeSinceLoad), WHERE actionName = 'CONTENT_REQUEST') as 'Time to Content Request', 
       filter(average(timeSinceRequested)/1000, WHERE actionName='CONTENT_START') as 'Time To First Frame'
@@ -129,20 +225,10 @@ export default {
       useSince: true,
     },
   ],
-  metrics: [
+  detailDashboards: [
     {
-      id: 'VSF',
-      title: 'Video Start Failure (%)',
-      threshold: {
-        critical: 2,
-        warning: 1,
-      },
-      query: {
-        nrql: `FROM ${activeEvents()} SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0))/filter(uniqueCount(viewId), where actionName != 'PLAYER_READY') * 100 as 'result'`,
-        lookup: 'result',
-      },
-      qualityScoreStrategy: 'zeroOrOne',
-      detailConfig: [
+      id: 'VSF-Detail',
+      config: [
         {
           nrql: `FROM ${activeEvents()} SELECT (filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_ERROR') - filter(uniqueCount(viewId), WHERE actionName like 'CONTENT%' and contentPlayhead > 0 AND numberOfErrors > 0))/filter(uniqueCount(viewId), where actionName != 'PLAYER_READY') * 100 as '%'`,
           columnStart: 1,
@@ -185,22 +271,8 @@ export default {
       ],
     },
     {
-      id: 'ER',
-      title: 'In-Stream Error Ratio (%)',
-      threshold: {
-        critical: 0.15,
-        warning: 0.1,
-      },
-      query: {
-        nrql: `FROM ${activeEvents()} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as 'result'`,
-        lookup: 'result',
-      },
-      findUser: {
-        nrql: `FROM ${activeEvents()} SELECT filter(clamp_max(count(*), 1), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(clamp_max(count(*), 1), where actionName = 'CONTENT_REQUEST') * 100 as 'result' `,
-        lookup: 'result',
-      },
-      qualityScoreStrategy: 'clampMinZeroMaxOne',
-      detailConfig: [
+      id: 'ER-Detail',
+      config: [
         {
           nrql: `FROM ${activeEvents()} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and contentPlayhead > 0) / filter(uniqueCount(viewId), where actionName = 'CONTENT_REQUEST') * 100 as '%' `,
           columnStart: 1,
@@ -244,23 +316,8 @@ export default {
       ],
     },
     {
-      id: 'VST',
-      title: 'Video Start Time',
-      threshold: {
-        critical: 4,
-        warning: 3.5,
-      },
-      query: {
-        nrql: `FROM ${activeEvents()} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'percentile' `,
-        lookup: 'percentile',
-        title: 'Video Start Time (Median)',
-      },
-      findUser: {
-        nrql: `FROM ${activeEvents()} SELECT (clamp_min(filter(sum(timeSinceRequested/1000), WHERE actionName = 'CONTENT_START'), 0) - clamp_min(filter(sum(timeSinceAdBreakBegin/1000), where actionName = 'AD_BREAK_END' and adPosition = 'pre'), 0))/filter(uniqueCount(viewId), where actionName='CONTENT_START') as 'result' `,
-        lookup: 'result',
-      },
-      qualityScoreStrategy: 'clampMinZeroMaxOne',
-      detailConfig: [
+      id: 'VST-Detail',
+      config: [
         {
           nrql: `SELECT filter(uniqueCount(viewId), WHERE timeSinceRequested > 4000 and actionName = 'CONTENT_START')/uniqueCount(viewId) * 100 as '%' FROM ${activeEvents()} `,
           columnStart: 1,
@@ -341,18 +398,8 @@ export default {
       ],
     },
     {
-      id: 'CRR',
-      title: 'Rebuffering Ratio (%)',
-      threshold: {
-        critical: 2.12,
-        warning: 2,
-      },
-      query: {
-        nrql: `FROM ${activeEvents()} SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as 'result'`,
-        lookup: 'result',
-      },
-      qualityScoreStrategy: 'clampMinZeroMaxOne',
-      detailConfig: [
+      id: 'CRR-Detail',
+      config: [
         {
           nrql: `FROM ${activeEvents()} SELECT filter(sum(timeSinceBufferBegin), WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection') / sum(playtimeSinceLastEvent) * 100 as '%' `,
           columnStart: 1,
@@ -405,19 +452,8 @@ export default {
       ],
     },
     {
-      id: 'BR',
-      title: 'Average Bitrate (mbps)',
-      threshold: {
-        critical: 4,
-        warning: 4.5,
-        type: 'below',
-      },
-      invertCompareTo: 'true',
-      query: {
-        nrql: `FROM ${activeEvents()} SELECT average(contentBitrate)/1000000 as 'result' where contentBitrate is not null and actionName like 'CONTENT%' `,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'BR-Detail',
+      config: [
         {
           nrql: `SELECT percentage(count(*), WHERE avgBitrate < 4000000) as '' FROM ( SELECT average(contentBitrate) as avgBitrate FROM ${activeEvents()} FACET viewId WHERE contentBitrate IS NOT NULL AND actionName like 'CONTENT%' LIMIT MAX) `,
           noFacet: true,
@@ -470,18 +506,8 @@ export default {
       ],
     },
     {
-      id: 'CI',
-      title: 'Interruption Rate',
-      threshold: {
-        critical: 23,
-        warning: 20,
-      },
-      query: {
-        nrql: `FROM ${activeEvents()} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) as 'result'`,
-        lookup: 'result',
-      },
-      qualityScoreStrategy: 'clampMinZeroMaxOne',
-      detailConfig: [
+      id: 'CI-Detail',
+      config: [
         {
           nrql: `FROM ${activeEvents()} SELECT filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(uniqueCount(viewId), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
           columnStart: 1,

@@ -11,7 +11,73 @@ export default {
       ],
     },
   ],
-  overviewConfig: [
+  metrics: [
+    {
+      title: 'Ingests Initiated (Count)',
+      threshold: {
+        critical: 3,
+        warning: 5,
+        type: 'below',
+      },
+      invertCompareTo: 'true',
+      query: {
+        nrql: `SELECT sum(provider.executionsStarted.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Ingest-Initiated-Detail',
+    },
+    {
+      title: 'Ingests Succeeded (Count)',
+      threshold: {
+        critical: 3,
+        warning: 5,
+        type: 'below',
+      },
+      invertCompareTo: 'true',
+      query: {
+        nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Ingest-Success-Detail',
+    },
+    {
+      title: 'Ingests Failed (Count)',
+      threshold: {
+        critical: 1,
+        warning: .5,
+      },
+      query: {
+        nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Ingest-Fail-Detail',
+    },
+    {
+      title: 'Ingest Time (s)',
+      threshold: {
+        critical: 20,
+        warning: 10,
+      },
+      query: {
+        nrql: `SELECT average(provider.executionTime.Average/1000) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='IngestWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Ingest-Time-Detail',
+    },
+    {
+      title: 'Ingest Failure Ratio (%)',
+      threshold: {
+        critical: 10,
+        warning: 5,
+      },
+      query: {
+        nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'result' WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Ingest-Fail-Ratio-Detail',
+    },
+  ],
+  overviewDashboard: [
     {
       nrql: `SELECT sum(provider.executionsStarted.Sum) as 'Starts' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
       columnStart: 1,
@@ -103,20 +169,10 @@ export default {
       useSince: true,
     },
   ],
-  metrics: [
+  detailDashboards: [
     {
-      title: 'Ingests Initiated (Count)',
-      threshold: {
-        critical: 3,
-        warning: 5,
-        type: 'below',
-      },
-      invertCompareTo: 'true',
-      query: {
-        nrql: `SELECT sum(provider.executionsStarted.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Ingest-Initiated-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.executionsStarted.Sum) as 'Executions' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
           columnStart: 1,
@@ -134,22 +190,12 @@ export default {
           chartType: 'line',
           title: 'Ingests Initiated',
           useSince: true,
-        }
+        },
       ],
     },
     {
-      title: 'Ingests Succeeded (Count)',
-      threshold: {
-        critical: 3,
-        warning: 5,
-        type: 'below',
-      },
-      invertCompareTo: 'true',
-      query: {
-        nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Ingest-Success-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'Succeeded' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
           columnStart: 1,
@@ -171,16 +217,8 @@ export default {
       ],
     },
     {
-      title: 'Ingests Failed (Count)',
-      threshold: {
-        critical: 1,
-        warning: .5,
-      },
-      query: {
-        nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Ingest-Fail-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
           columnStart: 1,
@@ -202,16 +240,8 @@ export default {
       ],
     },
     {
-      title: 'Ingest Time (s)',
-      threshold: {
-        critical: 20,
-        warning: 10,
-      },
-      query: {
-        nrql: `SELECT average(provider.executionTime.Average/1000) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='IngestWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Ingest-Time-Detail',
+      config: [
         {
           nrql: `SELECT average(provider.executionTime.Average/1000) as 'Ingest Time (s)' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='IngestWorkflow'`,
           columnStart: 1,
@@ -233,16 +263,8 @@ export default {
       ],
     },
     {
-      title: 'Ingest Failure Ratio (%)',
-      threshold: {
-        critical: 10,
-        warning: 5,
-      },
-      query: {
-        nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'result' WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Ingest-Fail-Ratio-Detail',
+      config: [
         {
           nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'Ingest Failure Ratio' WHERE \`label.aws:cloudformation:logical-id\` = 'IngestWorkflow'`,
           columnStart: 1,

@@ -11,7 +11,73 @@ export default {
       ],
     },
   ],
-  overviewConfig: [
+  metrics: [
+    {
+      title: 'Processes Initiated (Count)',
+      threshold: {
+        critical: 3,
+        warning: 5,
+        type: 'below',
+      },
+      invertCompareTo: 'true',
+      query: {
+        nrql: `SELECT sum(provider.executionsStarted.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Process-Initiated-Detail',
+    },
+    {
+      title: 'Processes Succeeded (Count)',
+      threshold: {
+        critical: 3,
+        warning: 5,
+        type: 'below',
+      },
+      invertCompareTo: 'true',
+      query: {
+        nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Process-Success-Detail',
+    },
+    {
+      title: 'Processes Failed (Count)',
+      threshold: {
+        critical: 1,
+        warning: .5,
+      },
+      query: {
+        nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Process-Fail-Detail',
+    },
+    {
+      title: 'Process Time (s)',
+      threshold: {
+        critical: 20,
+        warning: 10,
+      },
+      query: {
+        nrql: `SELECT average(provider.executionTime.Average/1000) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='ProcessWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Process-Time-Detail',
+    },
+    {
+      title: 'Process Failure Ratio (%)',
+      threshold: {
+        critical: 10,
+        warning: 5,
+      },
+      query: {
+        nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'result' WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Process-Fail-Ratio-Detail',
+    },
+  ],
+  overviewDashboard: [
     {
       nrql: `SELECT sum(provider.executionsStarted.Sum) as 'Starts' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
       columnStart: 1,
@@ -103,20 +169,10 @@ export default {
       useSince: true,
     },
   ],
-  metrics: [
+  detailDashboards: [
     {
-      title: 'Processes Initiated (Count)',
-      threshold: {
-        critical: 3,
-        warning: 5,
-        type: 'below',
-      },
-      invertCompareTo: 'true',
-      query: {
-        nrql: `SELECT sum(provider.executionsStarted.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Process-Initiated-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.executionsStarted.Sum) as 'Executions' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
           columnStart: 1,
@@ -138,18 +194,8 @@ export default {
       ],
     },
     {
-      title: 'Processes Succeeded (Count)',
-      threshold: {
-        critical: 3,
-        warning: 5,
-        type: 'below',
-      },
-      invertCompareTo: 'true',
-      query: {
-        nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Process-Success-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.executionsSucceeded.Sum) as 'Succeeded' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
           columnStart: 1,
@@ -171,16 +217,8 @@ export default {
       ],
     },
     {
-      title: 'Processes Failed (Count)',
-      threshold: {
-        critical: 1,
-        warning: .5,
-      },
-      query: {
-        nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Process-Fail-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.executionsFailed.Sum) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
           columnStart: 1,
@@ -222,16 +260,8 @@ export default {
       ],
     },
     {
-      title: 'Process Time (s)',
-      threshold: {
-        critical: 20,
-        warning: 10,
-      },
-      query: {
-        nrql: `SELECT average(provider.executionTime.Average/1000) as 'result' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='ProcessWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Process-Time-Detail',
+      config: [
         {
           nrql: `SELECT average(provider.executionTime.Average/1000) as 'Process Time (s)' FROM AwsStatesStateMachineSample WHERE \`label.aws:cloudformation:logical-id\` ='ProcessWorkflow'`,
           columnStart: 1,
@@ -253,16 +283,8 @@ export default {
       ],
     },
     {
-      title: 'Process Failure Ratio (%)',
-      threshold: {
-        critical: 10,
-        warning: 5,
-      },
-      query: {
-        nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'result' WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Process-Fail-Ratio-Detail',
+      config: [
         {
           nrql: `FROM AwsStatesStateMachineSample SELECT sum(provider.executionsFailed.Sum) / sum(provider.executionsStarted.Sum) * 100 as 'Process Failure Ratio' WHERE \`label.aws:cloudformation:logical-id\` = 'ProcessWorkflow'`,
           columnStart: 1,

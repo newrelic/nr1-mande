@@ -72,9 +72,12 @@ const chartGrid = props => {
           />
         )
       case 'billboard':
-        // if (facets) return <PieChart accountId={accountId} query={getQuery(config)} />
-        // else
-        return <BillboardChart accountId={accountId} query={getQuery(config)} />
+        if (facets)
+          return <BarChart accountId={accountId} query={getQuery(config)} />
+        else
+          return (
+            <BillboardChart accountId={accountId} query={getQuery(config)} />
+          )
       case 'heatmap':
         return <HeatmapChart accountId={accountId} query={getQuery(config)} />
       case 'histogram':

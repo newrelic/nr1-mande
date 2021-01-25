@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, GridItem, Stack, StackItem, NrqlQuery, Spinner } from 'nr1'
 import Metric from '../../../shared/components/metric/Metric'
-import { activeEvents } from '../../../shared/config/VideoConfig'
+import { activeVideoEvents } from '../../../shared/config/VideoConfig'
 
 export default class SessionDetail extends React.PureComponent {
   composeNrqlQuery = (query, dataHandler, handlerParams) => {
@@ -84,7 +84,7 @@ export default class SessionDetail extends React.PureComponent {
             <div className="chart-container">
               <div className="chart-title">Stream Details</div>
               {this.composeNrqlQuery(
-                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM ${activeEvents()} WHERE viewId='${session}'`,
+                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM ${activeVideoEvents()} WHERE viewId='${session}'`,
                 this.buildSessionDetailGrid
               )}
             </div>

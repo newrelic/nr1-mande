@@ -4,8 +4,10 @@ import AsyncSelect from 'react-select/async'
 import sortBy from 'lodash.sortby'
 
 import { HeadingText, NerdGraphQuery, Stack, StackItem } from 'nr1'
-import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
-import { activeVideoEvents } from '../../../shared/config/VideoConfig'
+import {
+  FIND_USER_ATTRIBUTE,
+  VIDEO_EVENTS,
+} from '../../../shared/config/constants'
 
 const searchBar = props => {
   const loadData = async searchTerm => {
@@ -20,7 +22,7 @@ const searchBar = props => {
       userCondition += `uniques(${u})`
       userClause += `${u} like '%${searchTerm}%'`
     })
-    const nrql = `FROM ${activeVideoEvents} SELECT ${userCondition} WHERE ${userClause} ${duration.since} LIMIT MAX `
+    const nrql = `FROM ${VIDEO_EVENTS} SELECT ${userCondition} WHERE ${userClause} ${duration.since} LIMIT MAX `
 
     const query = `{
       actor {

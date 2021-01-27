@@ -22,8 +22,7 @@ import MetricDashboard from './components/dashboard/MetricDashboard'
 import CategoryDetail from './components/category-detail/CategoryDetail'
 import Selected from './components/metric-sidebar/Selected'
 import metricConfigs from '../shared/config/MetricConfig'
-import { FIND_USER_ATTRIBUTE } from '../shared/config/MetricConfig'
-import { activeVideoEvents } from '../shared/config/VideoConfig'
+import { FIND_USER_ATTRIBUTE, VIDEO_EVENTS } from '../shared/config/constants'
 import {
   formatFilters,
   formatFacets,
@@ -81,7 +80,7 @@ export default class MandeContainer extends React.Component {
     const query = `{
       actor {
         account(id: ${accountId}) {
-          nrql(query: "FROM ${activeVideoEvents} SELECT count(*) WHERE ${userClause} ${duration.since}") {
+          nrql(query: "FROM ${VIDEO_EVENTS} SELECT count(*) WHERE ${userClause} ${duration.since}") {
             results
           }
         }

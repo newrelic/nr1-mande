@@ -1,6 +1,4 @@
-export const activeVideoEvents =
-  ' PageAction, MobileVideo, RokuVideo, BrowserVideo '
-const USER_IDENTIFIER = 'aiduid'
+import { USER_IDENTIFIER, VIDEO_EVENTS } from './constants'
 
 const defaultToOne = metric => {
   return metric !== undefined ? metric : 1
@@ -87,12 +85,12 @@ export default {
         warning: 3.5,
       },
       query: {
-        nrql: `FROM ${activeVideoEvents} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'percentile' `,
+        nrql: `FROM ${VIDEO_EVENTS} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'percentile' `,
         lookup: 'percentile',
         title: 'Video Start Time (Avg)',
       },
       findUser: {
-        nrql: `FROM ${activeVideoEvents} SELECT (clamp_min(filter(sum(timeSinceRequested/1000), WHERE actionName = 'CONTENT_START'), 0) - clamp_min(filter(sum(timeSinceAdBreakBegin/1000), where actionName = 'AD_BREAK_END' and adPosition = 'pre'), 0))/filter(uniqueCount(viewId), where actionName='CONTENT_START') as 'result' `,
+        nrql: `FROM ${VIDEO_EVENTS} SELECT (clamp_min(filter(sum(timeSinceRequested/1000), WHERE actionName = 'CONTENT_START'), 0) - clamp_min(filter(sum(timeSinceAdBreakBegin/1000), where actionName = 'AD_BREAK_END' and adPosition = 'pre'), 0))/filter(uniqueCount(viewId), where actionName='CONTENT_START') as 'result' `,
         lookup: 'result',
       },
       qualityScoreStrategy: 'clampMinZeroMaxOne',
@@ -106,7 +104,7 @@ export default {
         warning: 2,
       },
       query: {
-        nrql: `FROM ${activeVideoEvents} SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as 'result' `,
+        nrql: `FROM ${VIDEO_EVENTS} SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as 'result' `,
         lookup: 'result',
       },
       qualityScoreStrategy: 'clampMinZeroMaxOne',
@@ -116,7 +114,7 @@ export default {
       id: 'CBT',
       title: 'Total Connection Buffering Time',
       query: {
-        nrql: `FROM ${activeVideoEvents} SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceStarted > 10000) - filter(sum(timeSinceBufferBegin/1000), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true')) as 'result' `,
+        nrql: `FROM ${VIDEO_EVENTS} SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceStarted > 10000) - filter(sum(timeSinceBufferBegin/1000), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true')) as 'result' `,
         lookup: 'result',
       },
       detailDashboardId: 'Buffering-Detail',
@@ -129,7 +127,7 @@ export default {
         warning: 50,
       },
       query: {
-        nrql: `FROM ${activeVideoEvents} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as 'result' `,
+        nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as 'result' `,
         lookup: 'result',
       },
       qualityScoreStrategy: 'zeroOrOne',
@@ -143,11 +141,11 @@ export default {
         warning: 0.1,
       },
       query: {
-        nrql: `FROM ${activeVideoEvents} SELECT uniqueCount(viewId) as 'result' WHERE actionName = 'CONTENT_ERROR'and totalPlaytime >= 1000 `,
+        nrql: `FROM ${VIDEO_EVENTS} SELECT uniqueCount(viewId) as 'result' WHERE actionName = 'CONTENT_ERROR'and totalPlaytime >= 1000 `,
         lookup: 'result',
       },
       findUser: {
-        nrql: `FROM ${activeVideoEvents} SELECT filter(clamp_max(count(*), 1), where actionName = 'CONTENT_ERROR' and totalPlaytime >= 1000) / filter(clamp_max(count(*), 1), where actionName = 'CONTENT_REQUEST') * 100 as 'result' `,
+        nrql: `FROM ${VIDEO_EVENTS} SELECT filter(clamp_max(count(*), 1), where actionName = 'CONTENT_ERROR' and totalPlaytime >= 1000) / filter(clamp_max(count(*), 1), where actionName = 'CONTENT_REQUEST') * 100 as 'result' `,
         lookup: 'result',
       },
       qualityScoreStrategy: 'clampMinZeroMaxOne',
@@ -163,7 +161,7 @@ export default {
       },
       invertCompareTo: 'true',
       query: {
-        nrql: `FROM ${activeVideoEvents} SELECT average(contentBitrate)/1000000 as 'result' where contentBitrate is not null and actionName like 'CONTENT%' `,
+        nrql: `FROM ${VIDEO_EVENTS} SELECT average(contentBitrate)/1000000 as 'result' where contentBitrate is not null and actionName like 'CONTENT%' `,
         lookup: 'result',
       },
       detailDashboardId: 'BR-Detail',
@@ -176,7 +174,7 @@ export default {
     //     warning: 20,
     //   },
     //   query: {
-    //     nrql: `FROM ${activeVideoEvents} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) as 'result'`,
+    //     nrql: `FROM ${VIDEO_EVENTS} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) as 'result'`,
     //     lookup: 'result',
     //   },
     //   qualityScoreStrategy: 'clampMinZeroMaxOne',
@@ -185,7 +183,7 @@ export default {
   ],
   overviewDashboard: [
     {
-      nrql: `SELECT filter(average(timeSinceRequested)/1000, WHERE actionName='CONTENT_START') as 'seconds' FROM ${activeVideoEvents} TIMESERIES `,
+      nrql: `SELECT filter(average(timeSinceRequested)/1000, WHERE actionName='CONTENT_START') as 'seconds' FROM ${VIDEO_EVENTS} TIMESERIES `,
       columnStart: 1,
       columnEnd: 6,
       chartSize: 'small',
@@ -194,7 +192,7 @@ export default {
       useSince: true,
     },
     {
-      nrql: `FROM ${activeVideoEvents} SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' TIMESERIES `,
+      nrql: `FROM ${VIDEO_EVENTS} SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' TIMESERIES `,
       columnStart: 7,
       columnEnd: 12,
       chartSize: 'small',
@@ -203,7 +201,7 @@ export default {
       useSince: true,
     },
     {
-      nrql: `FROM ${activeVideoEvents} SELECT uniqueCount(viewId) as 'Views' where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 TIMESERIES `,
+      nrql: `FROM ${VIDEO_EVENTS} SELECT uniqueCount(viewId) as 'Views' where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 TIMESERIES `,
       columnStart: 1,
       columnEnd: 4,
       chartSize: 'small',
@@ -212,7 +210,7 @@ export default {
       useSince: true,
     },
     {
-      nrql: `FROM ${activeVideoEvents} SELECT uniqueCount(viewId) as 'Views' where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 TIMESERIES `,
+      nrql: `FROM ${VIDEO_EVENTS} SELECT uniqueCount(viewId) as 'Views' where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 TIMESERIES `,
       columnStart: 5,
       columnEnd: 8,
       chartSize: 'small',
@@ -221,7 +219,7 @@ export default {
       useSince: true,
     },
     {
-      nrql: `SELECT uniqueCount(viewId) as 'Active Plays' FROM ${activeVideoEvents} where totalPlaytime > 1000 TIMESERIES `,
+      nrql: `SELECT uniqueCount(viewId) as 'Active Plays' FROM ${VIDEO_EVENTS} where totalPlaytime > 1000 TIMESERIES `,
       columnStart: 9,
       columnEnd: 12,
       chartSize: 'small',
@@ -235,7 +233,7 @@ export default {
       id: 'VSF-Detail',
       config: [
         {
-          nrql: `FROM ${activeVideoEvents} SELECT count(*) as 'Attempts'where actionName = 'CONTENT_REQUEST' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT count(*) as 'Attempts'where actionName = 'CONTENT_REQUEST' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -244,7 +242,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime < 1000) / filter(count(*), where actionName = 'CONTENT_REQUEST')) *100 as '%' `,
           columnStart: 4,
           columnEnd: 6,
           chartSize: 'small',
@@ -253,7 +251,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT count(*) as 'Attempts' where actionName = 'CONTENT_REQUEST' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT count(*) as 'Attempts' where actionName = 'CONTENT_REQUEST' TIMESERIES `,
           columnStart: 7,
           columnEnd: 12,
           chartSize: 'small',
@@ -262,7 +260,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(uniqueCount(${USER_IDENTIFIER}), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as '' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(${USER_IDENTIFIER}), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as '' `,
           columnStart: 1,
           columnEnd: 4,
           chartSize: 'small',
@@ -271,7 +269,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(uniqueCount(${USER_IDENTIFIER}), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as 'Start Failures' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(${USER_IDENTIFIER}), where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000) as 'Start Failures' TIMESERIES `,
           columnStart: 5,
           columnEnd: 12,
           chartSize: 'small',
@@ -280,7 +278,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT uniqueCount(viewId) where totalPlaytime < 1000 `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT uniqueCount(viewId) where totalPlaytime < 1000 `,
           facets: 'message',
           columnStart: 1,
           columnEnd: 7,
@@ -290,7 +288,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT uniqueCount(viewId) where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 facet viewId LIMIT 200`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT uniqueCount(viewId) where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 facet viewId LIMIT 200`,
           noFacet: 'true',
           columnStart: 8,
           columnEnd: 12,
@@ -301,7 +299,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
           columnStart: 1,
           columnEnd: 5,
           chartSize: 'medium',
@@ -310,7 +308,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT actionName, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 LIMIT MAX`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT actionName, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 LIMIT MAX`,
           columnStart: 6,
           columnEnd: 12,
           chartSize: 'medium',
@@ -324,7 +322,7 @@ export default {
       id: 'ER-Detail',
       config: [
         {
-          nrql: `SELECT count(*) as 'Plays' FROM ${activeVideoEvents} where actionName = 'CONTENT_START' `,
+          nrql: `SELECT count(*) as 'Plays' FROM ${VIDEO_EVENTS} where actionName = 'CONTENT_START' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -333,7 +331,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(count(*), where actionName = 'CONTENT_START')) * 100 as '%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(count(*), where actionName = 'CONTENT_START')) * 100 as '%' `,
           columnStart: 4,
           columnEnd: 6,
           chartSize: 'small',
@@ -342,7 +340,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `SELECT uniqueCount(viewId) as 'Active Plays' FROM ${activeVideoEvents} where totalPlaytime > 1000 TIMESERIES `,
+          nrql: `SELECT uniqueCount(viewId) as 'Active Plays' FROM ${VIDEO_EVENTS} where totalPlaytime > 1000 TIMESERIES `,
           columnStart: 7,
           columnEnd: 12,
           chartSize: 'small',
@@ -351,7 +349,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(uniqueCount(${USER_IDENTIFIER}), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as '' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(${USER_IDENTIFIER}), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as '' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -360,7 +358,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' TIMESERIES `,
           columnStart: 4,
           columnEnd: 12,
           chartSize: 'small',
@@ -369,7 +367,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(count(*), where actionName = 'CONTENT_START')) *100 as '%' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT (filter(uniqueCount(viewId), where actionName = 'CONTENT_ERROR' AND totalPlaytime > 1000) / filter(count(*), where actionName = 'CONTENT_START')) *100 as '%' TIMESERIES `,
           columnStart: 1,
           columnEnd: 6,
           chartSize: 'small',
@@ -378,7 +376,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(uniqueCount(${USER_IDENTIFIER}), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(${USER_IDENTIFIER}), where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000) as'Playback Failures' TIMESERIES `,
           columnStart: 7,
           columnEnd: 12,
           chartSize: 'small',
@@ -387,7 +385,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT count(*) where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 facet viewId LIMIT 200`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT count(*) where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 facet viewId LIMIT 200`,
           noFacet: true,
           columnStart: 1,
           columnEnd: 12,
@@ -398,7 +396,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
           columnStart: 1,
           columnEnd: 5,
           chartSize: 'medium',
@@ -407,7 +405,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT actionName, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 LIMIT MAX`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT actionName, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 LIMIT MAX`,
           columnStart: 6,
           columnEnd: 12,
           chartSize: 'medium',
@@ -421,7 +419,7 @@ export default {
       id: 'VST-Detail',
       config: [
         {
-          nrql: `SELECT filter(uniqueCount(viewId), WHERE timeSinceRequested > 4000 and actionName = 'CONTENT_START')/uniqueCount(viewId) * 100 as '%' FROM ${activeVideoEvents} `,
+          nrql: `SELECT filter(uniqueCount(viewId), WHERE timeSinceRequested > 4000 and actionName = 'CONTENT_START')/uniqueCount(viewId) * 100 as '%' FROM ${VIDEO_EVENTS} `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -430,7 +428,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `SELECT filter(sum(timeSinceRequested)/1000, WHERE actionName = 'CONTENT_START') - filter(sum(timeSinceAdBreakBegin)/1000, where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'Time To First Frame (Average)' FROM ${activeVideoEvents} FACET viewId LIMIT 25`,
+          nrql: `SELECT filter(sum(timeSinceRequested)/1000, WHERE actionName = 'CONTENT_START') - filter(sum(timeSinceAdBreakBegin)/1000, where actionName = 'AD_BREAK_END' and adPosition = 'pre') as 'Time To First Frame (Average)' FROM ${VIDEO_EVENTS} FACET viewId LIMIT 25`,
           noFacet: true,
           columnStart: 4,
           columnEnd: 12,
@@ -441,7 +439,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as '50th Percentile' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as '50th Percentile' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -450,7 +448,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as '50th Percentile' TIMESERIES MAX `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(percentile(timeSinceRequested/1000, 50), WHERE actionName = 'CONTENT_START') - filter(percentile(timeSinceAdBreakBegin/1000, 50), where actionName = 'AD_BREAK_END' and adPosition = 'pre') as '50th Percentile' TIMESERIES MAX `,
           facets: 'deviceType',
           columnStart: 4,
           columnEnd: 12,
@@ -460,7 +458,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT percentile(timeSinceLoad, 50) as 'seconds' WHERE actionName = 'CONTENT_START' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT percentile(timeSinceLoad, 50) as 'seconds' WHERE actionName = 'CONTENT_START' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -469,7 +467,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT percentile(timeSinceLoad, 50) as 'seconds' WHERE actionName = 'CONTENT_START' TIMESERIES MAX `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT percentile(timeSinceLoad, 50) as 'seconds' WHERE actionName = 'CONTENT_START' TIMESERIES MAX `,
           facets: 'deviceType',
           columnStart: 4,
           columnEnd: 12,
@@ -479,7 +477,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT percentile(timeSinceRequested/1000,50) as 'seconds' where actionName = 'AD_START' and adPosition = 'pre'`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT percentile(timeSinceRequested/1000,50) as 'seconds' where actionName = 'AD_START' and adPosition = 'pre'`,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -488,7 +486,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT percentile(timeSinceRequested/1000,50) as 'seconds' where actionName = 'AD_START' and adPosition = 'pre' TIMESERIES MAX `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT percentile(timeSinceRequested/1000,50) as 'seconds' where actionName = 'AD_START' and adPosition = 'pre' TIMESERIES MAX `,
           facets: 'deviceType',
           columnStart: 4,
           columnEnd: 12,
@@ -503,7 +501,7 @@ export default {
       id: 'Buffering-Detail',
       config: [
         {
-          nrql: `SELECT count(*) as 'Plays' FROM ${activeVideoEvents} where actionName = 'CONTENT_START' `,
+          nrql: `SELECT count(*) as 'Plays' FROM ${VIDEO_EVENTS} where actionName = 'CONTENT_START' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -512,7 +510,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' `,
           columnStart: 4,
           columnEnd: 6,
           chartSize: 'small',
@@ -521,7 +519,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `SELECT uniqueCount(viewId) as 'Active Plays' FROM ${activeVideoEvents} where totalPlaytime > 1000 TIMESERIES `,
+          nrql: `SELECT uniqueCount(viewId) as 'Active Plays' FROM ${VIDEO_EVENTS} where totalPlaytime > 1000 TIMESERIES `,
           columnStart: 7,
           columnEnd: 12,
           chartSize: 'small',
@@ -530,7 +528,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT uniquecount(${USER_IDENTIFIER}) as '' where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false') `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT uniquecount(${USER_IDENTIFIER}) as '' where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false') `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -539,7 +537,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT percentage(uniquecount(${USER_IDENTIFIER}), where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')) as '%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT percentage(uniquecount(${USER_IDENTIFIER}), where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')) as '%' `,
           columnStart: 4,
           columnEnd: 6,
           chartSize: 'small',
@@ -548,7 +546,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END')) / (filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and actionName = 'CONTENT_BUFFER_END') - filter(sum(timeSinceBufferBegin), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true') and actionName = 'CONTENT_BUFFER_END') + sum(playtimeSinceLastEvent)) * 100 as '%' TIMESERIES `,
           columnStart: 7,
           columnEnd: 12,
           chartSize: 'small',
@@ -557,7 +555,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniquecount(viewId), where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')) / filter(uniquecount(viewId), where totalPlaytime > 1000) * 100 as '%' TIMESERIES `,
           columnStart: 1,
           columnEnd: 4,
           chartSize: 'small',
@@ -566,7 +564,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT uniquecount(${USER_IDENTIFIER}) as 'Impacted Customers' where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')  TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT uniquecount(${USER_IDENTIFIER}) as 'Impacted Customers' where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')  TIMESERIES `,
           columnStart: 5,
           columnEnd: 8,
           chartSize: 'small',
@@ -575,7 +573,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT percentage(uniquecount(${USER_IDENTIFIER}), where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')) as '%' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT percentage(uniquecount(${USER_IDENTIFIER}), where bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed IS NULL or timeSinceResumed > 10000 or timeSinceSeekEnd is NULL or timeSinceSeekEnd > 10000 or isBackground = 'false')) as '%' TIMESERIES `,
           columnStart: 9,
           columnEnd: 12,
           chartSize: 'small',
@@ -584,7 +582,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceStarted > 10000) - filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END'AND bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true')) as 'Buffer Events' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceStarted > 10000) - filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END'AND bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true')) as 'Buffer Events' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -593,7 +591,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceStarted > 10000) - filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END'AND bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true')) as 'Buffer Events' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceStarted > 10000) - filter(count(*), WHERE actionName = 'CONTENT_BUFFER_END'AND bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true')) as 'Buffer Events' TIMESERIES `,
           columnStart: 4,
           columnEnd: 8,
           chartSize: 'small',
@@ -602,7 +600,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT sum(timeSinceBufferBegin)/1000 as 'Total Buffering' WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection' FACET viewId LIMIT 25 `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT sum(timeSinceBufferBegin)/1000 as 'Total Buffering' WHERE actionName = 'CONTENT_BUFFER_END' and bufferType = 'connection' FACET viewId LIMIT 25 `,
           noFacet: true,
           columnStart: 9,
           columnEnd: 12,
@@ -613,7 +611,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT average(timeSinceBufferBegin/1000) as 'seconds' where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) AND isBackground != 'true' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT average(timeSinceBufferBegin/1000) as 'seconds' where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) AND isBackground != 'true' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -622,7 +620,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT average(timeSinceBufferBegin/1000) as 'seconds' where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) AND isBackground != 'true' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT average(timeSinceBufferBegin/1000) as 'seconds' where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) AND isBackground != 'true' TIMESERIES `,
           columnStart: 4,
           columnEnd: 8,
           chartSize: 'small',
@@ -631,7 +629,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceStarted > 10000) - filter(sum(timeSinceBufferBegin/1000), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true')) as 'seconds' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(sum(timeSinceBufferBegin/1000), WHERE actionName = 'CONTENT_BUFFER_END' AND bufferType = 'connection' and timeSinceStarted > 10000) - filter(sum(timeSinceBufferBegin/1000), where bufferType = 'connection' and timeSinceStarted > 10000 and (timeSinceResumed < 10000 or timeSinceSeekEnd < 10000 or isBackground = 'true')) as 'seconds' TIMESERIES `,
           columnStart: 9,
           columnEnd: 12,
           chartSize: 'small',
@@ -640,7 +638,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
           columnStart: 1,
           columnEnd: 5,
           chartSize: 'medium',
@@ -649,7 +647,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT actionName, bufferType, timeSinceBufferBegin, timeSinceSeekEnd, timeSinceStarted, timeSinceResumed, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) AND isBackground != 'true' LIMIT MAX`,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT actionName, bufferType, timeSinceBufferBegin, timeSinceSeekEnd, timeSinceStarted, timeSinceResumed, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) AND isBackground != 'true' LIMIT MAX`,
           columnStart: 6,
           columnEnd: 12,
           chartSize: 'medium',
@@ -663,7 +661,7 @@ export default {
       id: 'BR-Detail',
       config: [
         {
-          nrql: `FROM ${activeVideoEvents} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' `,
           columnStart: 1,
           columnEnd: 4,
           chartSize: 'small',
@@ -672,7 +670,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' TIMESERIES `,
           columnStart: 5,
           columnEnd: 12,
           chartSize: 'small',
@@ -681,7 +679,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' `,
           facets: 'appName',
           columnStart: 1,
           columnEnd: 4,
@@ -691,7 +689,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' TIMESERIES `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' TIMESERIES `,
           facets: 'appName',
           columnStart: 5,
           columnEnd: 12,
@@ -701,7 +699,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT percentile(contentBitrate, 50)/1000000 as 'Bitrate', percentile(contentBitrate, 90)/1000000 as 'Bitrate', percentile(contentBitrate, 95)/1000000 as 'Bitrate', percentile(contentBitrate, 99)/1000000 as 'Bitrate' where contentBitrate is not null and actionName like 'CONTENT%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT percentile(contentBitrate, 50)/1000000 as 'Bitrate', percentile(contentBitrate, 90)/1000000 as 'Bitrate', percentile(contentBitrate, 95)/1000000 as 'Bitrate', percentile(contentBitrate, 99)/1000000 as 'Bitrate' where contentBitrate is not null and actionName like 'CONTENT%' `,
           noFacet: true,
           columnStart: 1,
           columnEnd: 4,
@@ -711,7 +709,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT percentile(contentBitrate, 50)/1000000 as 'Bitrate', percentile(contentBitrate, 90)/1000000 as 'Bitrate', percentile(contentBitrate, 95)/1000000 as 'Bitrate', percentile(contentBitrate, 99)/1000000 as 'Bitrate' where contentBitrate is not null and actionName like 'CONTENT%' TIMESERIES MAX `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT percentile(contentBitrate, 50)/1000000 as 'Bitrate', percentile(contentBitrate, 90)/1000000 as 'Bitrate', percentile(contentBitrate, 95)/1000000 as 'Bitrate', percentile(contentBitrate, 99)/1000000 as 'Bitrate' where contentBitrate is not null and actionName like 'CONTENT%' TIMESERIES MAX `,
           columnStart: 5,
           columnEnd: 12,
           chartSize: 'small',
@@ -720,7 +718,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' facet viewId LIMIT 200 `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT average(contentBitrate)/1000000 as 'mbps' where contentBitrate is not null and actionName like 'CONTENT%' facet viewId LIMIT 200 `,
           noFacet: true,
           columnStart: 1,
           columnEnd: 12,
@@ -736,7 +734,7 @@ export default {
       id: 'CI-Detail',
       config: [
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(uniqueCount(viewId), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(viewId), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(uniqueCount(viewId), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -745,7 +743,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT count(*) WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection' FACET viewId LIMIT 25 `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT count(*) WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection' FACET viewId LIMIT 25 `,
           noFacet: true,
           columnStart: 4,
           columnEnd: 12,
@@ -756,7 +754,7 @@ export default {
           click: 'openSession',
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',
@@ -765,7 +763,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${activeVideoEvents} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' timeseries MAX `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(count(*), WHERE actionName = 'CONTENT_BUFFER_START' and bufferType = 'connection') / filter(count(*), WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')) * 100 as '%' timeseries MAX `,
           facets: `deviceType`,
           columnStart: 4,
           columnEnd: 12,

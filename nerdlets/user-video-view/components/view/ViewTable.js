@@ -14,7 +14,7 @@ import videoConfig from '../../../shared/config/VideoConfig'
 import { formatTimestampAsDate } from '../../../shared/utils/date-formatter'
 import { openVideoSession } from '../../../shared/utils/navigation'
 import { getThresholdClass } from '../../../shared/utils/threshold'
-import { activeVideoEvents } from '../../../shared/config/VideoConfig'
+import { VIDEO_EVENTS } from '../../../shared/config/constants'
 
 export default class ViewTable extends React.Component {
   state = {
@@ -34,7 +34,7 @@ export default class ViewTable extends React.Component {
 
   render() {
     const { accountId, duration, session, views, scope } = this.props
-    const nrql = `FROM ${activeVideoEvents} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
+    const nrql = `FROM ${VIDEO_EVENTS} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>

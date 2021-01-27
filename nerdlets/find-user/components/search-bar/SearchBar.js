@@ -20,7 +20,7 @@ const searchBar = props => {
       userCondition += `uniques(${u})`
       userClause += `${u} like '%${searchTerm}%'`
     })
-    const nrql = `FROM ${activeVideoEvents()} SELECT ${userCondition} WHERE ${userClause} ${duration.since} LIMIT MAX `
+    const nrql = `FROM ${activeVideoEvents} SELECT ${userCondition} WHERE ${userClause} ${duration.since} LIMIT MAX `
 
     const query = `{
       actor {

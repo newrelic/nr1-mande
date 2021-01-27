@@ -84,7 +84,7 @@ export default class SessionDetail extends React.PureComponent {
             <div className="chart-container">
               <div className="chart-title">Stream Details</div>
               {this.composeNrqlQuery(
-                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM ${activeVideoEvents()} WHERE viewId='${session}'`,
+                `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM ${activeVideoEvents} WHERE viewId='${session}'`,
                 this.buildSessionDetailGrid
               )}
             </div>

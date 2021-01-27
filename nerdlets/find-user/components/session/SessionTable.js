@@ -74,7 +74,7 @@ export default class SessionTable extends React.Component {
       if (userClause) userClause += ' OR '
       userClause += `${u} = '${user}'`
     })
-    const nrql = `FROM ${activeVideoEvents()} SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
+    const nrql = `FROM ${activeVideoEvents} SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>

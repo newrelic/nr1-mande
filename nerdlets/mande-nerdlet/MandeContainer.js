@@ -81,7 +81,7 @@ export default class MandeContainer extends React.Component {
     const query = `{
       actor {
         account(id: ${accountId}) {
-          nrql(query: "FROM ${activeVideoEvents()} SELECT count(*) WHERE ${userClause} ${duration.since}") {
+          nrql(query: "FROM ${activeVideoEvents} SELECT count(*) WHERE ${userClause} ${duration.since}") {
             results
           }
         }

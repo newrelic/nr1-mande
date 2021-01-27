@@ -34,7 +34,7 @@ export default class ViewTable extends React.Component {
 
   render() {
     const { accountId, duration, session, views, scope } = this.props
-    const nrql = `FROM ${activeVideoEvents()} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
+    const nrql = `FROM ${activeVideoEvents} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>

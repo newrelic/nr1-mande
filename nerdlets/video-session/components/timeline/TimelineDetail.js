@@ -16,7 +16,7 @@ export default class TimelineDetail extends React.PureComponent {
   getData = async () => {
     const { accountId, session, duration } = this.props
 
-    const query = `SELECT * from ${activeVideoEvents()} WHERE viewId = '${session}' ORDER BY timestamp ASC LIMIT 1000 ${duration.since}`
+    const query = `SELECT * from ${activeVideoEvents} WHERE viewId = '${session}' ORDER BY timestamp ASC LIMIT 1000 ${duration.since}`
 
     const { data } = await NrqlQuery.query({ accountId, query })
 

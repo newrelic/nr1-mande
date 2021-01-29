@@ -193,7 +193,7 @@ export default class MandeContainer extends React.Component {
       const duration = formatSinceAndCompare(
         this.props.launcherUrlState.timeRange
       )
-      const { accountId } = this.props.launcherUrlState.accountId
+      const accountId = this.props.launcherUrlState.accountId
 
       let metricData = []
       for (let config of metricConfigs) {

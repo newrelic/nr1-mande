@@ -113,6 +113,10 @@
       box-sizing: border-box;
       padding: 16px;
 
+      &.micro {
+        height: 175px;
+      }
+
       &.small {
         height: 250px;
       }

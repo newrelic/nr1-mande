@@ -1,83 +1,172 @@
+import { USER_IDENTIFIER, VIDEO_EVENTS } from './constants'
+
 export default {
   title: 'Audience',
+  eventTypes: [
+    {
+      event: 'Global',
+      attributes: [
+        ['appName', 'Platform'],
+        ['playerVersion', 'Player'],
+        ['playerName', 'Player'],
+        ['contentSrc', 'Content'],
+        ['countryCode', 'Geography'],
+        ['contentIsLive', 'Content'],
+        ['contentTitle', 'Content'],
+      ],
+    },
+    {
+      event: 'PageAction',
+      eventSelector: { attribute: 'Delivery Type', value: 'Web' },
+      attributes: [
+        ['userAgentName', 'Platform'],
+        ['userAgentOS', 'Platform'],
+        ['userAgentVersion', 'Platform'],
+        ['isAd', 'Content'],
+        ['asnOrganization', 'Geography'],
+        ['city', 'Geography'],
+        ['regionCode', 'Geography'],
+        ['message', 'Error'],
+      ],
+    },
+    {
+      event: 'MobileVideo',
+      eventSelector: { attribute: 'Delivery Type', value: 'Mobile' },
+      attributes: [
+        ['isAd', 'Content'],
+        ['asnOrganization', 'Geography'],
+        ['city', 'Geography'],
+        ['regionCode', 'Geography'],
+        ['device', 'Platform'],
+        ['deviceGroup', 'Platform'],
+        ['deviceType', 'Platform'],
+        ['osName', 'Platform'],
+        ['osVersion', 'Platform'],
+        ['message', 'Error'],
+      ],
+    },
+    {
+      event: 'RokuVideo',
+      eventSelector: { attribute: 'Delivery Type', value: 'OTT' },
+      attributes: [
+        ['device', 'Platform'],
+        ['deviceGroup', 'Platform'],
+        ['deviceType', 'Platform'],
+        ['osName', 'Platform'],
+        ['osVersion', 'Platform'],
+        ['errorMessage', 'Error'],
+      ],
+    },
+    {
+      event: 'BrowserVideo',
+      eventSelector: { attribute: 'Delivery Type', value: 'Web' },
+      attributes: [
+        ['userAgentName', 'Platform'],
+        ['userAgentOS', 'Platform'],
+        ['userAgentVersion', 'Platform'],
+        ['isAd', 'Content'],
+        // ['asnOrganization', 'Geography'],
+        // ['city', 'Geography'],
+        // ['regionCode', 'Geography'],
+        ['message', 'Error'],
+      ],
+    },
+  ],
   metrics: [
     {
-      title: '# of Active Viewers',
-      threshold: {
-        critical: 1500,
-        warning: 1800,
-        type: 'below',
-      },
+      title: 'Play Attempts',
       invertCompareTo: 'true',
       query: {
-        nrql: `SELECT uniqueCount(userId) as 'result' FROM PageAction where actionName = 'CONTENT_START'`,
+        nrql: `SELECT count(*) as 'result' FROM ${VIDEO_EVENTS} where actionName = 'CONTENT_REQUEST' `,
         lookup: 'result',
       },
     },
     {
-      title: 'Stream Joins',
-      threshold: {
-        critical: 40,
-        warning: 43,
-        type: 'below',
-      },
+      title: 'Plays',
       invertCompareTo: 'true',
       query: {
-        nrql: `SELECT count(*)  as 'result' FROM PageAction, MobileVideo, RokuVideo  WHERE actionName IN ('CONTENT_START', 'CONTENT_NEXT')`,
+        nrql: `SELECT count(*) as 'result' FROM ${VIDEO_EVENTS} where actionName = 'CONTENT_START' `,
         lookup: 'result',
       },
     },
     {
-      title: 'Total View Time (m)',
+      title: 'Peak Concurrent Plays',
       invertCompareTo: 'true',
-      threshold: {
-        critical: 150,
-        warning: 175,
-        type: 'below'
+      query: {
+        nrql: `SELECT uniquecount(viewId) as 'result' FROM ${VIDEO_EVENTS} where actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000`,
+        lookup: 'result',
       },
+    },
+    {
+      title: 'Total Playtime (minutes)',
+      invertCompareTo: 'true',
       query: {
         nrql: `SELECT sum(playtimeSinceLastEvent)/60000 as 'result' from PageAction`,
         lookup: 'result',
       }
     },
     {
-      title: 'Crash-free User % (Mobile)',
+      title: 'Unique Accounts',
       invertCompareTo: 'true',
-      threshold: {
-        critical: 98,
-        warning: 96,
-        type: 'below'
-      },
       query: {
-        nrql: `SELECT (1-(uniqueCount(MobileCrash.uuid) / uniqueCount(MobileSession.uuid))) * 100 AS 'result' FROM MobileCrash, MobileSession`,
+        nrql: `SELECT uniqueCount(${USER_IDENTIFIER}) as 'result' FROM ${VIDEO_EVENTS} `,
         lookup: 'result',
       },
     },
     {
-      title: 'Error-free User %',
+      title: 'Unique Devices',
       invertCompareTo: 'true',
-      threshold: {
-        critical: 98,
-        warning: 96,
-        type: 'below'
-      },
       query: {
-        nrql: `FROM PageAction SELECT (1- (filter(uniqueCount(userId), WHERE actionName = 'CONTENT_ERROR') / uniqueCount(userId))) * 100 as 'result'`,
+        nrql: `SELECT uniquecount(deviceId OR deviceID) as 'result' FROM ${VIDEO_EVENTS} `,
         lookup: 'result',
       },
     },
+  ],
+  overviewDashboard: [
     {
-      title: 'Rebuffer-free User %',
-      invertCompareTo: 'true',
-      threshold: {
-        critical: 98,
-        warning: 96,
-        type: 'below'
-      },
-      query: {
-        nrql: `FROM PageAction SELECT (1- (filter(uniqueCount(userId), WHERE actionName = 'CONTENT_BUFFER_START' and contentPlayhead = 0) / uniqueCount(userId))) * 100 as 'result'`,
-        lookup: 'result',
-      },
+      nrql: `SELECT count(*) as 'result' FROM ${VIDEO_EVENTS} where actionName = 'CONTENT_REQUEST' TIMESERIES `,
+      columnStart: 1,
+      columnEnd: 12,
+      chartSize: 'micro',
+      chartType: 'line',
+      title: 'Play Attempts',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT count(*) as 'Plays' FROM ${VIDEO_EVENTS} where actionName = 'CONTENT_START' TIMESERIES `,
+      columnStart: 1,
+      columnEnd: 6,
+      chartSize: 'micro',
+      chartType: 'line',
+      title: 'Plays Trend',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT uniquecount(viewId) as 'result' FROM ${VIDEO_EVENTS} where actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000 TIMESERIES `,
+      columnStart: 7,
+      columnEnd: 12,
+      chartSize: 'micro',
+      chartType: 'line',
+      title: 'Peak Concurrent Plays Trend',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT uniqueCount(${USER_IDENTIFIER}) as 'result' FROM ${VIDEO_EVENTS} TIMESERIES `,
+      columnStart: 1,
+      columnEnd: 6,
+      chartSize: 'micro',
+      chartType: 'line',
+      title: 'Unique Accounts Trend',
+      useSince: true,
+    },
+    {
+      nrql: `SELECT uniquecount(deviceId OR deviceID or deviceUuid) as 'result' FROM ${VIDEO_EVENTS} TIMESERIES `,
+      columnStart: 7,
+      columnEnd: 12,
+      chartSize: 'micro',
+      chartType: 'line',
+      title: 'Unique Devices Trend',
+      useSince: true,
     },
   ],
 }

@@ -14,6 +14,7 @@ import {
   PieChart,
   FunnelChart,
   TableChart,
+  Tooltip,
 } from 'nr1'
 import { dateFormatter } from '../../../shared/utils/date-formatter'
 import { formatFacets } from '../../../shared/utils/query-formatter'
@@ -121,9 +122,8 @@ const chartGrid = props => {
                 >
                   <div className="chart-container">
                     <div className="chart-title">
-                      {chart.title}
+                      <Tooltip text={chart.title}>{chart.title}</Tooltip>
                       <div className="chart-subtitle">{formattedDuration}</div>
-                      <div className="chart-title-tooltip">{chart.title}</div>
                     </div>
                     <div className={'detail-chart ' + chart.chartSize}>
                       {getChart(chart)}

@@ -95,7 +95,7 @@ export default {
       title: 'Peak Concurrent Plays',
       invertCompareTo: 'true',
       query: {
-        nrql: `SELECT uniquecount(viewId) as 'result' FROM ${VIDEO_EVENTS} where actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000`,
+        nrql: `SELECT uniquecount(viewId) as 'result' FROM ${VIDEO_EVENTS} where PageAction.actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000`,
         lookup: 'result',
       },
       detailDashboardId: 'Audience-Plays-Detail',
@@ -148,7 +148,7 @@ export default {
       useSince: true,
     },
     {
-      nrql: `SELECT uniquecount(viewId) as 'result' FROM ${VIDEO_EVENTS} where actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000 TIMESERIES `,
+      nrql: `SELECT uniquecount(viewId) as 'result' FROM ${VIDEO_EVENTS} where PageAction.actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000 TIMESERIES `,
       columnStart: 7,
       columnEnd: 12,
       chartSize: 'micro',
@@ -198,7 +198,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `SELECT uniqueCount(viewId) as 'View Ids' FROM ${VIDEO_EVENTS} where actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 0 `,
+          nrql: `SELECT uniqueCount(viewId) as 'View Ids' FROM ${VIDEO_EVENTS} where PageAction.actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 0 `,
           columnStart: 9,
           columnEnd: 12,
           chartSize: 'small',
@@ -234,7 +234,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `SELECT uniqueCount(viewId) as 'View Ids' FROM ${VIDEO_EVENTS} where actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000 FACET weekdayOf(timestamp) SINCE 1 week ago `,
+          nrql: `SELECT uniqueCount(viewId) as 'View Ids' FROM ${VIDEO_EVENTS} where PageAction.actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000 FACET weekdayOf(timestamp) SINCE 1 week ago `,
           noFacet: true,
           columnStart: 1,
           columnEnd: 3,
@@ -244,7 +244,7 @@ export default {
           useSince: false,
         },
         {
-          nrql: `SELECT uniqueCount(viewId) as 'View Ids' FROM ${VIDEO_EVENTS} where actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000 TIMESERIES `,
+          nrql: `SELECT uniqueCount(viewId) as 'View Ids' FROM ${VIDEO_EVENTS} where PageAction.actionName NOT IN ('PLAYER_READY') AND totalPlaytime > 1000 TIMESERIES `,
           columnStart: 4,
           columnEnd: 8,
           chartSize: 'small',
@@ -262,7 +262,7 @@ export default {
           useSince: true,
         },
         {
-          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(viewId), where actionName NOT IN ('PLAYER_READY'))/uniqueCount(deviceUuid) as 'Avg Streams' WHERE totalPlaytime > 1000 `,
+          nrql: `FROM ${VIDEO_EVENTS} SELECT filter(uniqueCount(viewId), where PageAction.actionName NOT IN ('PLAYER_READY'))/uniqueCount(deviceUuid) as 'Avg Streams' WHERE totalPlaytime > 1000 `,
           columnStart: 1,
           columnEnd: 3,
           chartSize: 'small',

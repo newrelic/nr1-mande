@@ -507,14 +507,14 @@ export default class MandeContainer extends React.Component {
       <Spinner />
     ) : (
       <>
-        {/* {this.state.modal && (
+        {this.state.modal && (
           <Modal
             style={{ width: '90%', height: '90%' }}
             onClose={this.closeModal}
           >
             <div>Testing Modal</div>
           </Modal>
-        )} */}
+        )}
         <Grid
           className="container"
           spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}

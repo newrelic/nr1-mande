@@ -29,6 +29,7 @@ import {
   formatSinceAndCompare,
 } from '../shared/utils/query-formatter'
 import { loadMetricsForConfigs } from '../shared/utils/metric-data-loader'
+import Modal from '../shared/components/modal/modal'
 
 export default class MandeContainer extends React.Component {
   constructor(props) {
@@ -50,6 +51,7 @@ export default class MandeContainer extends React.Component {
       metricData: [],
       metricCategories,
       metricRefreshInterval: 180000,
+      modal: true,
     }
   }
 
@@ -79,8 +81,8 @@ export default class MandeContainer extends React.Component {
       let savedStack = selectedMetric
         ? this.onToggleMetric(selectedMetric, true)
         : selectedStack
-          ? this.onToggleDetailView(selectedStack, true)
-          : null
+        ? this.onToggleDetailView(selectedStack, true)
+        : null
       this.setState({
         threshold,
         selectedMetric,
@@ -274,6 +276,9 @@ export default class MandeContainer extends React.Component {
     })
   }
 
+  onCloseModal = () => this.setState({ modal: false })
+  onActionMenuClick = () => this.setState({ modal: true })
+
   onChangeAccount = (event, value) => {
     this.setState({ accountId: value })
   }
@@ -453,7 +458,9 @@ export default class MandeContainer extends React.Component {
   }
 
   renderSidebar = duration => {
-    const { launcherUrlState: { accountId } } = this.props
+    const {
+      launcherUrlState: { accountId },
+    } = this.props
     const {
       showFacetSidebar,
       facets,
@@ -500,6 +507,14 @@ export default class MandeContainer extends React.Component {
       <Spinner />
     ) : (
       <>
+        {/* {this.state.modal && (
+          <Modal
+            style={{ width: '90%', height: '90%' }}
+            onClose={this.closeModal}
+          >
+            <div>Testing Modal</div>
+          </Modal>
+        )} */}
         <Grid
           className="container"
           spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}
@@ -615,7 +630,7 @@ export default class MandeContainer extends React.Component {
                     }
                   >
                     Choose Facets
-              </StackItem>
+                  </StackItem>
                   <StackItem
                     grow
                     className={
@@ -625,7 +640,7 @@ export default class MandeContainer extends React.Component {
                     }
                   >
                     Choose Filters
-              </StackItem>
+                  </StackItem>
                 </Stack>
               </div>
               <Stack
@@ -639,7 +654,7 @@ export default class MandeContainer extends React.Component {
                   <React.Fragment>
                     <StackItem className="sidebar-selected-title">
                       Facets
-                  </StackItem>
+                    </StackItem>
                     {this.renderSelectedSidebar(true)}
                   </React.Fragment>
                 )}
@@ -647,7 +662,7 @@ export default class MandeContainer extends React.Component {
                   <React.Fragment>
                     <StackItem className="sidebar-selected-title">
                       Filters
-                  </StackItem>
+                    </StackItem>
                     {this.renderSelectedSidebar(false)}
                   </React.Fragment>
                 )}

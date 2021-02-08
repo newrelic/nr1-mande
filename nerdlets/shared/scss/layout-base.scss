@@ -91,3 +91,14 @@ h4 {
 .greenLight {
   color: $greenlight-color;
 }
+
+.query {
+  font: 1.2em monospace;
+  color: #464e4e;
+
+  .keyword  { color: #aa1bc8; }
+  .function { color: #3083e1; }
+  .string   { color: #71ba02; }
+  .numeric  { color: #dd9715; }
+  .operator { color: #19b1bb; }
+}

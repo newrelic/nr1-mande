@@ -51,7 +51,9 @@ export default class MandeContainer extends React.Component {
       metricData: [],
       metricCategories,
       metricRefreshInterval: 180000,
-      modal: true,
+      modal: false,
+      modalContent: null,
+      modalStyles: {},
     }
   }
 
@@ -277,7 +279,9 @@ export default class MandeContainer extends React.Component {
   }
 
   onCloseModal = () => this.setState({ modal: false })
-  onActionMenuClick = () => this.setState({ modal: true })
+  onOpenModal = (content, styles) => {
+    this.setState({ modal: true, modalContent: content, modalStyles: styles })
+  }
 
   onChangeAccount = (event, value) => {
     this.setState({ accountId: value })
@@ -509,10 +513,10 @@ export default class MandeContainer extends React.Component {
       <>
         {this.state.modal && (
           <Modal
-            style={{ width: '90%', height: '90%' }}
-            onClose={this.closeModal}
+            style={{ width: '90%', height: '90%', ...this.state.modalStyles }}
+            onClose={this.onCloseModal}
           >
-            <div>Testing Modal</div>
+            {this.state.modalContent}
           </Modal>
         )}
         <Grid
@@ -601,6 +605,7 @@ export default class MandeContainer extends React.Component {
                         stack={selectedStack}
                         activeFilters={filters}
                         facets={facetClause}
+                        actionMenuSelect={this.onOpenModal}
                       />
                     </StackItem>
                   )}

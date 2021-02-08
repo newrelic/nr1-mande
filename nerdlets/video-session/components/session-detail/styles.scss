@@ -11,15 +11,15 @@
 }
 
 .sessionSectionBase {
-  .chart-container {
-    width: 100%;
-    margin-bottom: 8px;
-    box-sizing: border-box;
-    background-color: #fff;
+  // .chart-container {
+  //   width: 100%;
+  //   margin-bottom: 8px;
+  //   box-sizing: border-box;
+  //   background-color: #fff;
 
-    [class*="component--loaded"] {
-      background-color: transparent;
-    }
+  //   [class*="component--loaded"] {
+  //     background-color: transparent;
+  //   }
 
     > .chart-title {
       font-size: 12px;
@@ -49,7 +49,7 @@
       margin-left: 2px;
       font-weight: 400;
     }
-  }
+  // }
 }
 
 .session-kpi-grid {

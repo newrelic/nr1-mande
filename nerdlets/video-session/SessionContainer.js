@@ -11,7 +11,7 @@ const sessionContainer = props => {
   const duration = formatSinceAndCompare(timeRange)
 
   return (
-    <Grid>
+    <Grid style={{ paddingLeft: '1rem' }}>
       <GridItem columnSpan={12}>
         <header className="header">
           <HeadingText type={HeadingText.TYPE.HEADING_3}>

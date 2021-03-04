@@ -12,15 +12,17 @@ export const loadMetricsForConfigs = async (
   // console.debug('>>>> metric-data-loader.loadMetricsForConfigs')
   let metricData = []
 
-  metricData = await Promise.all(
+  await Promise.all(
     metricConfigs
       .filter(config => config.metrics)
       .map(async config =>
         loadMetricsForConfig(config, duration, accountId, filters, parser)
       )
   )
+    .then(results => (metricData = flatten(results)))
+    .catch(error => console.log(error))
 
-  return flatten(metricData)
+  return metricData
 }
 
 export const loadMetricsForConfig = async (

@@ -4,10 +4,10 @@ const hooks = [
   {
     name: 'openSession',
     handler({ data, metadata }) {
-      if (!this || !this.accountId || !this.stack.title)
+      if (!this || !this.accountId)
         throw `This handler's this context must be bound to the calling props`
 
-      openVideoSession(this.accountId, metadata.name, this.stack.title)
+      openVideoSession(this.accountId, metadata.name)
     },
   },
 ]

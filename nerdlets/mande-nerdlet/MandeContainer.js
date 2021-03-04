@@ -3,7 +3,6 @@ import uniq from 'lodash.uniq'
 import cloneDeep from 'lodash.clonedeep'
 import isEqual from 'lodash.isequal'
 import {
-  AccountPicker,
   NerdGraphQuery,
   Stack,
   StackItem,
@@ -14,6 +13,7 @@ import {
   SelectItem,
   Button,
   navigation,
+  Spinner,
 } from 'nr1'
 
 import CategoryMenu from './components/category-menu/CategoryMenu'
@@ -22,14 +22,14 @@ import MetricDashboard from './components/dashboard/MetricDashboard'
 import CategoryDetail from './components/category-detail/CategoryDetail'
 import Selected from './components/metric-sidebar/Selected'
 import metricConfigs from '../shared/config/MetricConfig'
-import { FIND_USER_ATTRIBUTE } from '../shared/config/MetricConfig'
-import { activeEvents } from '../shared/config/VideoConfig'
+import { FIND_USER_ATTRIBUTE, VIDEO_EVENTS } from '../shared/config/constants'
 import {
   formatFilters,
   formatFacets,
   formatSinceAndCompare,
 } from '../shared/utils/query-formatter'
 import { loadMetricsForConfigs } from '../shared/utils/metric-data-loader'
+import Modal from '../shared/components/modal/modal'
 
 export default class MandeContainer extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ export default class MandeContainer extends React.Component {
     metricCategories = uniq(metricCategories)
 
     this.state = {
-      accountId: null,
+      loading: true,
       threshold: 'All',
       selectedMetric: null,
       selectedStack: null,
@@ -51,7 +51,176 @@ export default class MandeContainer extends React.Component {
       metricData: [],
       metricCategories,
       metricRefreshInterval: 180000,
+      modal: false,
+      modalContent: null,
+      modalStyles: {},
     }
+  }
+
+  async componentDidMount() {
+    const { timeRange, accountId } = this.props.launcherUrlState
+    const duration = formatSinceAndCompare(timeRange)
+    const {
+      threshold,
+      selectedMetric,
+      selectedStack,
+    } = this.props.nerdletUrlState
+
+    // check if we should load from a saved state
+    const savedState = threshold || selectedMetric || selectedStack
+
+    let metricData = await loadMetricsForConfigs(
+      metricConfigs,
+      duration,
+      accountId,
+      null
+    )
+
+    const showFindUserButton = await this.loadUserFlag(accountId, duration)
+
+    // reset all state if a state was saved
+    if (savedState) {
+      let savedStack = selectedMetric
+        ? this.onToggleMetric(selectedMetric, true)
+        : selectedStack
+        ? this.onToggleDetailView(selectedStack, true)
+        : null
+      this.setState({
+        threshold,
+        selectedMetric,
+        selectedStack: savedStack,
+        metricData,
+        showFindUserButton,
+        loading: false,
+      })
+    } else {
+      this.setState({
+        metricData,
+        showFindUserButton,
+        loading: false,
+      })
+    }
+    this.setupInterval(this.state.metricRefreshInterval)
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    let update = false
+
+    if (!isEqual(this.state, nextState)) {
+      update = true
+    }
+
+    const { launcherUrlState } = this.props
+    const nextLauncherState = nextProps.launcherUrlState
+    if (!isEqual(launcherUrlState, nextLauncherState)) {
+      update = true
+    }
+
+    return update
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    const {
+      threshold,
+      selectedMetric,
+      selectedStack,
+      metricRefreshInterval,
+      loading,
+    } = this.state
+    const { timeRange, accountId } = this.props.launcherUrlState
+    const {
+      timeRange: prevTimeRange,
+      accountId: prevAccountId,
+    } = prevProps.launcherUrlState
+
+    if (prevAccountId !== accountId) {
+      if (!loading) {
+        this.setState({ metricData: [], loading: true }, async () => {
+          const duration = formatSinceAndCompare(timeRange)
+          let metricData = await loadMetricsForConfigs(
+            metricConfigs,
+            duration,
+            accountId,
+            null
+          )
+          const showFindUserButton = await this.loadUserFlag(
+            accountId,
+            duration
+          )
+
+          this.setState({ metricData, showFindUserButton, loading: false })
+        })
+      }
+    }
+
+    if (metricRefreshInterval !== prevState.metricRefreshInterval) {
+      clearInterval(this.interval)
+      this.setupInterval(metricRefreshInterval)
+    }
+
+    if (
+      threshold != prevState.threshold ||
+      selectedMetric != prevState.selectedMetric ||
+      !isEqual(selectedStack, prevState.selectedStack)
+    ) {
+      nerdlet.setUrlState({
+        threshold: threshold,
+        selectedMetric,
+        selectedStack: selectedStack ? selectedStack.title : null,
+      })
+    }
+
+    if (
+      prevTimeRange.begin_time !== timeRange.begin_time ||
+      prevTimeRange.end_time !== timeRange.end_time ||
+      prevTimeRange.duration !== timeRange.duration
+    ) {
+      const duration = formatSinceAndCompare(timeRange)
+      let metricData = await loadMetricsForConfigs(
+        metricConfigs,
+        duration,
+        accountId,
+        null
+      )
+      const showFindUserButton = await this.loadUserFlag(accountId, duration)
+
+      this.setState({ metricData, showFindUserButton })
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
+  }
+
+  setupInterval = interval => {
+    this.interval = setInterval(async () => {
+      const duration = formatSinceAndCompare(
+        this.props.launcherUrlState.timeRange
+      )
+      const accountId = this.props.launcherUrlState.accountId
+
+      let metricData = []
+      for (let config of metricConfigs) {
+        if (config.metrics) {
+          metricData = metricData.concat(
+            config.metrics.map(metric => {
+              return { def: metric, category: config.title, loading: true }
+            })
+          )
+        }
+      }
+
+      this.setState({ metricData })
+
+      metricData = await loadMetricsForConfigs(
+        metricConfigs,
+        duration,
+        accountId,
+        null
+      )
+
+      this.setState({ metricData })
+    }, interval)
   }
 
   loadAccounts = async () => {
@@ -81,7 +250,7 @@ export default class MandeContainer extends React.Component {
     const query = `{
       actor {
         account(id: ${accountId}) {
-          nrql(query: "FROM ${activeEvents()} SELECT count(*) WHERE ${userClause} ${duration.since}") {
+          nrql(query: "FROM ${VIDEO_EVENTS} SELECT count(*) WHERE ${userClause} ${duration.since}") {
             results
           }
         }
@@ -104,12 +273,17 @@ export default class MandeContainer extends React.Component {
     navigation.openStackedNerdlet({
       id: 'find-user',
       urlState: {
-        accountId: this.state.accountId,
+        accountId: this.props.launcherUrlState.accountId,
       },
     })
   }
 
-  onChangeAccount = value => {
+  onCloseModal = () => this.setState({ modal: false })
+  onOpenModal = (content, styles) => {
+    this.setState({ modal: true, modalContent: content, modalStyles: styles })
+  }
+
+  onChangeAccount = (event, value) => {
     this.setState({ accountId: value })
   }
 
@@ -219,154 +393,6 @@ export default class MandeContainer extends React.Component {
     }
   }
 
-  setupInterval = interval => {
-    this.interval = setInterval(async () => {
-      const duration = formatSinceAndCompare(
-        this.props.launcherUrlState.timeRange
-      )
-      const { accountId } = this.state
-
-      let metricData = []
-      for (let config of metricConfigs) {
-        if (config.metrics) {
-          metricData = metricData.concat(
-            config.metrics.map(metric => {
-              return { def: metric, category: config.title, loading: true }
-            })
-          )
-        }
-      }
-
-      this.setState({ metricData })
-
-      metricData = await loadMetricsForConfigs(
-        metricConfigs,
-        duration,
-        accountId,
-        null
-      )
-
-      this.setState({ metricData })
-    }, interval)
-  }
-
-  async componentDidMount() {
-    const { timeRange } = this.props.launcherUrlState
-    const duration = formatSinceAndCompare(timeRange)
-
-    let { accountId } = this.props.nerdletUrlState
-    const {
-      threshold,
-      selectedMetric,
-      selectedStack,
-    } = this.props.nerdletUrlState
-
-    // no state can have been saved without also having saved accountId, so we can pivot based on presence of accountId
-    const savedState = accountId !== undefined
-
-    if (!accountId) {
-      const accounts = await this.loadAccounts()
-      accountId = accounts[0].id
-    }
-
-    let metricData = await loadMetricsForConfigs(
-      metricConfigs,
-      duration,
-      accountId,
-      null
-    )
-
-    const showFindUserButton = await this.loadUserFlag(accountId, duration)
-
-    // reset all state if an accountId was saved, otherwise, just set the default accountId state
-    if (savedState) {
-      let savedStack = selectedMetric
-        ? this.onToggleMetric(selectedMetric, true)
-        : selectedStack
-          ? this.onToggleDetailView(selectedStack, true)
-          : null
-      this.setState({
-        accountId,
-        threshold,
-        selectedMetric,
-        selectedStack: savedStack,
-        metricData,
-        showFindUserButton,
-      })
-    } else {
-      this.setState({ accountId, metricData, showFindUserButton })
-    }
-
-    this.setupInterval(this.state.metricRefreshInterval)
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!isEqual(this.state, nextState)) {
-      return true
-    }
-
-    const { launcherUrlState } = this.props
-    const nextLauncherState = nextProps.launcherUrlState
-    if (!isEqual(launcherUrlState, nextLauncherState)) {
-      return true
-    }
-
-    return false
-  }
-
-  async componentDidUpdate(prevProps, prevState) {
-    const {
-      accountId,
-      threshold,
-      selectedMetric,
-      selectedStack,
-      metricRefreshInterval,
-    } = this.state
-
-    if (metricRefreshInterval !== prevState.metricRefreshInterval) {
-      clearInterval(this.interval)
-      this.setupInterval(metricRefreshInterval)
-    }
-
-    if (
-      accountId != prevState.accountId ||
-      threshold != prevState.threshold ||
-      selectedMetric != prevState.selectedMetric ||
-      !isEqual(selectedStack, prevState.selectedStack)
-    ) {
-      nerdlet.setUrlState({
-        accountId: accountId,
-        threshold: threshold,
-        selectedMetric,
-        selectedStack: selectedStack ? selectedStack.title : null,
-      })
-    }
-
-    const { timeRange } = this.props.launcherUrlState
-    const prevTimeRange = prevProps.launcherUrlState.timeRange
-
-    if (
-      prevTimeRange.begin_time !== timeRange.begin_time ||
-      prevTimeRange.end_time !== timeRange.end_time ||
-      prevTimeRange.duration !== timeRange.duration
-    ) {
-      const duration = formatSinceAndCompare(timeRange)
-      let metricData = await loadMetricsForConfigs(
-        metricConfigs,
-        duration,
-        accountId,
-        null
-      )
-      const showFindUserButton = await this.loadUserFlag(accountId, duration)
-
-      this.setState({ metricData, showFindUserButton })
-    }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval)
-  }
-
   renderOptionsBar = () => {
     return (
       <React.Fragment>
@@ -382,15 +408,6 @@ export default class MandeContainer extends React.Component {
               className="options-bar"
               fullWidth
             >
-              <StackItem>
-                <Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
-                  <div className="options-bar-label">Accounts</div>
-                  <AccountPicker
-                    value={this.state.accountId}
-                    onChange={this.onChangeAccount}
-                  />
-                </Stack>
-              </StackItem>
               <StackItem>
                 <Stack directionType={Stack.DIRECTION_TYPE.VERTICAL}>
                   <div className="options-bar-label">Threshold</div>
@@ -446,10 +463,13 @@ export default class MandeContainer extends React.Component {
 
   renderSidebar = duration => {
     const {
+      launcherUrlState: { accountId },
+    } = this.props
+    const {
       showFacetSidebar,
       facets,
       activeFilters,
-      accountId,
+      // accountId,
       selectedStack,
     } = this.state
 
@@ -468,11 +488,11 @@ export default class MandeContainer extends React.Component {
   }
 
   render() {
-    const { timeRange } = this.props.launcherUrlState
+    const { timeRange, accountId } = this.props.launcherUrlState
     const duration = formatSinceAndCompare(timeRange)
 
     const {
-      accountId,
+      loading,
       threshold,
       selectedMetric,
       selectedStack,
@@ -487,8 +507,18 @@ export default class MandeContainer extends React.Component {
     const filters = formatFilters(activeFilters)
     const facetClause = formatFacets(facets)
 
-    return (
+    return loading ? (
+      <Spinner />
+    ) : (
       <>
+        {this.state.modal && (
+          <Modal
+            style={{ width: '90%', height: '90%', ...this.state.modalStyles }}
+            onClose={this.onCloseModal}
+          >
+            {this.state.modalContent}
+          </Modal>
+        )}
         <Grid
           className="container"
           spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]}
@@ -575,6 +605,7 @@ export default class MandeContainer extends React.Component {
                         stack={selectedStack}
                         activeFilters={filters}
                         facets={facetClause}
+                        actionMenuSelect={this.onOpenModal}
                       />
                     </StackItem>
                   )}
@@ -604,7 +635,7 @@ export default class MandeContainer extends React.Component {
                     }
                   >
                     Choose Facets
-                </StackItem>
+                  </StackItem>
                   <StackItem
                     grow
                     className={
@@ -614,7 +645,7 @@ export default class MandeContainer extends React.Component {
                     }
                   >
                     Choose Filters
-                </StackItem>
+                  </StackItem>
                 </Stack>
               </div>
               <Stack

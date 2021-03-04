@@ -12,7 +12,93 @@ export default {
       ],
     },
   ],
-  overviewConfig: [
+  metrics: [
+    {
+      title: 'Origin Bucket Size (Avg MB)',
+      threshold: {
+        critical: 500,
+        warning: 300,
+      },
+      query: {
+        nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'result' from DatastoreSample WHERE provider.bucketName like '%destination%' and provider = 'S3Bucket'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Origin-Bucket-Detail',
+    },
+    {
+      title: 'Origin 4xx Errors (Count)',
+      threshold: {
+        critical: 10,
+        warning: 5,
+      },
+      query: {
+        nrql: `SELECT sum(provider.error4xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Origin-4xx-Detail',
+    },
+    {
+      title: 'Origin 5xx Errors (Count)',
+      threshold: {
+        critical: 5,
+        warning: 2,
+      },
+      query: {
+        nrql: `SELECT sum(provider.error5xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Origin-5xx-Detail',
+    },
+    {
+      title: 'Origin All Requests',
+      threshold: {
+        critical: 400,
+        warning: 300,
+      },
+      query: {
+        nrql: `SELECT sum(provider.allRequests.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Origin-Requests-Detail',
+    },
+    {
+      title: 'Origin # of Objects (Avg)',
+      threshold: {
+        critical: 10,
+        warning: 8,
+      },
+      query: {
+        nrql: `SELECT average(provider.numberOfObjects.Average) as 'result' from DatastoreSample WHERE provider.bucketName like '%destination%'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Origin-Objects-Detail',
+    },
+    {
+      title: 'Origin First Byte Latency - Avg (ms)',
+      threshold: {
+        critical: 150,
+        warning: 100,
+      },
+      query: {
+        nrql: `SELECT average(provider.firstByteLatency.Average) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Origin-FB-Detail',
+    },
+    {
+      title: 'Origin Total Request Latency - Avg (ms)',
+      threshold: {
+        critical: 200,
+        warning: 180,
+      },
+      query: {
+        nrql: `SELECT average(provider.totalRequestLatency.Average) as 'result' from DatastoreSample where provider='S3BucketRequests' where entityName like '%destination%'`,
+        lookup: 'result',
+      },
+      detailDashboardId: 'Origin-Request-Latency-Detail',
+    },
+  ],
+  overviewDashboard: [
     {
       nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'MB' from DatastoreSample WHERE provider.bucketName like '%destination%' and provider = 'S3Bucket'`,
       columnStart: 1,
@@ -122,18 +208,10 @@ export default {
       useSince: true,
     }
   ],
-  metrics: [
+  detailDashboards: [
     {
-      title: 'Origin Bucket Size (Avg MB)',
-      threshold: {
-        critical: 500,
-        warning: 300,
-      },
-      query: {
-        nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'result' from DatastoreSample WHERE provider.bucketName like '%destination%' and provider = 'S3Bucket'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Origin-Bucket-Detail',
+      config: [
         {
           nrql: `SELECT average(provider.bucketSizeBytes.Average/1000000) as 'MB' from DatastoreSample WHERE provider.bucketName like '%destination%' and provider = 'S3Bucket'`,
           columnStart: 1,
@@ -151,20 +229,12 @@ export default {
           chartType: 'line',
           title: 'Origin Bucket Size (MB)',
           useSince: true,
-        }
+        },
       ],
     },
     {
-      title: 'Origin 4xx Errors (Count)',
-      threshold: {
-        critical: 10,
-        warning: 5,
-      },
-      query: {
-        nrql: `SELECT sum(provider.error4xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Origin-4xx-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.error4xxErrors.Sum) as '4xx Errors' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
           columnStart: 1,
@@ -182,20 +252,12 @@ export default {
           chartType: 'line',
           title: 'Origin 4xx Errors',
           useSince: true,
-        }
+        },
       ],
     },
     {
-      title: 'Origin 5xx Errors (Count)',
-      threshold: {
-        critical: 5,
-        warning: 2,
-      },
-      query: {
-        nrql: `SELECT sum(provider.error5xxErrors.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Origin-5xx-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.error5xxErrors.Sum) as '5xx Errors' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
           columnStart: 1,
@@ -213,20 +275,12 @@ export default {
           chartType: 'line',
           title: 'Origin 5xx Errors',
           useSince: true,
-        }
+        },
       ],
     },
     {
-      title: 'Origin All Requests',
-      threshold: {
-        critical: 400,
-        warning: 300,
-      },
-      query: {
-        nrql: `SELECT sum(provider.allRequests.Sum) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Origin-Requests-Detail',
+      config: [
         {
           nrql: `SELECT sum(provider.allRequests.Sum) as 'Requests' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
           columnStart: 1,
@@ -244,20 +298,12 @@ export default {
           chartType: 'line',
           title: 'Origin All Requests',
           useSince: true,
-        }
+        },
       ],
     },
     {
-      title: 'Origin # of Objects (Avg)',
-      threshold: {
-        critical: 10,
-        warning: 8,
-      },
-      query: {
-        nrql: `SELECT average(provider.numberOfObjects.Average) as 'result' from DatastoreSample WHERE provider.bucketName like '%destination%'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Origin-Objects-Detail',
+      config: [
         {
           nrql: `SELECT average(provider.numberOfObjects.Average) as 'Objects' from DatastoreSample WHERE provider.bucketName like '%destination%'`,
           columnStart: 1,
@@ -279,16 +325,8 @@ export default {
       ],
     },
     {
-      title: 'Origin First Byte Latency - Avg (ms)',
-      threshold: {
-        critical: 150,
-        warning: 100,
-      },
-      query: {
-        nrql: `SELECT average(provider.firstByteLatency.Average) as 'result' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Origin-FB-Detail',
+      config: [
         {
           nrql: `SELECT average(provider.firstByteLatency.Average) as 'ms' from DatastoreSample WHERE provider = 'S3BucketRequests' AND entityName like '%destination%'`,
           columnStart: 1,
@@ -310,16 +348,8 @@ export default {
       ],
     },
     {
-      title: 'Origin Total Request Latency - Avg (ms)',
-      threshold: {
-        critical: 200,
-        warning: 180,
-      },
-      query: {
-        nrql: `SELECT average(provider.totalRequestLatency.Average) as 'result' from DatastoreSample where provider='S3BucketRequests' where entityName like '%destination%'`,
-        lookup: 'result',
-      },
-      detailConfig: [
+      id: 'Origin-Request-Latency-Detail',
+      config: [
         {
           nrql: `SELECT average(provider.totalRequestLatency.Average) as 'ms' from DatastoreSample where provider='S3BucketRequests' where entityName like '%destination%'`,
           columnStart: 1,
@@ -337,7 +367,7 @@ export default {
           chartType: 'line',
           title: 'Views destination Total Request Latency (Avg - ms)',
           useSince: true,
-        }
+        },
       ],
     },
   ],

@@ -115,17 +115,16 @@ export default class Metric extends React.PureComponent {
       minify,
     } = this.props
 
-    const title = <p className="name">{metric.title}</p>
     return (
       <React.Fragment>
         {/* {metric.def.query.title ? metric.def.query.title : metric.def.title} */}
-        {showTooltip ? (
+        <p className="name">{showTooltip ? (
           <Tooltip text={tooltipText ? tooltipText : metric.title}>
-            {title}
+            {metric.title}
           </Tooltip>
           // eslint-disable-next-line prettier/prettier
-          ) : title
-        }
+          ) : metric.title
+        }</p>
         <span className="value-container">
           {this.renderMetricValue(thresholdClass, false)}
           {showCompare && this.renderCompare()}
@@ -196,9 +195,8 @@ export default class Metric extends React.PureComponent {
           <div
             onClick={() => (click ? click(metric) : () => null)}
             style={styles && { ...styles }}
-            className={`${
-              !selected ? 'metric-chart' : 'metric-chart selected'
-            } ${thresholdClass} ${!click ? 'no-click' : ''}`}
+            className={`${!selected ? 'metric-chart' : 'metric-chart selected'
+              } ${thresholdClass} ${!click ? 'no-click' : ''}`}
           >
             {metricContent}
           </div>

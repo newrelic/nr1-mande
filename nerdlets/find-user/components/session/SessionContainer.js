@@ -15,7 +15,7 @@ import {
 } from '../../../shared/utils/quality-score'
 import QosKpiGrid from '../../../shared/components/qos/QosKpiGrid'
 import SessionTable from './SessionTable'
-import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
+import { FIND_USER_ATTRIBUTE } from '../../../shared/config/constants'
 
 export default class SessionContainer extends React.Component {
   state = {

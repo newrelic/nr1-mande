@@ -64,12 +64,74 @@ export default {
   ],
   metrics: [
     {
+      id: 'AS',
       title: 'Ads Shown',
       query: {
         nrql: `SELECT count(*) as 'result' from PageAction, MobileVideo where actionName = 'AD_START'`,
         lookup: 'result',
       },
-      detailConfig: [
+      detailDashboardId: 'AS-Detail',
+    },
+    {
+      id: 'ACR',
+      title: 'Ad Click Ratio',
+      query: {
+        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_CLICK') / filter(count(*), WHERE actionName = 'AD_START') * 100  as 'result' from PageAction, MobileVideo `,
+        lookup: 'result',
+      },
+    },
+    {
+      id: 'ASR',
+      title: 'Ad Skip Ratio',
+      query: {
+        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_END' and skipped is true) / filter(count(*), WHERE actionName = 'AD_END') * 100  as 'result' from PageAction, MobileVideo `,
+        lookup: 'result',
+      },
+    },
+    {
+      id: 'AER',
+      title: 'Ad Error Ratio',
+      query: {
+        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_ERROR') / filter(count(*), WHERE actionName = 'AD_START') * 100  as 'result' from PageAction, MobileVideo `,
+        lookup: 'result',
+      },
+    },
+    {
+      id: 'ASFR',
+      title: 'Ad Start Failure Ratio',
+      query: {
+        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_ERROR' and adPlayhead < 1000) / filter(count(*), WHERE actionName = 'AD_REQUEST') * 100 as 'result' from PageAction, MobileVideo `,
+        lookup: 'result',
+      },
+    },
+    {
+      title: 'In-Stream Ad Error Ratio',
+      query: {
+        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_ERROR' and adPlayhead >= 1000) / filter(count(*), WHERE actionName = 'AD_START') * 100 as 'result' from PageAction, MobileVideo `,
+        lookup: 'result',
+      },
+    },
+    {
+      id: 'AIR',
+      title: 'Ad Interruption Ratio',
+      query: {
+        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_BUFFER_START') / filter(count(*), WHERE actionName = 'AD_START') * 100  as 'result' from PageAction, MobileVideo `,
+        lookup: 'result',
+      },
+    },
+    {
+      id: 'AJT',
+      title: 'Join Time for Ads (s)',
+      query: {
+        nrql: `SELECT percentile(timeSinceAdRequested/1000, 50) as 'percentile' FROM PageAction, MobileVideo WHERE actionName ='AD_START'`,
+        lookup: 'percentile',
+      },
+    },
+  ],
+  detailDashboards: [
+    {
+      id: 'AS-Detail',
+      config: [
         {
           nrql: `SELECT count(*) as 'Ads' from PageAction, MobileVideo where actionName = 'AD_START' `,
           columnStart: 1,
@@ -101,55 +163,6 @@ export default {
           useSince: true,
         },
       ],
-    },
-    {
-      title: 'Ad Click Ratio',
-      query: {
-        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_CLICK') / filter(count(*), WHERE actionName = 'AD_START') * 100  as 'result' from PageAction, MobileVideo `,
-        lookup: 'result',
-      },
-    },
-    {
-      title: 'Ad Skip Ratio',
-      query: {
-        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_END' and skipped is true) / filter(count(*), WHERE actionName = 'AD_END') * 100  as 'result' from PageAction, MobileVideo `,
-        lookup: 'result',
-      },
-    },
-    {
-      title: 'Ad Error Ratio',
-      query: {
-        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_ERROR') / filter(count(*), WHERE actionName = 'AD_START') * 100  as 'result' from PageAction, MobileVideo `,
-        lookup: 'result',
-      },
-    },
-    {
-      title: 'Ad Start Failure Ratio',
-      query: {
-        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_ERROR' and adPlayhead < 1000) / filter(count(*), WHERE actionName = 'AD_REQUEST') * 100 as 'result' from PageAction, MobileVideo `,
-        lookup: 'result',
-      },
-    },
-    {
-      title: 'In-Stream Ad Error Ratio',
-      query: {
-        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_ERROR' and adPlayhead >= 1000) / filter(count(*), WHERE actionName = 'AD_START') * 100 as 'result' from PageAction, MobileVideo `,
-        lookup: 'result',
-      },
-    },
-    {
-      title: 'Ad Interruption Ratio',
-      query: {
-        nrql: `SELECT filter(count(*), WHERE actionName = 'AD_BUFFER_START') / filter(count(*), WHERE actionName = 'AD_START') * 100  as 'result' from PageAction, MobileVideo `,
-        lookup: 'result',
-      },
-    },
-    {
-      title: 'Join Time for Ads (s)',
-      query: {
-        nrql: `SELECT percentile(timeSinceAdRequested/1000, 50) as 'percentile' FROM PageAction, MobileVideo WHERE actionName ='AD_START'`,
-        lookup: 'percentile',
-      },
     },
   ],
 }

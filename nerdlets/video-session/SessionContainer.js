@@ -2,18 +2,16 @@ import React from 'react'
 import { Grid, GridItem, HeadingText } from 'nr1'
 import SessionDetail from './components/session-detail/SessionDetail'
 import TimelineDetail from './components/timeline/TimelineDetail'
-import metricConfig from '../shared/config/MetricConfig'
+import videoConfig from '../shared/config/VideoConfig'
 import { formatSinceAndCompare } from '../shared/utils/query-formatter'
 
 const sessionContainer = props => {
   const { timeRange } = props.launcherUrlState
-  const { accountId, session, stackName } = props.nerdletUrlState
-
+  const { accountId, session } = props.nerdletUrlState
   const duration = formatSinceAndCompare(timeRange)
-  const stack = metricConfig.find(config => config.title === stackName)
 
   return (
-    <Grid>
+    <Grid style={{ paddingLeft: '1rem' }}>
       <GridItem columnSpan={12}>
         <header className="header">
           <HeadingText type={HeadingText.TYPE.HEADING_3}>
@@ -25,7 +23,7 @@ const sessionContainer = props => {
         <SessionDetail
           accountId={accountId}
           session={session}
-          stack={stack}
+          stack={videoConfig}
           duration={duration}
         />
       </GridItem>

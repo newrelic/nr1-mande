@@ -4,7 +4,7 @@ import { NrqlQuery } from 'nr1'
 import EventStream from './EventStream'
 import Timeline from '../timeline/Timeline'
 import videoGroup from './VideoGroup'
-import { activeEvents } from '../../../shared/config/VideoConfig'
+import { VIDEO_EVENTS } from '../../../shared/config/constants'
 
 export default class TimelineDetail extends React.PureComponent {
   state = {
@@ -16,7 +16,7 @@ export default class TimelineDetail extends React.PureComponent {
   getData = async () => {
     const { accountId, session, duration } = this.props
 
-    const query = `SELECT * from ${activeEvents()} WHERE viewId = '${session}' ORDER BY timestamp ASC LIMIT 1000 ${duration.since}`
+    const query = `SELECT * from ${VIDEO_EVENTS} WHERE viewId = '${session}' ORDER BY timestamp ASC LIMIT 1000 ${duration.since}`
 
     const { data } = await NrqlQuery.query({ accountId, query })
 

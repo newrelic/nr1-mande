@@ -38,7 +38,6 @@
         display: flex;
         align-items: center;
       }
-
     }
 
     > .detail-main {
@@ -60,75 +59,126 @@
   [class*="wnd-GridItem"] {
     margin-left: 0px;
   }
+}
 
-  .chart-container {
-    width: 100%;
-    margin-bottom: 8px;
-    box-sizing: border-box;
-    background-color: #fff;
-    border-radius: 2px;
-    box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);
-    position: relative;
+.chart-container {
+  width: 100%;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);
+  position: relative;
 
-    [class*="component--loaded"] {
-      background-color: transparent;
-    }
+  [class*="component--loaded"] {
+    background-color: transparent;
+  }
 
-    > .chart-title {
-      font-size: 13px;
-      font-weight: 400;
-      box-sizing: border-box;
-      padding: 8px 16px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  &.expand {
+    height: 98%;
 
-      > .chart-subtitle {
-        color: #8e9494;
-        font-size: 12px;
-        padding-top: 2px;
-      }
-
-      &:hover {
-        > .chart-title-tooltip {
-          visibility: visible;
-          opacity: 1;
-          transition: 0.25s opacity ease;
-          transition-delay: 0.75s;
-          z-index: 10;
-        }
-      }
-    }
-
-    .chart-title-tooltip {
-      visibility: hidden;
-      opacity: 0;
-      position: absolute;
-      top: 27px;
-      padding: 8px;
-      background-color: #edeeee;
-    }
-
-    .detail-chart {
-      box-sizing: border-box;
-      padding: 16px;
-
-      &.small {
-        height: 250px;
-      }
-
-      &.medium {
-        height: 380px;
-      }
-
-      &.large {
-        height: 500px;
-      }
-
-      & > [class*="Chart"] {
-        height: 100%;
-        width: 100%;
-      }
+    >.detail-chart {
+      height: 90%;
     }
   }
 }
+
+.chart-view-query-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 90%;
+
+  > .chart-view-query {
+    @include defaultPanel;
+  }
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+
+  &.expand {
+    padding: .5rem 0 .75rem .2rem;
+  }
+
+  > .chart-title {
+    font-size: 13px;
+    font-weight: 400;
+    box-sizing: border-box;
+    padding: 8px 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.expand {
+      font-size: 1.25rem;
+      padding: 0;
+    }
+
+    > .chart-subtitle {
+      color: #8e9494;
+      font-size: 12px;
+      padding-top: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  > .chart-actions {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.detail-chart {
+  box-sizing: border-box;
+  padding: 16px;
+  height: 100%;
+
+  &.micro {
+    height: 175px;
+  }
+
+  &.small {
+    height: 250px;
+  }
+
+  &.medium {
+    height: 380px;
+  }
+
+  &.large {
+    height: 500px;
+  }
+
+  & > [class*="Chart"] {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.chart-actions-menu {
+  @include defaultPanel;
+  padding: .25rem;
+  width: 100%;
+  min-width: 8rem;
+
+  > .chart-actions-menu-item {
+    padding: .1rem .5rem;
+    color: #464e4e;
+    cursor: pointer;
+    line-height: 1.5rem;
+
+    &:hover {
+      background-color: #FAFBFC;
+      color: #000e0e;
+    }
+
+    &:first-of-type {
+      padding-top: .1rem;
+    }    
+  }
+}
+

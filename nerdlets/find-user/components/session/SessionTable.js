@@ -18,8 +18,7 @@ import {
 } from '../../../shared/utils/date-formatter'
 import { getThresholdClass } from '../../../shared/utils/threshold'
 import videoConfig from '../../../shared/config/VideoConfig'
-import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
-import { activeEvents } from '../../../shared/config/VideoConfig'
+import { FIND_USER_ATTRIBUTE, VIDEO_EVENTS } from '../../../shared/config/constants'
 
 export default class SessionTable extends React.Component {
   state = {
@@ -74,7 +73,7 @@ export default class SessionTable extends React.Component {
       if (userClause) userClause += ' OR '
       userClause += `${u} = '${user}'`
     })
-    const nrql = `FROM ${activeEvents()} SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
+    const nrql = `FROM ${VIDEO_EVENTS} SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>

@@ -87,6 +87,8 @@ const metricDashboard = props => {
                 }}
                 showSparkline={true}
                 query={metricDef.def.query.nrql + duration.since}
+                showTooltip={true}
+                tooltipText={metricDef.def.title}
                 click={toggleMetric}
                 visibleThreshold={threshold}
                 valueAlign="left"

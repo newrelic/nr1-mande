@@ -65,7 +65,7 @@ export default class Chart extends React.Component {
     const { facets } = this.props
     let allFacets = []
 
-    if (config.facets) allFacets = config.facets.split(',')
+    if (config.facets) allFacets = config.facets.split(',').map(item => item.trim())
     if (facets) allFacets = allFacets.concat(facets.split(','))
     const formattedFacets = formatFacets(uniq(allFacets))
 

@@ -2,9 +2,29 @@ import React from 'react'
 import startCase from 'lodash.startcase'
 import map from 'lodash.map'
 import { Icon, NrqlQuery, Spinner, Checkbox } from 'nr1'
+import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
-export default class Filter extends React.Component {
+class Filter extends React.Component {
   state = { expanded: false, loading: true, values: [] }
+
+  async componentDidMount() {
+    this.setState({ loading: true })
+    const values = await this.loadValues()
+    this.setState({ loading: false, values })
+  }
+
+  async componentDidUpdate(prevProps) {
+    const {
+      duration: { since },
+    } = this.props
+    const prevSince = prevProps.duration.since
+
+    if (since !== prevSince) {
+      this.setState({ loading: true })
+      const values = await this.loadValues()
+      this.setState({ loading: false, values })
+    }
+  }
 
   loadValues = async () => {
     const {
@@ -37,44 +57,23 @@ export default class Filter extends React.Component {
 
   getSelectedState = (activeAttributes, attribute, value) => {
     const found = activeAttributes.filter(
-      active => active.attribute === attribute && active.value === value
-    )
+      active => active.attribute === attribute && active.value === value)
     return found.length > 0
-  }
-
-  async componentDidMount() {
-    this.setState({ loading: true })
-    const values = await this.loadValues()
-    this.setState({ loading: false, values })
-  }
-
-  async componentDidUpdate(prevProps) {
-    const {
-      duration: { since },
-    } = this.props
-    const prevSince = prevProps.duration.since
-
-    if (since !== prevSince) {
-      this.setState({ loading: true })
-      const values = await this.loadValues()
-      this.setState({ loading: false, values })
-    }
   }
 
   render() {
     const { loading, expanded, values } = this.state
-    const { attribute, attributeToggle, activeAttributes } = this.props
+    const {
+      attribute,
+      facetContext: { filters, updateFilters },
+    } = this.props
     const displayName = startCase(attribute)
 
-    let valueItems = loading ? (
+    let itemValues = loading ? (
       <Spinner type={Spinner.TYPE.DOT} fillContainer />
     ) : (
       values.map((value, idx) => {
-        const selected = this.getSelectedState(
-          activeAttributes,
-          attribute,
-          value
-        )
+        const selected = this.getSelectedState(filters, attribute, value)
         const selectedNextState = !selected
         return (
           <div key={value + idx} className="filter-attribute-item">
@@ -83,14 +82,12 @@ export default class Filter extends React.Component {
                 checked={selected}
                 className="filter-attribute-checkbox-input"
                 onChange={() =>
-                  attributeToggle(attribute, value, selectedNextState)
+                  updateFilters(attribute, value, selectedNextState)
                 }
               />
             </span>
             <span
-              onClick={() =>
-                attributeToggle(attribute, value, selectedNextState)
-              }
+              onClick={() => updateFilters(attribute, value, selectedNextState)}
               className={
                 selected
                   ? 'filter-attribute-value checked'
@@ -146,8 +143,10 @@ export default class Filter extends React.Component {
             )}
           </h5>
         </div>
-        {expanded && valueItems}
+        {expanded && itemValues}
       </div>
     )
   }
 }
+
+export default withFacetFilterContext(Filter)

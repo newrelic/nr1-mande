@@ -1,14 +1,17 @@
 import React from 'react'
 import uniq from 'lodash.uniq'
-import { StackItem } from 'nr1'
+import { Stack, StackItem } from 'nr1'
 import Filter from './Filter'
 import Facet from './Facet'
+import ActiveSidebar from './ActiveSidebar'
+import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
-export default class MetricSidebar extends React.Component {
+class MetricSidebar extends React.Component {
   state = {
     loading: true,
     categories: new Map(),
     eventTypes: '',
+    showFacetSidebar: true,
   }
 
   getCategories = () => {
@@ -49,22 +52,6 @@ export default class MetricSidebar extends React.Component {
     return types ? types.join() : ''
   }
 
-  // placeholder in case we need to present the underlying event type as a selectable attribute. on hold.
-  // getEventSelectors = () => {
-  //   const { stack } = this.props
-  //   let attributes = []
-  //   let count = 0 // placeholder - do we want to not display eventSelectors if there's one event?
-
-  //   stack.eventTypes.forEach(eventType => {
-  //     if (eventType.eventSelector) {
-  //       attributes = [...attributes, eventType.eventSelector.attribute]
-  //       count++
-  //     }
-  //   })
-
-  //   return uniq(attributes).sort
-  // }
-
   componentDidMount() {
     const categories = this.getCategories()
     const eventTypes = this.getEventTypes()
@@ -79,9 +66,54 @@ export default class MetricSidebar extends React.Component {
     }
   }
 
+  onSidebarToggle = () => {
+    const { showFacetSidebar } = this.state
+    this.setState({ showFacetSidebar: !showFacetSidebar })
+  }
+
+  renderHeader = () => {
+    const { showFacetSidebar } = this.state
+
+    return (
+      <div onClick={this.onSidebarToggle}>
+        <Stack
+          fullWidth
+          directionType={Stack.DIRECTION_TYPE.HORIZONTAL}
+          verticalType={Stack.VERTICAL_TYPE.CENTER}
+          gapType={Stack.GAP_TYPE.NONE}
+        >
+          <StackItem
+            grow
+            className={
+              showFacetSidebar
+                ? 'filter-visibility-control selected'
+                : 'filter-visibility-control notSelected'
+            }
+          >
+            Choose Facets
+          </StackItem>
+          <StackItem
+            grow
+            className={
+              !showFacetSidebar
+                ? 'filter-visibility-control selected'
+                : 'filter-visibility-control notSelected'
+            }
+          >
+            Choose Filters
+          </StackItem>
+        </Stack>
+      </div>
+    )
+  }
+
   render() {
-    const { categories, eventTypes } = this.state
-    const { accountId, duration, toggle, selected, showFacets } = this.props
+    const { categories, eventTypes, showFacetSidebar } = this.state
+    const {
+      accountId,
+      duration,
+      facetContext: { facets, updateFacets, filters, updateFilters },
+    } = this.props
 
     let filterItems = []
     categories.forEach((value, key) => {
@@ -90,18 +122,11 @@ export default class MetricSidebar extends React.Component {
           <React.Fragment key={key}>
             <div className="filter-category-label">{key}</div>
             <React.Fragment>
-              {showFacets &&
+              {showFacetSidebar &&
                 value.map((attribute, idx) => {
-                  return (
-                    <Facet
-                      key={attribute + idx}
-                      attribute={attribute}
-                      facetToggle={toggle}
-                      activeFacets={selected}
-                    />
-                  )
+                  return <Facet key={attribute + idx} attribute={attribute} />
                 })}
-              {!showFacets &&
+              {!showFacetSidebar &&
                 value.map((attribute, idx) => {
                   return (
                     <Filter
@@ -110,8 +135,6 @@ export default class MetricSidebar extends React.Component {
                       attribute={attribute}
                       duration={duration}
                       eventTypes={eventTypes}
-                      attributeToggle={toggle}
-                      activeAttributes={selected}
                     />
                   )
                 })}
@@ -122,9 +145,42 @@ export default class MetricSidebar extends React.Component {
     })
 
     return (
-      <StackItem grow className="filter-stack not-selected">
-        {filterItems}
-      </StackItem>
+      <>
+        {this.renderHeader()}
+        <Stack
+          grow
+          fullHeight
+          fullWidth
+          directionType={Stack.DIRECTION_TYPE.VERTICAL}
+          className="detail-filter"
+        >
+          {facets && facets.length > 0 && (
+            <>
+              <StackItem className="sidebar-selected-title">Facets</StackItem>
+              <ActiveSidebar
+                showFacets={true}
+                items={facets}
+                toggle={updateFacets}
+              />
+            </>
+          )}
+          {filters && filters.length > 0 && (
+            <>
+              <StackItem className="sidebar-selected-title">Filters</StackItem>
+              <ActiveSidebar
+                showFacets={false}
+                items={filters}
+                toggle={updateFilters}
+              />
+            </>
+          )}
+          <StackItem grow className="filter-stack not-selected">
+            {filterItems}
+          </StackItem>
+        </Stack>
+      </>
     )
   }
 }
+
+export default withFacetFilterContext(MetricSidebar)

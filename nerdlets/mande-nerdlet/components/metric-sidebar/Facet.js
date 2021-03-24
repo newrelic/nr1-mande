@@ -1,15 +1,16 @@
 import React from 'react'
 import startCase from 'lodash.startcase'
 import { Checkbox } from 'nr1'
+import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
 const facet = props => {
-  const { attribute, facetToggle, activeFacets } = props
-
+  const {
+    facetContext: { facets, updateFacets },
+    attribute,
+  } = props
   const displayName = startCase(attribute)
-
-  const selected =
-    activeFacets &&
-    activeFacets.find(facet => facet === attribute) !== undefined
+  const isSelected =
+    facets && facets.find(facet => facet === attribute) !== undefined
 
   return (
     <div className="filter-category-section">
@@ -17,14 +18,14 @@ const facet = props => {
         <h5 className="facet-category-section-label">
           <span className="filter-attribute-checkbox">
             <Checkbox
-              checked={selected}
+              checked={isSelected}
               className="filter-attribute-checkbox-input"
-              onChange={() => facetToggle(attribute, !selected)}
+              onChange={() => updateFacets(attribute, !isSelected)}
             />
           </span>
           <span
             className="facet-category-section-label-text"
-            onClick={() => facetToggle(attribute, !selected)}
+            onClick={() => updateFacets(attribute, !isSelected)}
           >
             {displayName}
           </span>
@@ -34,4 +35,4 @@ const facet = props => {
   )
 }
 
-export default facet
+export default withFacetFilterContext(facet)

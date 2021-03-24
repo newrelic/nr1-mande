@@ -21,8 +21,9 @@ import { formatFacets } from '../../../shared/utils/query-formatter'
 import { getHook } from '../../../shared/utils/hooks'
 import { lexer } from '../../../shared/utils/syntax-highligher'
 import Popup from '../../../shared/components/popup/Popup'
+import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
-export default class Chart extends React.Component {
+class Chart extends React.Component {
   state = {
     popup: false,
   }
@@ -40,8 +41,10 @@ export default class Chart extends React.Component {
   getQuery = config => {
     const {
       duration: { since, compare },
-      filters,
-      facets,
+      facetContext: {
+        queryFormattedFacets: facets,
+        queryFormattedFilters: filters,
+      },
     } = this.props
 
     let query = config.nrql
@@ -51,7 +54,7 @@ export default class Chart extends React.Component {
 
     if (!config.noFacet) {
       if (config.facets && facets)
-        query += `FACET ${this.getDedupedFacets(config)}`
+        query += `FACET ${this.getDedupedFacets(config, facets)}`
       else {
         if (facets) query += `FACET ${facets}`
         if (config.facets) query += `FACET ${config.facets}`
@@ -61,15 +64,14 @@ export default class Chart extends React.Component {
     return query
   }
 
-  getDedupedFacets = config => {
-    const { facets } = this.props
-    let allFacets = []
-
-    if (config.facets) allFacets = config.facets.split(',').map(item => item.trim())
-    if (facets) allFacets = allFacets.concat(facets.split(','))
-    const formattedFacets = formatFacets(uniq(allFacets))
-
-    return formattedFacets
+  getDedupedFacets = (config, facets) => {
+    if (!config.facets) return facets
+    else {
+      let allFacets = []
+      allFacets = config.facets.split(',').map(item => item.trim())
+      if (facets) allFacets = allFacets.concat(facets.split(','))
+      return formatFacets(uniq(allFacets))
+    }
   }
 
   onClickOutsideActionMenu = e => {
@@ -111,7 +113,10 @@ export default class Chart extends React.Component {
   }
 
   renderChart = (config, query) => {
-    const { accountId, facets } = this.props
+    const {
+      accountId,
+      facetContext: { queryFormattedFacets: facets },
+    } = this.props
 
     switch (config.chartType) {
       case 'area':
@@ -218,8 +223,6 @@ export default class Chart extends React.Component {
 Chart.propTypes = {
   duration: PropTypes.object.isRequired,
   chartDef: PropTypes.object.isRequired,
-  filters: PropTypes.array,
-  facets: PropTypes.string,
   expand: PropTypes.bool,
   actionMenuSelect: PropTypes.func.isRequired,
 }
@@ -227,3 +230,5 @@ Chart.propTypes = {
 Chart.defaultProps = {
   expand: false,
 }
+
+export default withFacetFilterContext(Chart)

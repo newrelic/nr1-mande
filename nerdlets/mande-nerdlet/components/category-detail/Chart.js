@@ -127,12 +127,14 @@ class Chart extends React.Component {
             accountId={accountId}
             query={query}
             onClickBar={
-              config.click ? getHook(config.click).bind(this.props) : () => null
+              getHook(config.click ? config.click : 'filter').bind(this.props)
+              // config.click ? getHook(config.click).bind(this.props) : () => null
             }
           />
         )
       case 'billboard':
-        if (facets) return <BarChart accountId={accountId} query={query} />
+        if (facets)
+          return this.renderChart({ ...config, chartType: 'bar' }, query)
         else return <BillboardChart accountId={accountId} query={query} />
       case 'heatmap':
         return <HeatmapChart accountId={accountId} query={query} />

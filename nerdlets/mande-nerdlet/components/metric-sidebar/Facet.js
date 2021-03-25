@@ -20,12 +20,12 @@ const facet = props => {
             <Checkbox
               checked={isSelected}
               className="filter-attribute-checkbox-input"
-              onChange={() => updateFacets(attribute, !isSelected)}
+              onChange={() => updateFacets(attribute)}
             />
           </span>
           <span
             className="facet-category-section-label-text"
-            onClick={() => updateFacets(attribute, !isSelected)}
+            onClick={() => updateFacets(attribute)}
           >
             {displayName}
           </span>

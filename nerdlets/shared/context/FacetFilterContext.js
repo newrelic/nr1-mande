@@ -14,51 +14,97 @@ export class FacetFilterProvider extends React.Component {
 
   state = { ...this.emptyState }
 
-  updateFilters = (attribute, value, add) => {
+  /**
+   * Add or remove a set of filters to the filter list
+   * @param {Array[object]} filterGroup
+   */
+  updateFilterGroup = filterGroup => {
     let clonedFilters = []
 
-    if (this.state.filters) clonedFilters = cloneDeep(this.state.filters)
-    if (add) {
-      clonedFilters.push({ attribute, value })
-      this.setState({
-        filters: clonedFilters,
-        queryFormattedFilters: formatFilters(clonedFilters),
-      })
-      return
+    if (this.state.filters && this.state.filters.length > 0) {
+      clonedFilters = cloneDeep(this.state.filters)
     }
 
-    let updatedFilters = []
-    if (!add) {
-      updatedFilters = clonedFilters.filter(
-        active => !(active.attribute === attribute && active.value === value)
+    let foundCount = 0
+    const totalFilters = filterGroup.length
+    filterGroup.forEach(filter => {
+      const found = clonedFilters.find(
+        cloned =>
+          filter.name === cloned.attribute && filter.value === cloned.value
       )
-      this.setState({
-        filters: updatedFilters,
-        queryFormattedFilters: formatFilters(updatedFilters),
-      })
-    }
+      if (found) {
+        foundCount++
+        filter.found = true
+      }
+    })
+
+    // if all filters are present, this is a remove action
+    filterGroup.forEach(filter => {
+      if (foundCount === totalFilters) {
+        clonedFilters = clonedFilters.filter(
+          cloned =>
+            !(cloned.attribute === filter.name && cloned.value === filter.value)
+        )
+      } else {
+        if (!filter.found) { // only add missing ones
+          clonedFilters.push({ attribute: filter.name, value: filter.value })
+        }
+      }
+    })
+
+    this.setState({
+      filters: clonedFilters,
+      queryFormattedFilters: formatFilters(clonedFilters),
+    })
   }
 
-  updateFacets = (attribute, add) => {
-    const clonedFacets = [...this.state.facets]
+  /**
+   * Add or remove a single filter value to the filter list
+   * @param {String} attribute
+   * @param {String} value
+   */
+  updateFilters = (attribute, value) => {
+    let clonedFilters = []
 
-    if (add) {
-      clonedFacets.push(attribute)
-      this.setState({
-        facets: clonedFacets,
-        queryFormattedFacets: formatFacets(clonedFacets),
-      })
-      return
+    if (this.state.filters && this.state.filters.length > 0) {
+      clonedFilters = cloneDeep(this.state.filters)
     }
 
-    let updatedFacets = []
-    if (!add) {
-      updatedFacets = clonedFacets.filter(cloned => cloned !== attribute)
-      this.setState({
-        facets: updatedFacets,
-        queryFormattedFacets: formatFacets(updatedFacets),
+    let add = true
+    if (clonedFilters && clonedFilters.length > 0)
+      add = !clonedFilters.find(
+        filter => filter.attribute === attribute && filter.value === value
+      )
+
+    if (add) clonedFilters.push({ attribute, value })
+    else
+      clonedFilters = clonedFilters.filter(
+        active => !(active.attribute === attribute && active.value === value)
+      )
+
+    this.setState({
+      filters: clonedFilters,
+      queryFormattedFilters: formatFilters(clonedFilters),
+    })
+  }
+
+  updateFacets = attribute => {
+    let clonedFacets = [...this.state.facets]
+
+    let add = true
+    if (clonedFacets && clonedFacets.length > 0)
+      add = !clonedFacets.find(facet => {
+        const found = facet === attribute
+        return found
       })
-    }
+
+    if (add) clonedFacets.push(attribute)
+    else clonedFacets = clonedFacets.filter(cloned => cloned !== attribute)
+
+    this.setState({
+      facets: clonedFacets,
+      queryFormattedFacets: formatFacets(clonedFacets),
+    })
   }
 
   reset = () => this.setState({ ...this.emptyState })
@@ -71,6 +117,7 @@ export class FacetFilterProvider extends React.Component {
         value={{
           ...this.state,
           updateFilters: this.updateFilters,
+          updateFilterGroup: this.updateFilterGroup,
           updateFacets: this.updateFacets,
           reset: this.reset,
         }}

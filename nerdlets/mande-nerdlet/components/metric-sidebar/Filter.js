@@ -74,20 +74,17 @@ class Filter extends React.Component {
     ) : (
       values.map((value, idx) => {
         const selected = this.getSelectedState(filters, attribute, value)
-        const selectedNextState = !selected
         return (
           <div key={value + idx} className="filter-attribute-item">
             <span className="filter-attribute-checkbox">
               <Checkbox
                 checked={selected}
                 className="filter-attribute-checkbox-input"
-                onChange={() =>
-                  updateFilters(attribute, value, selectedNextState)
-                }
+                onChange={() => updateFilters(attribute, value)}
               />
             </span>
             <span
-              onClick={() => updateFilters(attribute, value, selectedNextState)}
+              onClick={() => updateFilters(attribute, value)}
               className={
                 selected
                   ? 'filter-attribute-value checked'

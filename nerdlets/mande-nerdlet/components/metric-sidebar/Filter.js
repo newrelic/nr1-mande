@@ -40,7 +40,7 @@ class Filter extends React.Component {
     if (error) console.error(error)
 
     let values = [] // if we don't get any values back, state will reset to blank
-    if (data) values = map(data.chart[0].data, attribute).sort()
+    if (data) values = map(data[0].data, attribute).sort()
 
     return values
   }

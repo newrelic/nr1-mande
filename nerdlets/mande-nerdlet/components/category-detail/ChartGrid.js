@@ -3,14 +3,7 @@ import { Grid, GridItem, ChartGroup } from 'nr1'
 import Chart from './Chart'
 
 const chartGrid = props => {
-  const {
-    accountId,
-    duration,
-    filters,
-    facets,
-    chartDefs,
-    actionMenuSelect,
-  } = props
+  const { accountId, duration, chartDefs, actionMenuSelect } = props
 
   return (
     <ChartGroup>
@@ -27,8 +20,6 @@ const chartGrid = props => {
                   <Chart
                     accountId={accountId}
                     duration={duration}
-                    filters={filters}
-                    facets={facets}
                     chartDef={chartDef}
                     actionMenuSelect={actionMenuSelect}
                   />

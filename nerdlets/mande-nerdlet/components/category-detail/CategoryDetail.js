@@ -4,8 +4,9 @@ import isEqual from 'lodash.isequal'
 import ChartGrid from './ChartGrid'
 import Metric from '../../../shared/components/metric/Metric'
 import { loadMetricsForConfig } from '../../../shared/utils/metric-data-loader'
+import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
-export default class CategoryDetail extends React.Component {
+class CategoryDetail extends React.Component {
   state = {
     metricDefs: [],
   }
@@ -29,7 +30,10 @@ export default class CategoryDetail extends React.Component {
 
   async componentDidUpdate(prevProps) {
     if (
-      !isEqual(prevProps.activeFilters, this.props.activeFilters) ||
+      !isEqual(
+        prevProps.facetContext.queryFormattedFilters,
+        this.props.facetContext.queryFormattedFilters
+      ) ||
       prevProps.duration !== this.props.duration ||
       prevProps.stack !== this.props.stack ||
       prevProps.accountId !== this.props.accountId
@@ -63,12 +67,17 @@ export default class CategoryDetail extends React.Component {
   }
 
   loadMetricData = async () => {
-    const { accountId, duration, stack, activeFilters } = this.props
+    const {
+      accountId,
+      duration,
+      stack,
+      facetContext: { queryFormattedFilters },
+    } = this.props
     let metricDefs = await loadMetricsForConfig(
       stack,
       duration,
       accountId,
-      activeFilters
+      queryFormattedFilters
     )
 
     this.setState({ metricDefs })
@@ -81,7 +90,7 @@ export default class CategoryDetail extends React.Component {
       threshold,
       activeMetric,
       toggleMetric,
-      activeFilters,
+      facetContext: { filterQueryString },
     } = this.props
     const { metricDefs } = this.state
 
@@ -116,7 +125,7 @@ export default class CategoryDetail extends React.Component {
                   query={metricDef.def.query.nrql + duration.since}
                   selected={activeMetric === metricDef.def.title}
                   click={toggleMetric}
-                  filters={activeFilters}
+                  filters={filterQueryString}
                   visibleThreshold={threshold}
                   showTooltip={true}
                   valueAlign="left"
@@ -130,7 +139,7 @@ export default class CategoryDetail extends React.Component {
     return metrics
   }
 
-  renderDetailView = (filters, facetClause) => {
+  renderDetailView = () => {
     const {
       accountId,
       duration,
@@ -154,8 +163,6 @@ export default class CategoryDetail extends React.Component {
             duration={duration}
             stack={stack}
             activeMetric={activeMetric}
-            filters={filters}
-            facets={facetClause}
             chartDefs={detailDashboardId.config}
             actionMenuSelect={actionMenuSelect}
           />
@@ -165,8 +172,6 @@ export default class CategoryDetail extends React.Component {
         <ChartGrid
           accountId={accountId}
           duration={duration}
-          filters={filters}
-          facets={facetClause}
           chartDefs={stack.overviewDashboard}
           actionMenuSelect={actionMenuSelect}
       />
@@ -176,8 +181,6 @@ export default class CategoryDetail extends React.Component {
   }
 
   render() {
-    const { activeFilters, facets } = this.props
-
     return (
       <Stack className="detail-container">
         <Stack
@@ -187,10 +190,12 @@ export default class CategoryDetail extends React.Component {
         >
           <StackItem className="detail-kpis">{this.renderMetrics()}</StackItem>
           <StackItem className="detail-main">
-            {this.renderDetailView(activeFilters, facets)}
+            {this.renderDetailView()}
           </StackItem>
         </Stack>
       </Stack>
     )
   }
 }
+
+export default withFacetFilterContext(CategoryDetail)

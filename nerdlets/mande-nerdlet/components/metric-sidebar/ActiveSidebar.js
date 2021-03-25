@@ -1,13 +1,14 @@
 import React from 'react'
 
 import { StackItem } from 'nr1'
+import FacetFilterContext from '../../../shared/context/FacetFilterContext'
 
 const selected = props => {
-  const { showFacets, selected, toggle } = props
+  const { showFacets, items, toggle } = props
 
-  const activeItems =
-    selected &&
-    selected.map((item, idx) => {
+  const itemList =
+    items &&
+    items.map((item, idx) => {
       const value = showFacets ? item : item.value
       return (
         <div className="filter-attribute-item__selected" key={value + idx}>
@@ -32,11 +33,11 @@ const selected = props => {
     })
 
   return (
-    <React.Fragment>
-      {activeItems && activeItems.length > 0 && (
-        <StackItem className="filter-stack selected">{activeItems}</StackItem>
+    <>
+      {items && items.length > 0 && (
+        <StackItem className="filter-stack selected">{itemList}</StackItem>
       )}
-    </React.Fragment>
+    </>
   )
 }
 

@@ -21,7 +21,7 @@ export default class TimelineDetail extends React.PureComponent {
     const { data } = await NrqlQuery.query({ accountId, query })
 
     let result = []
-    if (data && data.chart.length > 0) result = data.chart[0].data
+    if (data && data.length > 0) result = data[0].data
 
     return result
   }

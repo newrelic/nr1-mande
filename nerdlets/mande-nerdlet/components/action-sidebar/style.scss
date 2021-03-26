@@ -52,10 +52,25 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
 }
 
 .sidebar-selected-title {
+  @extend .sidebar-header-base;
   padding: 4px 16px;
   border-top: 1px solid #e3e4e4;
   border-bottom: 1px solid #e3e4e4;
-  @extend .sidebar-header-base;
+  display: inline-flex;
+  align-items: flex-end;
+
+  & .clear-all {
+    padding-left: 1rem;
+    text-transform: capitalize;
+    color: #0079bf;
+    font-weight: 400;
+    font-size: 10px;
+    
+    &:hover {
+      cursor: pointer;
+      color: #8e9494;
+    }
+  }
 }
 
 .filter-category-label {

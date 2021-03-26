@@ -3,10 +3,10 @@ import uniq from 'lodash.uniq'
 import { Stack, StackItem } from 'nr1'
 import Filter from './Filter'
 import Facet from './Facet'
-import ActiveSidebar from './ActiveSidebar'
+import ActiveAttributes from './ActiveAttributes'
 import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
-class MetricSidebar extends React.Component {
+class ActionSidebar extends React.Component {
   state = {
     loading: true,
     categories: new Map(),
@@ -107,12 +107,44 @@ class MetricSidebar extends React.Component {
     )
   }
 
+  renderActiveAttributeHeader = isFacet => {
+    const {
+      facetContext: {
+        facets,
+        updateFacets,
+        clearFacets,
+        filters,
+        updateFilters,
+        clearFilters,
+      },
+    } = this.props
+
+    return (
+      <>
+        <StackItem className="sidebar-selected-title">
+          <div>{isFacet ? 'Facets' : 'Filters'}</div>
+          <div
+            onClick={isFacet ? clearFacets : clearFilters}
+            className="clear-all"
+          >
+           X Clear All
+          </div>
+        </StackItem>
+        <ActiveAttributes
+          showFacets={isFacet}
+          items={isFacet ? facets : filters}
+          toggle={isFacet ? updateFacets : updateFilters}
+        />
+      </>
+    )
+  }
+
   render() {
     const { categories, eventTypes, showFacetSidebar } = this.state
     const {
       accountId,
       duration,
-      facetContext: { facets, updateFacets, filters, updateFilters },
+      facetContext: { facets, filters },
     } = this.props
 
     let filterItems = []
@@ -154,26 +186,12 @@ class MetricSidebar extends React.Component {
           directionType={Stack.DIRECTION_TYPE.VERTICAL}
           className="detail-filter"
         >
-          {facets && facets.length > 0 && (
-            <>
-              <StackItem className="sidebar-selected-title">Facets</StackItem>
-              <ActiveSidebar
-                showFacets={true}
-                items={facets}
-                toggle={updateFacets}
-              />
-            </>
-          )}
-          {filters && filters.length > 0 && (
-            <>
-              <StackItem className="sidebar-selected-title">Filters</StackItem>
-              <ActiveSidebar
-                showFacets={false}
-                items={filters}
-                toggle={updateFilters}
-              />
-            </>
-          )}
+          {facets &&
+            facets.length > 0 &&
+            this.renderActiveAttributeHeader(true)}
+          {filters &&
+            filters.length > 0 &&
+            this.renderActiveAttributeHeader(false)}
           <StackItem grow className="filter-stack not-selected">
             {filterItems}
           </StackItem>
@@ -183,4 +201,4 @@ class MetricSidebar extends React.Component {
   }
 }
 
-export default withFacetFilterContext(MetricSidebar)
+export default withFacetFilterContext(ActionSidebar)

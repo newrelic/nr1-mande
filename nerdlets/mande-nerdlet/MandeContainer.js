@@ -16,7 +16,7 @@ import {
 } from 'nr1'
 
 import CategoryMenu from './components/category-menu/CategoryMenu'
-import MetricSidebar from './components/metric-sidebar/MetricSidebar'
+import ActionSidebar from './components/action-sidebar/ActionSidebar'
 import MetricDashboard from './components/dashboard/MetricDashboard'
 import CategoryDetail from './components/category-detail/CategoryDetail'
 import metricConfigs from '../shared/config/MetricConfig'
@@ -525,7 +525,7 @@ class MandeContainer extends React.Component {
               columnSpan={2}
               collapseGapBefore
             >
-              <MetricSidebar
+              <ActionSidebar
                 accountId={accountId}
                 duration={duration}
                 stack={selectedStack}

@@ -51,6 +51,7 @@ const groups = [
       'CONTENT_SEEK_END',
       'CONTENT_DROPPED_FRAMES',
       'CONTENT_NEXT',
+      'CONTENT_MANIFEST_REQUEST',
     ],
   },
   {
@@ -148,6 +149,20 @@ const groups = [
       label: 'External Calls',
     },
     actionNames: ['UNKNOWN AT THIS TIME'],
+  },
+  {
+    name: 'DEVICE',
+    eventDisplay: {
+      class: 'timeline-item-type-device',
+      icon: Icon.TYPE.HARDWARE_AND_SOFTWARE__HARDWARE__MOBILE,
+      label: 'Device',
+      color: '#9055cf',
+    },
+    timelineDisplay: {
+      color: '#9055cf', // purple
+      label: 'Device',
+    },
+    actionNames: ['FOREGROUND', 'BACKGROUND'],
   },
 ]
 

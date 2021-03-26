@@ -92,6 +92,8 @@ export const formatFilters = filters => {
 
   let attributeMap = new Map()
   for (let filter of filters) {
+    if (!filter.value) break
+
     const entries = attributeMap.get(filter.attribute)
     if (entries) entries.push(filter.value)
     else {

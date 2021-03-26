@@ -11,24 +11,25 @@ const selected = props => {
     items.map((item, idx) => {
       const value = showFacets ? item : item.value
       return (
-        <div className="filter-attribute-item__selected" key={value + idx}>
-          <div className="filter-attribute-item__selected value">{value}</div>
-          {value.length > 15 && (
-            <div className="filter-attribute-item__selected tooltip">
-              {value}
+        value && (
+          <div className="filter-attribute-item__selected" key={value + idx}>
+            <div className="filter-attribute-item__selected value">{value}</div>
+            {value.length > 15 && (
+              <div className="filter-attribute-item__selected tooltip">
+                {value}
+              </div>
+            )}
+            <div
+              className="filter-attribute-item__selected remove"
+              onClick={
+                showFacets
+                  ? () => toggle(item, false)
+                  : () => toggle(item.attribute, item.value, false)
+              }
+            >
+              X
             </div>
-          )}
-          <div
-            className="filter-attribute-item__selected remove"
-            onClick={
-              showFacets
-                ? () => toggle(item, false)
-                : () => toggle(item.attribute, item.value, false)
-            }
-          >
-            X
-          </div>
-        </div>
+          </div>)
       )
     })
 

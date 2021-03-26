@@ -107,6 +107,10 @@ export class FacetFilterProvider extends React.Component {
     })
   }
 
+  clearFacets = () => this.setState({ facets: [], queryFormattedFacets: '' })
+
+  clearFilters = () => this.setState({ filters: [], queryFormattedFilters: undefined })
+
   reset = () => this.setState({ ...this.emptyState })
 
   render() {
@@ -119,6 +123,8 @@ export class FacetFilterProvider extends React.Component {
           updateFilters: this.updateFilters,
           updateFilterGroup: this.updateFilterGroup,
           updateFacets: this.updateFacets,
+          clearFacets: this.clearFacets,
+          clearFilters: this.clearFilters,
           reset: this.reset,
         }}
       >

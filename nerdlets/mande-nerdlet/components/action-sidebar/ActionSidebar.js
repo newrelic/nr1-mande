@@ -3,10 +3,10 @@ import uniq from 'lodash.uniq'
 import { Stack, StackItem } from 'nr1'
 import Filter from './Filter'
 import Facet from './Facet'
-import ActiveSidebar from './ActiveSidebar'
+import ActiveAttributes from './ActiveAttributes'
 import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
-class MetricSidebar extends React.Component {
+class ActionSidebar extends React.Component {
   state = {
     loading: true,
     categories: new Map(),
@@ -157,7 +157,7 @@ class MetricSidebar extends React.Component {
           {facets && facets.length > 0 && (
             <>
               <StackItem className="sidebar-selected-title">Facets</StackItem>
-              <ActiveSidebar
+              <ActiveAttributes
                 showFacets={true}
                 items={facets}
                 toggle={updateFacets}
@@ -167,7 +167,7 @@ class MetricSidebar extends React.Component {
           {filters && filters.length > 0 && (
             <>
               <StackItem className="sidebar-selected-title">Filters</StackItem>
-              <ActiveSidebar
+              <ActiveAttributes
                 showFacets={false}
                 items={filters}
                 toggle={updateFilters}
@@ -183,4 +183,4 @@ class MetricSidebar extends React.Component {
   }
 }
 
-export default withFacetFilterContext(MetricSidebar)
+export default withFacetFilterContext(ActionSidebar)

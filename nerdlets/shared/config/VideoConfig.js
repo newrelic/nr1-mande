@@ -300,6 +300,7 @@ export default {
         },
         {
           nrql: `FROM ${VIDEO_EVENTS} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
+          noFacet: 'true',
           columnStart: 1,
           columnEnd: 5,
           chartSize: 'medium',
@@ -309,6 +310,7 @@ export default {
         },
         {
           nrql: `FROM ${VIDEO_EVENTS} SELECT actionName, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime < 1000 LIMIT MAX`,
+          noFacet: 'true',
           columnStart: 6,
           columnEnd: 12,
           chartSize: 'medium',
@@ -397,6 +399,7 @@ export default {
         },
         {
           nrql: `FROM ${VIDEO_EVENTS} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
+          noFacet: 'true',
           columnStart: 1,
           columnEnd: 5,
           chartSize: 'medium',
@@ -406,6 +409,7 @@ export default {
         },
         {
           nrql: `FROM ${VIDEO_EVENTS} SELECT actionName, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_ERROR' and totalPlaytime > 1000 LIMIT MAX`,
+          noFacet: 'true',
           columnStart: 6,
           columnEnd: 12,
           chartSize: 'medium',
@@ -639,6 +643,7 @@ export default {
         },
         {
           nrql: `FROM ${VIDEO_EVENTS} SELECT * where actionName != 'CONTENT_HEARTBEAT' LIMIT 1000`,
+          noFacet: 'true',
           columnStart: 1,
           columnEnd: 5,
           chartSize: 'medium',
@@ -648,6 +653,7 @@ export default {
         },
         {
           nrql: `FROM ${VIDEO_EVENTS} SELECT actionName, bufferType, timeSinceBufferBegin, timeSinceSeekEnd, timeSinceStarted, timeSinceResumed, appName, appVersion, city, regionCode, asnOrganization, asnOwner, deviceModel, osName, osVersion, playerName, playerVersion, userAgentOS, userAgentName where actionName = 'CONTENT_BUFFER_END'and bufferType = 'connection' and timeSinceStarted > 10000 AND (timeSinceResumed > 10000 OR timeSinceResumed IS NULL) AND (timeSinceSeekEnd > 10000 OR timeSinceSeekEnd is NULL) AND isBackground != 'true' LIMIT MAX`,
+          noFacet: 'true',
           columnStart: 6,
           columnEnd: 12,
           chartSize: 'medium',

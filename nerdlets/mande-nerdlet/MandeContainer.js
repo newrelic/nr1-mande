@@ -75,8 +75,8 @@ class MandeContainer extends React.Component {
       let savedStack = selectedMetric
         ? this.onToggleMetric(selectedMetric, true)
         : selectedStack
-          ? this.onToggleDetailView(selectedStack, true)
-          : null
+        ? this.onToggleDetailView(selectedStack, true)
+        : null
       this.setState({
         threshold,
         selectedMetric,
@@ -126,23 +126,20 @@ class MandeContainer extends React.Component {
     } = prevProps.launcherUrlState
 
     if (prevAccountId !== accountId) {
-      if (!loading) {
-        this.setState({ metricData: [], loading: true }, async () => {
-          const duration = formatSinceAndCompare(timeRange)
-          let metricData = await loadMetricsForConfigs(
-            metricConfigs,
-            duration,
-            accountId,
-            null
-          )
-          const showFindUserButton = await this.loadUserFlag(
-            accountId,
-            duration
-          )
+      // if (!loading) {
+      this.setState({ metricData: [], loading: true }, async () => {
+        const duration = formatSinceAndCompare(timeRange)
+        let metricData = await loadMetricsForConfigs(
+          metricConfigs,
+          duration,
+          accountId,
+          null
+        )
+        const showFindUserButton = await this.loadUserFlag(accountId, duration)
 
-          this.setState({ metricData, showFindUserButton, loading: false })
-        })
-      }
+        this.setState({ metricData, showFindUserButton, loading: false })
+      })
+      // }
     }
 
     if (metricRefreshInterval !== prevState.metricRefreshInterval) {

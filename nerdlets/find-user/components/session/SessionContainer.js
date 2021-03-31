@@ -50,7 +50,7 @@ export default class SessionContainer extends React.Component {
     if (view.def.qualityScoreStrategy) {
       view.qualityScore = metricQualityScore(
         view.value,
-        view.def.threshold.critical,
+        view.def.threshold ? view.def.threshold.critical : null,
         view.def.qualityScoreStrategy
       )
     }

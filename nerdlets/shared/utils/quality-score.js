@@ -3,7 +3,8 @@ import { roundToTwoDigits } from './number-formatter'
 export const metricQualityScore = (metric, threshold, strategy) => {
   switch (strategy) {
     case 'clampMinZeroMaxOne':
-      return metric >= threshold ? 0 : 1
+      if (threshold) return metric >= threshold ? 0 : 1
+      else return 1
     case 'zeroOrOne':
       if (metric && metric > 0) return 0
       else return 1

@@ -93,17 +93,23 @@ export const loadMetric = async (
         }
       }
     }`
-  const { data, errors } = await NerdGraphQuery.query({
-    query,
-    fetchPolicyType: NerdGraphQuery.FETCH_POLICY_TYPE.NO_CACHE,
-  })
 
-  if (errors) {
-    console.error(`error occurred with query ${query}: `, errors)
+  try {
+    const { data, errors } = await NerdGraphQuery.query({
+      query,
+      fetchPolicyType: NerdGraphQuery.FETCH_POLICY_TYPE.NO_CACHE,
+    })
+
+    if (errors) {
+      console.error(`error returned by query. ${query}: `, errors)
+      return {}
+    } else {
+      return parser(metric, data, metric[queryCategory].lookup)
+    }
+  } catch (e) {
+    console.error(`error occurred: `, e)
+    return {}
   }
-
-  return parser(metric, data, metric[queryCategory].lookup)
-
 }
 
 export const compareParser = (metric, data, lookup) => {

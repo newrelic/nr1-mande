@@ -1,7 +1,6 @@
 import React from 'react'
 
-import { StackItem } from 'nr1'
-import FacetFilterContext from '../../../shared/context/FacetFilterContext'
+import { StackItem, Tooltip } from 'nr1'
 
 const selected = props => {
   const { showFacets, items, toggle } = props
@@ -10,15 +9,18 @@ const selected = props => {
     items &&
     items.map((item, idx) => {
       const value = showFacets ? item : item.value
+      const tooltip = showFacets ? item : `${item.attribute}: ${item.value}`
       return (
         value && (
           <div className="filter-attribute-item__selected" key={value + idx}>
-            <div className="filter-attribute-item__selected value">{value}</div>
-            {value.length > 15 && (
-              <div className="filter-attribute-item__selected tooltip">
+            <Tooltip
+              text={tooltip}
+              placementType={Tooltip.PLACEMENT_TYPE.BOTTOM}
+            >
+              <div className="filter-attribute-item__selected value">
                 {value}
               </div>
-            )}
+            </Tooltip>
             <div
               className="filter-attribute-item__selected remove"
               onClick={
@@ -29,7 +31,8 @@ const selected = props => {
             >
               X
             </div>
-          </div>)
+          </div>
+        )
       )
     })
 

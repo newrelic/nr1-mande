@@ -120,7 +120,18 @@ class Chart extends React.Component {
 
     switch (config.chartType) {
       case 'area':
-        return <AreaChart accountId={accountId} query={query} />
+        return (
+          <AreaChart
+            accountId={accountId}
+            query={query}
+            onClickArea={getHook(config.click ? config.click : 'filter').bind(
+              this.props
+            )}
+            onClickLine={getHook(config.click ? config.click : 'filter').bind(
+              this.props
+            )}
+          />
+        )
       case 'bar':
         return (
           <BarChart
@@ -145,7 +156,15 @@ class Chart extends React.Component {
       case 'pie':
         return <PieChart accountId={accountId} query={query} />
       case 'line':
-        return <LineChart accountId={accountId} query={query} />
+        return (
+          <LineChart
+            accountId={accountId}
+            query={query}
+            onClickLine={getHook(config.click ? config.click : 'filter').bind(
+              this.props
+            )}
+          />
+        )
       case 'funnel':
         return <FunnelChart accountId={accountId} query={query} />
       case 'scatter':
@@ -156,7 +175,7 @@ class Chart extends React.Component {
             accountId={accountId}
             query={query}
             onClickTable={
-              config.click ? getHook(config.click).bind(props) : () => null
+              config.click ? getHook(config.click).bind(this.props) : () => null
             }
           />
         )

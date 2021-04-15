@@ -83,7 +83,7 @@ export default class SessionDetail extends React.PureComponent {
           <StackItem grow className="sessionStackItem sessionSectionBase">
             <div className="chart-title">Stream Details</div>
             {this.composeNrqlQuery(
-              `SELECT latest(userAgentName), latest(userAgentOS), latest(userAgentVersion), latest(appName), latest(deviceType), latest(contentTitle), latest(countryCode), latest(city) FROM ${VIDEO_EVENTS} WHERE viewId='${session}'`,
+              `SELECT latest(contentTitle), latest(appName), latest(deviceType), latest(appVersion), latest(osName), latest(asnOwner), latest(osVersion), latest(asnOrganization), latest(userAgentName), latest(city), latest(userAgentOS), latest(regionCode), latest(userAgentVersion), latest(countryCode) FROM ${VIDEO_EVENTS} WHERE viewId='${session}'`,
               this.buildSessionDetailGrid
             )}
           </StackItem>

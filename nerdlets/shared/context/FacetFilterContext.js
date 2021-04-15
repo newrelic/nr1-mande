@@ -52,9 +52,10 @@ export class FacetFilterProvider extends React.Component {
       }
     })
 
+    const formatted = formatFilters(clonedFilters)
     this.setState({
       filters: clonedFilters,
-      queryFormattedFilters: formatFilters(clonedFilters),
+      queryFormattedFilters: formatted,
     })
   }
 

@@ -92,7 +92,7 @@ export const formatFilters = filters => {
 
   let attributeMap = new Map()
   for (let filter of filters) {
-    if (!filter.value) break
+    if (!filter.value) continue
 
     const entries = attributeMap.get(filter.attribute)
     if (entries) entries.push(filter.value)

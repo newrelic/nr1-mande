@@ -526,6 +526,7 @@ class MandeContainer extends React.Component {
                 accountId={accountId}
                 duration={duration}
                 stack={selectedStack}
+                timeRange={timeRange}
               />
             </GridItem>
           )}

@@ -62,7 +62,7 @@ class Filter extends React.Component {
     if (expanded) {
       this.setState({ expanded: false })
     } else {
-      this.setState({ expanded: true }, () => this.loadValues())
+      this.setState({ expanded: true }, this.loadValues)
     }
   }
 
@@ -139,7 +139,7 @@ class Filter extends React.Component {
         }
       >
         <div
-          className={'filter-category-section-header'}
+          className="filter-category-section-header"
           onClick={this.toggleValues}
         >
           <h5 className="filter-category-section-label">

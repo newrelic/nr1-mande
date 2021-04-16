@@ -1,16 +1,16 @@
 import React from 'react'
 import startCase from 'lodash.startcase'
 import map from 'lodash.map'
-import { Icon, NrqlQuery, Spinner, Checkbox } from 'nr1'
+import { Icon, NrqlQuery, Spinner, Checkbox, TextField } from 'nr1'
 import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
 class Filter extends React.Component {
-  state = { expanded: false, loading: true, values: [] }
-
-  async componentDidMount() {
-    this.setState({ loading: true })
-    const values = await this.loadValues()
-    this.setState({ loading: false, values })
+  state = {
+    expanded: false,
+    loading: true,
+    searchText: '',
+    lastLoad: null,
+    values: [],
   }
 
   async componentDidUpdate(prevProps) {
@@ -18,15 +18,27 @@ class Filter extends React.Component {
       duration: { since },
     } = this.props
     const prevSince = prevProps.duration.since
+    const { lastLoad } = this.state
 
-    if (since !== prevSince) {
-      this.setState({ loading: true })
-      const values = await this.loadValues()
-      this.setState({ loading: false, values })
-    }
+    if (since !== prevSince && lastLoad) this.loadValues(true)
   }
 
-  loadValues = async () => {
+  loadValues = async force => {
+    const {
+      props: {
+        timeRange: { duration },
+      },
+      state: { lastLoad },
+    } = this
+    let shouldQuery = !!force
+
+    if (!lastLoad) shouldQuery = true
+    if (duration && Date.now() - lastLoad > duration) shouldQuery = true
+
+    if (shouldQuery) this.setState({ loading: true }, this.queryValues)
+  }
+
+  queryValues = async () => {
     const {
       accountId,
       attribute,
@@ -42,37 +54,48 @@ class Filter extends React.Component {
     let values = [] // if we don't get any values back, state will reset to blank
     if (data) values = map(data[0].data, attribute).sort()
 
-    return values
+    this.setState({ loading: false, lastLoad: Date.now(), values })
   }
 
   toggleValues = async () => {
     const { expanded } = this.state
     if (expanded) {
-      this.setState({ loading: true, expanded: false })
+      this.setState({ expanded: false })
     } else {
-      const values = await this.loadValues()
-      this.setState({ loading: false, expanded: true, values })
+      this.setState({ expanded: true }, this.loadValues)
     }
   }
 
   getSelectedState = (activeAttributes, attribute, value) => {
     const found = activeAttributes.filter(
-      active => active.attribute === attribute && active.value === value)
+      active => active.attribute === attribute && active.value === value
+    )
     return found.length > 0
   }
 
+  searchTextHandler = evt => this.setState({ searchText: evt.target.value })
+
   render() {
-    const { loading, expanded, values } = this.state
+    const { loading, expanded, searchText, values } = this.state
     const {
       attribute,
       facetContext: { filters, updateFilters },
     } = this.props
     const displayName = startCase(attribute)
 
+    const trimmedSearchText = searchText.trim()
+
+    const displayValues =
+      trimmedSearchText.length > 0
+        ? values.filter(value =>
+            new RegExp(trimmedSearchText, 'ig').test(value)
+          )
+        : values
+
     let itemValues = loading ? (
       <Spinner type={Spinner.TYPE.DOT} fillContainer />
     ) : (
-      values.map((value, idx) => {
+      displayValues.map((value, idx) => {
         const selected = this.getSelectedState(filters, attribute, value)
         return (
           <div key={value + idx} className="filter-attribute-item">
@@ -98,6 +121,15 @@ class Filter extends React.Component {
       })
     )
 
+    const chevronIcon = expanded ? (
+      <Icon type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_TOP__SIZE_8} />
+    ) : (
+      <Icon
+        type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_BOTTOM__SIZE_8}
+        color="#8E9494"
+      />
+    )
+
     return (
       <div
         className={
@@ -107,40 +139,30 @@ class Filter extends React.Component {
         }
       >
         <div
-          className={
-            values.length === 0
-              ? 'filter-category-section-header empty'
-              : 'filter-category-section-header'
-          }
-          onClick={values.length > 0 ? this.toggleValues : () => null}
+          className="filter-category-section-header"
+          onClick={this.toggleValues}
         >
           <h5 className="filter-category-section-label">
-            {values.length === 0 && (
-              <span className="filter-category-section-label-text empty">
+            <React.Fragment>
+              <span className="filter-category-section-label-text">
                 {displayName}
               </span>
-            )}
-            {values.length > 0 && (
-              <React.Fragment>
-                <span className="filter-category-section-label-text">
-                  {displayName}
-                </span>
-                {!expanded && (
-                  <Icon
-                    type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_BOTTOM__SIZE_8}
-                    color="#8E9494"
-                  />
-                )}
-                {expanded && (
-                  <Icon
-                    type={Icon.TYPE.INTERFACE__CHEVRON__CHEVRON_TOP__SIZE_8}
-                  />
-                )}
-              </React.Fragment>
-            )}
+              {chevronIcon}
+            </React.Fragment>
           </h5>
         </div>
-        {expanded && itemValues}
+        {expanded && (
+          <>
+            <TextField
+              type={TextField.TYPE.SEARCH}
+              placeholder="Search"
+              className="filter-search"
+              value={searchText}
+              onChange={this.searchTextHandler}
+            />
+            {itemValues}
+          </>
+        )}
       </div>
     )
   }

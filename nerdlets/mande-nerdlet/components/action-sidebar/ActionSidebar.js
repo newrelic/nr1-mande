@@ -144,6 +144,7 @@ class ActionSidebar extends React.Component {
     const {
       accountId,
       duration,
+      timeRange,
       facetContext: { facets, filters },
     } = this.props
 
@@ -167,6 +168,7 @@ class ActionSidebar extends React.Component {
                       attribute={attribute}
                       duration={duration}
                       eventTypes={eventTypes}
+                      timeRange={timeRange}
                     />
                   )
                 })}

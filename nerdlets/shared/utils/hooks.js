@@ -29,6 +29,10 @@ const hooks = [
       this.facetContext.updateFilterGroup(filterGroups)
     },
   },
+  {
+    name: 'doNothing',
+    handler() {},
+  },
 ]
 
 export const getHook = name => {

@@ -40,11 +40,6 @@ class Filter extends React.Component {
     if (shouldQuery) this.setState({ loading: true }, this.queryValues)
   }
 
-  refreshValues = evt => {
-    evt.stopPropagation()
-    this.loadValues(true)
-  }
-
   queryValues = async () => {
     const {
       accountId,
@@ -101,6 +96,11 @@ class Filter extends React.Component {
     }
 
     this.setState({ searchText, searchRE, displayValues })
+  }
+
+  refreshHandler = evt => {
+    evt.stopPropagation()
+    this.loadValues(true)
   }
 
   render() {
@@ -167,7 +167,7 @@ class Filter extends React.Component {
                 {displayName}
               </span>
               <span className="filter-category-section-label-control">
-                <span onClick={this.refreshValues}>
+                <span onClick={this.refreshHandler}>
                   <Icon type={Icon.TYPE.INTERFACE__OPERATIONS__REFRESH} />
                 </span>
                 <span>{chevronIcon}</span>

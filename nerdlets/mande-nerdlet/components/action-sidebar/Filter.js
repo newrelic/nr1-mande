@@ -174,7 +174,7 @@ class Filter extends React.Component {
               value={searchText}
               onChange={this.searchTextHandler}
             />
-            {itemValues}
+            <div className="filter-values-list">{itemValues}</div>
           </>
         )}
       </div>

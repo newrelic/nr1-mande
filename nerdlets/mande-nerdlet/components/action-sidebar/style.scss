@@ -229,6 +229,11 @@ div[class*="wnd-StackItem"] {
   }
 }
 
+.filter-values-list {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
 .filter-attribute-item, .filter-search {
   padding-left: 26px;
   padding-right: 8px;

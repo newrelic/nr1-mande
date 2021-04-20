@@ -9,8 +9,10 @@ class Filter extends React.Component {
     expanded: false,
     loading: true,
     searchText: '',
+    searchRE: new RegExp(),
     lastLoad: null,
     values: [],
+    displayValues: [],
   }
 
   async componentDidUpdate(prevProps) {
@@ -54,7 +56,12 @@ class Filter extends React.Component {
     let values = [] // if we don't get any values back, state will reset to blank
     if (data) values = map(data[0].data, attribute).sort()
 
-    this.setState({ loading: false, lastLoad: Date.now(), values })
+    this.setState({
+      loading: false,
+      lastLoad: Date.now(),
+      values,
+      displayValues: values,
+    })
   }
 
   toggleValues = async () => {
@@ -73,24 +80,31 @@ class Filter extends React.Component {
     return found.length > 0
   }
 
-  searchTextHandler = evt => this.setState({ searchText: evt.target.value })
+  searchTextHandler = evt => {
+    const searchText = evt.target.value
+    let { searchRE, displayValues, values } = this.state
+
+    try {
+      const trimmedSearchText = searchText.trim()
+      searchRE = new RegExp(trimmedSearchText, 'ig')
+      displayValues =
+        trimmedSearchText.length > 0
+          ? values.filter(value => searchRE.test(value))
+          : values
+    } catch (e) {
+      console.error(`Unable to search for filter values. ${e.message}`)
+    }
+
+    this.setState({ searchText, searchRE, displayValues })
+  }
 
   render() {
-    const { loading, expanded, searchText, values } = this.state
+    const { loading, expanded, searchText, displayValues } = this.state
     const {
       attribute,
       facetContext: { filters, updateFilters },
     } = this.props
     const displayName = startCase(attribute)
-
-    const trimmedSearchText = searchText.trim()
-
-    const displayValues =
-      trimmedSearchText.length > 0
-        ? values.filter(value =>
-            new RegExp(trimmedSearchText, 'ig').test(value)
-          )
-        : values
 
     let itemValues = loading ? (
       <Spinner type={Spinner.TYPE.DOT} fillContainer />

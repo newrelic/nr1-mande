@@ -40,6 +40,11 @@ class Filter extends React.Component {
     if (shouldQuery) this.setState({ loading: true }, this.queryValues)
   }
 
+  refreshValues = evt => {
+    evt.stopPropagation()
+    this.loadValues(true)
+  }
+
   queryValues = async () => {
     const {
       accountId,
@@ -47,6 +52,7 @@ class Filter extends React.Component {
       eventTypes,
       duration: { since },
     } = this.props
+    const { searchText, displayValues } = this.state
 
     const query = `SELECT uniques(${attribute}) FROM ${eventTypes} ${since}`
 
@@ -60,7 +66,7 @@ class Filter extends React.Component {
       loading: false,
       lastLoad: Date.now(),
       values,
-      displayValues: values,
+      displayValues: searchText.trim().length ? displayValues : values,
     })
   }
 
@@ -87,10 +93,9 @@ class Filter extends React.Component {
     try {
       const trimmedSearchText = searchText.trim()
       searchRE = new RegExp(trimmedSearchText, 'ig')
-      displayValues =
-        trimmedSearchText.length > 0
-          ? values.filter(value => searchRE.test(value))
-          : values
+      displayValues = trimmedSearchText.length
+        ? values.filter(value => searchRE.test(value))
+        : values
     } catch (e) {
       console.error(`Unable to search for filter values. ${e.message}`)
     }
@@ -161,7 +166,12 @@ class Filter extends React.Component {
               <span className="filter-category-section-label-text">
                 {displayName}
               </span>
-              {chevronIcon}
+              <span className="filter-category-section-label-control">
+                <span onClick={this.refreshValues}>
+                  <Icon type={Icon.TYPE.INTERFACE__OPERATIONS__REFRESH} />
+                </span>
+                <span>{chevronIcon}</span>
+              </span>
             </React.Fragment>
           </h5>
         </div>

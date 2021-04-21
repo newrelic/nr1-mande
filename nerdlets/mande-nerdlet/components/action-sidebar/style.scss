@@ -151,6 +151,13 @@ div[class*="wnd-StackItem"].filters-container-stack-item {
   }
 }
 
+.filter-category-section-label-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 2em;
+}
+
 .filter-stack {
   width: 100%;
   margin-bottom: 5px;

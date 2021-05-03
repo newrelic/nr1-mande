@@ -20,10 +20,16 @@ export const formatSinceAndCompare = timeRange => {
 
 const singleFilter = (attribute, value) => {
   const isString = isStringValue(value)
-  const prefix = `WHERE ${getAttribute(attribute, isString)} =`
+  const prefix = ` WHERE ${getAttribute(attribute, isString)} `
+  const contains = [...value.matchAll(/contains "(.*)"/g)]
+  if (contains.length && contains[0].length)
+    return {
+      single: `${prefix} LIKE '%${escapeValue(contains[0][1])}%' `,
+      double: `${prefix} LIKE '%${doubleEscapeValue(contains[0][1])}%' `,
+    }
   const filters = {
-    single: `${prefix} ${getFilterValue(value, isString, 'single')} `,
-    double: `${prefix} ${getFilterValue(value, isString, 'double')} `,
+    single: `${prefix} = ${getFilterValue(value, isString, 'single')} `,
+    double: `${prefix} = ${getFilterValue(value, isString, 'double')} `,
   }
   return filters
 }
@@ -31,22 +37,40 @@ const singleFilter = (attribute, value) => {
 const multipleFilters = (attribute, values) => {
   const isString = isStringValue(values)
 
-  let singleEscapedValues = ''
-  let doubleEscapedValues = ''
-  for (let i = 1; i <= values.length; i++) {
-    singleEscapedValues = singleEscapedValues + getFilterValue(values[i - 1], isString, 'single')
-    if (i < values.length) singleEscapedValues = singleEscapedValues + ','
+  const queryAttribute = getAttribute(attribute, isString)
+  const queryValues = values.reduce(
+    (acc, value) => {
+      const contains = [...value.matchAll(/contains "(.*)"/g)]
+      if (contains.length && contains[0].length) {
+        acc.contains = {
+          single: `OR ${queryAttribute} LIKE '%${escapeValue(
+            contains[0][1]
+          )}%'`,
+          double: `OR ${queryAttribute} LIKE '%${doubleEscapeValue(
+            contains[0][1]
+          )}%'`,
+        }
+      } else {
+        acc.singleEscapedValues.push(getFilterValue(value, isString, 'single'))
+        acc.doubleEscapedValues.push(getFilterValue(value, isString, 'double'))
+      }
+      return acc
+    },
+    {
+      singleEscapedValues: [],
+      doubleEscapedValues: [],
+      contains: { single: '', double: '' },
+    }
+  )
 
-    doubleEscapedValues = doubleEscapedValues + getFilterValue(values[i - 1], isString, 'double')
-    if (i < values.length) doubleEscapedValues = doubleEscapedValues + ','
-  }
+  let single = ` WHERE ${queryAttribute} `, double = single
+  single += ` IN (${queryValues.singleEscapedValues.join(',')}) `
+  single += `${queryValues.contains.single} `
 
-  const prefix = ` WHERE ${getAttribute(attribute, isString)} IN (`
-  const suffix = ')'
-  return {
-    single: `${prefix} ${singleEscapedValues} ${suffix}`,
-    double: `${prefix} ${doubleEscapedValues} ${suffix}`,
-  }
+  double += ` IN (${queryValues.doubleEscapedValues.join(',')}) `
+  double += `${queryValues.contains.double} `
+
+  return { single, double }
 }
 
 const getAttribute = (attribute, isString) => {

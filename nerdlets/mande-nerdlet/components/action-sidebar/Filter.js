@@ -10,6 +10,8 @@ class Filter extends React.Component {
     loading: true,
     searchText: '',
     searchRE: new RegExp(),
+    trimmedSearchText: '',
+    containsText: '',
     lastLoad: null,
     values: [],
     displayValues: [],
@@ -47,7 +49,7 @@ class Filter extends React.Component {
       eventTypes,
       duration: { since },
     } = this.props
-    const { searchText, displayValues } = this.state
+    const { trimmedSearchText, displayValues } = this.state
 
     const query = `SELECT uniques(${attribute}) FROM ${eventTypes} ${since}`
 
@@ -61,7 +63,7 @@ class Filter extends React.Component {
       loading: false,
       lastLoad: Date.now(),
       values,
-      displayValues: searchText.trim().length ? displayValues : values,
+      displayValues: trimmedSearchText.length ? displayValues : values,
     })
   }
 
@@ -83,10 +85,16 @@ class Filter extends React.Component {
 
   searchTextHandler = evt => {
     const searchText = evt.target.value
-    let { searchRE, displayValues, values } = this.state
+    let {
+      searchRE,
+      trimmedSearchText,
+      containsText,
+      displayValues,
+      values,
+    } = this.state
 
     try {
-      const trimmedSearchText = searchText.trim()
+      trimmedSearchText = searchText.trim()
       searchRE = new RegExp(trimmedSearchText, 'ig')
       displayValues = trimmedSearchText.length
         ? values.filter(value => searchRE.test(value))
@@ -95,7 +103,15 @@ class Filter extends React.Component {
       console.error(`Unable to search for filter values. ${e.message}`)
     }
 
-    this.setState({ searchText, searchRE, displayValues })
+    if (containsText) containsText = ''
+
+    this.setState({
+      searchText,
+      searchRE,
+      trimmedSearchText,
+      containsText,
+      displayValues,
+    })
   }
 
   refreshHandler = evt => {
@@ -103,13 +119,44 @@ class Filter extends React.Component {
     this.loadValues(true)
   }
 
+  containsHandler = evt => {
+    let { containsText, trimmedSearchText } = this.state
+    containsText = evt.target.checked ? trimmedSearchText : ''
+    this.setState({ containsText }, this.updateContainsFilter(containsText))
+  }
+
+  updateContainsFilter = text => {
+    const { containsText } = this.state
+    const {
+      attribute,
+      facetContext: { filters, updateFilters },
+    } = this.props
+    if (containsText !== text)
+      updateFilters(attribute, this.formatContainsText(containsText))
+    if (text) updateFilters(attribute, this.formatContainsText(text))
+  }
+
+  formatContainsText = text => `contains "${text}"`
+
   render() {
-    const { loading, expanded, searchText, displayValues } = this.state
+    const {
+      loading,
+      expanded,
+      searchText,
+      trimmedSearchText,
+      containsText,
+      displayValues,
+    } = this.state
     const {
       attribute,
       facetContext: { filters, updateFilters },
     } = this.props
     const displayName = startCase(attribute)
+    const containsSelected = this.getSelectedState(
+      filters,
+      attribute,
+      this.formatContainsText(containsText)
+    )
 
     let itemValues = loading ? (
       <Spinner type={Spinner.TYPE.DOT} fillContainer />
@@ -184,7 +231,27 @@ class Filter extends React.Component {
               value={searchText}
               onChange={this.searchTextHandler}
             />
-            <div className="filter-values-list">{itemValues}</div>
+            <div className="filter-values-list">
+              {trimmedSearchText.length ? (
+                <div className="filter-attribute-item">
+                  <span className="filter-attribute-checkbox">
+                    <Checkbox
+                      checked={containsSelected}
+                      className="filter-attribute-checkbox-input"
+                      onChange={this.containsHandler}
+                    />
+                  </span>
+                  <span
+                    onClick={this.containsHandler}
+                    className={`filter-attribute-value ${containsSelected &&
+                      'checked'}`}
+                  >
+                    {this.formatContainsText(trimmedSearchText)}
+                  </span>
+                </div>
+              ) : null}
+              {itemValues}
+            </div>
           </>
         )}
       </div>

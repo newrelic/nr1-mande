@@ -237,8 +237,13 @@ div[class*="wnd-StackItem"] {
 }
 
 .filter-values-list {
+  min-height: 10px;
   max-height: 200px;
   overflow-y: scroll;
+
+  div[role=progressbar]::before {
+    margin-top: 0;
+  }
 }
 
 .filter-attribute-item, .filter-search {

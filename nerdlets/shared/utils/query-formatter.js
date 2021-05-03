@@ -66,7 +66,7 @@ const multipleFilters = (attribute, values) => {
   let single = ` WHERE ${queryAttribute} `, double = single
   single += ` IN (${queryValues.singleEscapedValues.join(',')}) `
   single += `${queryValues.contains.single} `
-  
+
   double += ` IN (${queryValues.doubleEscapedValues.join(',')}) `
   double += `${queryValues.contains.double} `
 
@@ -89,7 +89,7 @@ const getFilterValue = (value, isString, escapeType) => {
 }
 
 const escapeValue = value => {
-  return value.replace(/'/g, "\\'")
+  return value.replace(/'/g, "\\\'")
 }
 
 const doubleEscapeValue = value => {

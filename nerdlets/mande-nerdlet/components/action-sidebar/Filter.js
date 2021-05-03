@@ -221,7 +221,7 @@ class Filter extends React.Component {
                   sizeType={Button.SIZE_TYPE.SMALL}
                   iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__REFRESH}
                   onClick={this.refreshHandler}
-                  style={{marginRight: '.25em'}}
+                  style={{ marginRight: '.25em' }}
                 />
                 <span>{chevronIcon}</span>
               </span>

@@ -119,9 +119,9 @@ class Filter extends React.Component {
     this.loadValues(true)
   }
 
-  containsHandler = evt => {
+  containsHandler = () => {
     let { containsText, trimmedSearchText } = this.state
-    containsText = evt.target.checked ? trimmedSearchText : ''
+    containsText = containsText ? '' : trimmedSearchText
     this.setState({ containsText }, this.updateContainsFilter(containsText))
   }
 

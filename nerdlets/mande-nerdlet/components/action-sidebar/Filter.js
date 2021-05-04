@@ -1,7 +1,7 @@
 import React from 'react'
 import startCase from 'lodash.startcase'
 import map from 'lodash.map'
-import { Icon, NrqlQuery, Spinner, Checkbox, TextField } from 'nr1'
+import { Icon, NrqlQuery, Spinner, Checkbox, TextField, Button } from 'nr1'
 import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
 class Filter extends React.Component {
@@ -116,7 +116,9 @@ class Filter extends React.Component {
 
   refreshHandler = evt => {
     evt.stopPropagation()
-    this.loadValues(true)
+    this.setState({ loading: true }, () => {
+      window.setTimeout(() => this.loadValues(true), 1000)
+    })
   }
 
   containsHandler = () => {
@@ -214,9 +216,13 @@ class Filter extends React.Component {
                 {displayName}
               </span>
               <span className="filter-category-section-label-control">
-                <span onClick={this.refreshHandler}>
-                  <Icon type={Icon.TYPE.INTERFACE__OPERATIONS__REFRESH} />
-                </span>
+                <Button
+                  type={Button.TYPE.PLAIN_NEUTRAL}
+                  sizeType={Button.SIZE_TYPE.SMALL}
+                  iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__REFRESH}
+                  onClick={this.refreshHandler}
+                  style={{ marginRight: '.25em' }}
+                />
                 <span>{chevronIcon}</span>
               </span>
             </React.Fragment>

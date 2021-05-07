@@ -75,7 +75,8 @@ class Chart extends React.Component {
   }
 
   onClickOutsideActionMenu = e => {
-    if (this.myRef.current && !this.myRef.current.contains(e.target)) this.setState({ popup: false })
+    if (this.myRef.current && !this.myRef.current.contains(e.target))
+      this.setState({ popup: false })
   }
 
   onActionsMenuClick = () => this.setState({ popup: !this.state.popup })
@@ -112,7 +113,7 @@ class Chart extends React.Component {
     this.setState({ popup: false })
   }
 
-  renderChart = (config, query) => {
+  renderChart = (config, query, expand) => {
     const {
       accountId,
       facetContext: { queryFormattedFacets: facets },
@@ -170,10 +171,13 @@ class Chart extends React.Component {
       case 'scatter':
         return <ScatterChart accountId={accountId} query={query} />
       case 'table': // need to pass the facets for data matching
+        const tableQuery = expand
+          ? query
+          : query.replace(/limit (max|[0-9]+)/gi, 'LIMIT 20')
         return (
           <TableChart
             accountId={accountId}
-            query={query}
+            query={tableQuery}
             onClickTable={
               config.click ? getHook(config.click).bind(this.props) : () => null
             }
@@ -234,7 +238,7 @@ class Chart extends React.Component {
           )}
         </div>
         <div className={'detail-chart ' + (!expand ? chartDef.chartSize : '')}>
-          {this.renderChart(chartDef, query)}
+          {this.renderChart(chartDef, query, expand)}
         </div>
       </div>
     )

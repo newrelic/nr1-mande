@@ -31,10 +31,13 @@ export const loadMetricsForConfig = async (
   accountId,
   filters,
   parser,
-  queryCategory
+  queryCategory,
+  retryCount = 1
 ) => {
   // console.debug('>>>> metric-data-loader.loadMetricsForConfig', metricConfig)
   let metricData = []
+  let metricNoData = []
+  retryCount = retryCount
   metricData = metricData.concat(
     await Promise.all(
       metricConfig.metrics
@@ -48,6 +51,10 @@ export const loadMetricsForConfig = async (
             parser,
             queryCategory
           )
+          if (!dataDef || !Object.keys(dataDef).length) {
+            metricNoData.push(metric)
+            return null
+          }
           dataDef.id = metricConfig.id
           dataDef.category = metricConfig.title
           dataDef.loading = false
@@ -56,6 +63,18 @@ export const loadMetricsForConfig = async (
         })
     )
   )
+  if (metricNoData.length && retryCount < 4) {
+    retryCount += 1
+    const retryData = await loadMetricsForConfig(
+      { ...metricConfig, ...{ metrics: metricNoData } },
+      duration,
+      accountId,
+      filters,
+      parser,
+      retryCount
+    )
+    metricData = metricData.filter(Boolean).concat(retryData)
+  }
   return metricData
 }
 
@@ -68,7 +87,8 @@ export const loadMetric = async (
   queryCategory
 ) => {
   // defaults for backwards compatibility
-  if (!parserConfig) parserConfig = { parser: compareParser, parserName: 'compareParser' }
+  if (!parserConfig)
+    parserConfig = { parser: compareParser, parserName: 'compareParser' }
   if (!queryCategory || !metric[queryCategory]) queryCategory = 'query'
 
   const { parser, parserName } = parserConfig
@@ -142,8 +162,8 @@ export const compareParser = (metric, data, lookup) => {
       current > previous
         ? 'increase'
         : current < previous
-          ? 'decrease'
-          : 'noChange'
+        ? 'decrease'
+        : 'noChange'
 
     return {
       value: current,
@@ -174,4 +194,3 @@ export const facetParser = (metric, data, lookup) => {
     return {}
   }
 }
-

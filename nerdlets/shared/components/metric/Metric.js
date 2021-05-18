@@ -19,6 +19,7 @@ const getThresholdClass = (threshold, value, baseStyle) => {
 const round = value => Math.round((value + Number.EPSILON) * 100) / 100
 
 const formatValue = value => {
+  if (isNaN(value)) return '-'
   let formatted
 
   if (value < 1000) formatted = round(value)
@@ -76,12 +77,18 @@ export default class Metric extends React.PureComponent {
       const status = statusClasses.getStatus(changeClass)
       classes.push(status)
     }
+    const roundedDiff = Math.round(compare.difference)
+    const diffPct = isNaN(roundedDiff)
+      ? ''
+      : new Intl.NumberFormat('default', {
+          style: 'percent',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(roundedDiff / 100)
 
     return (
       <React.Fragment>
-        <p className={classes.join(' ')}>
-          {`${Math.round(compare.difference)} %`}
-        </p>
+        <p className={classes.join(' ')}>{diffPct}</p>
       </React.Fragment>
     )
   }
@@ -118,13 +125,16 @@ export default class Metric extends React.PureComponent {
     return (
       <React.Fragment>
         {/* {metric.def.query.title ? metric.def.query.title : metric.def.title} */}
-        <p className="name">{showTooltip ? (
-          <Tooltip text={tooltipText ? tooltipText : metric.title}>
-            {metric.title}
-          </Tooltip>
-          // eslint-disable-next-line prettier/prettier
-          ) : metric.title
-        }</p>
+        <p className="name">
+          {showTooltip ? (
+            <Tooltip text={tooltipText ? tooltipText : metric.title}>
+              {metric.title}
+            </Tooltip>
+          ) : (
+            // eslint-disable-next-line prettier/prettier
+            metric.title
+          )}
+        </p>
         <span className="value-container">
           {this.renderMetricValue(thresholdClass, false)}
           {showCompare && this.renderCompare()}
@@ -195,15 +205,18 @@ export default class Metric extends React.PureComponent {
           <div
             onClick={() => (click ? click(metric) : () => null)}
             style={styles && { ...styles }}
-            className={`${!selected ? 'metric-chart' : 'metric-chart selected'
-              } ${thresholdClass} ${!click ? 'no-click' : ''}`}
+            className={`${
+              !selected ? 'metric-chart' : 'metric-chart selected'
+            } ${thresholdClass} ${!click ? 'no-click' : ''}`}
           >
             {metricContent}
           </div>
           {minify && (
             <div className="metric-tooltip">
               <div className="metric maximized">
-                <div className={`metric-chart ${thresholdClass}`}>{maximized}</div>
+                <div className={`metric-chart ${thresholdClass}`}>
+                  {maximized}
+                </div>
               </div>
             </div>
           )}

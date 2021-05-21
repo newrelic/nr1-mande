@@ -51,7 +51,8 @@ export const loadMetricsForConfig = async (
             parser,
             queryCategory
           )
-          if (!dataDef || !Object.keys(dataDef).length) {
+          // if (!dataDef || !Object.keys(dataDef).length) {
+          if (!dataDef || dataDef.error) {
             metricNoData.push(metric)
             return null
           }
@@ -122,13 +123,13 @@ export const loadMetric = async (
 
     if (errors) {
       console.error(`error returned by query. ${query}: `, errors)
-      return {}
+      return { error: true }
     } else {
       return parser(metric, data, metric[queryCategory].lookup)
     }
   } catch (e) {
     console.error(`error occurred: `, e)
-    return {}
+    return { error: true }
   }
 }
 

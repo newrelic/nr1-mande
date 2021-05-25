@@ -51,7 +51,7 @@ export const loadMetricsForConfig = async (
             parser,
             queryCategory
           )
-          if (retryCount < 4 && (!dataDef || !Object.keys(dataDef).length)) {
+          if (!dataDef || !Object.keys(dataDef).length) {
             metricNoData.push(metric)
             return null
           }
@@ -71,7 +71,6 @@ export const loadMetricsForConfig = async (
       accountId,
       filters,
       parser,
-      queryCategory,
       retryCount
     )
     metricData = metricData.filter(Boolean).concat(retryData)

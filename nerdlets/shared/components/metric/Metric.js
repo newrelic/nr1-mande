@@ -19,6 +19,7 @@ const getThresholdClass = (threshold, value, baseStyle) => {
 const round = value => Math.round((value + Number.EPSILON) * 100) / 100
 
 const formatValue = value => {
+  if (isNaN(value)) return '-'
   let formatted
 
   if (value < 1000) formatted = round(value)
@@ -76,12 +77,18 @@ export default class Metric extends React.PureComponent {
       const status = statusClasses.getStatus(changeClass)
       classes.push(status)
     }
+    const roundedDiff = Math.round(compare.difference)
+    const diffPct = isNaN(roundedDiff)
+      ? ''
+      : new Intl.NumberFormat('default', {
+          style: 'percent',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(roundedDiff / 100)
 
     return (
       <React.Fragment>
-        <p className={classes.join(' ')}>
-          {`${Math.round(compare.difference)} %`}
-        </p>
+        <p className={classes.join(' ')}>{diffPct}</p>
       </React.Fragment>
     )
   }

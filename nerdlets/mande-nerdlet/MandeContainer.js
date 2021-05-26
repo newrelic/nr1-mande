@@ -68,7 +68,7 @@ class MandeContainer extends React.Component {
       null
     )
 
-    const showFindUserButton = await this.loadUserFlag(accountId, duration)
+    const showFindUserButton = this.userLookupIsEnabled()
 
     // reset all state if a state was saved
     if (savedState) {
@@ -227,36 +227,7 @@ class MandeContainer extends React.Component {
     return accounts
   }
 
-  loadUserFlag = async (accountId, duration) => {
-    let userFound = false
-
-    let userClause = ''
-    FIND_USER_ATTRIBUTE.forEach(u => {
-      if (userClause) userClause += ' OR '
-      userClause += `${u} IS NOT NULL`
-    })
-
-    const query = `{
-      actor {
-        account(id: ${accountId}) {
-          nrql(query: "FROM ${VIDEO_EVENTS} SELECT count(*) WHERE ${userClause} ${duration.since}") {
-            results
-          }
-        }
-      }
-    }`
-
-    const { data, errors } = await NerdGraphQuery.query({ query })
-
-    if (errors) {
-      console.error('error checking for userId', errors)
-      return false
-    }
-
-    if (data) userFound = data.actor.account.nrql.results[0].count > 0
-
-    return userFound
-  }
+  userLookupIsEnabled = () => !!FIND_USER_ATTRIBUTE
 
   onFindUserClick = () => {
     navigation.openStackedNerdlet({

@@ -31,16 +31,18 @@ export const loadMetricsForConfig = async (
   accountId,
   filters,
   parser,
-  queryCategory
+  queryCategory,
+  retryCount = 1
 ) => {
   // console.debug('>>>> metric-data-loader.loadMetricsForConfig', metricConfig)
   let metricData = []
+  let metricNoData = []
   metricData = metricData.concat(
     await Promise.all(
       metricConfig.metrics
         .filter(metric => metric.query)
         .map(async metric => {
-          const dataDef = await loadMetric(
+          let dataDef = await loadMetric(
             metric,
             duration,
             accountId,
@@ -48,14 +50,32 @@ export const loadMetricsForConfig = async (
             parser,
             queryCategory
           )
-          dataDef.id = metricConfig.id
-          dataDef.category = metricConfig.title
+          if (retryCount < 4 && !dataDef) {
+            metricNoData.push(metric)
+            return null
+          }
+          dataDef = Object.keys(dataDef).length ? dataDef : {}
+          dataDef.id = (metricConfig || {}).id
+          dataDef.category = (metricConfig || {}).title
           dataDef.loading = false
           dataDef.def = metric
           return dataDef
         })
     )
   )
+  if (metricNoData.length && retryCount < 4) {
+    retryCount += 1
+    const retryData = await loadMetricsForConfig(
+      { ...metricConfig, ...{ metrics: metricNoData } },
+      duration,
+      accountId,
+      filters,
+      parser,
+      queryCategory,
+      retryCount
+    )
+    metricData = metricData.filter(Boolean).concat(retryData)
+  }
   return metricData
 }
 
@@ -102,13 +122,13 @@ export const loadMetric = async (
 
     if (errors) {
       console.error(`error returned by query. ${query}: `, errors)
-      return {}
+      return false
     } else {
       return parser(metric, data, metric[queryCategory].lookup)
     }
   } catch (e) {
     console.error(`error occurred: `, e)
-    return {}
+    return false
   }
 }
 
@@ -174,4 +194,3 @@ export const facetParser = (metric, data, lookup) => {
     return {}
   }
 }
-

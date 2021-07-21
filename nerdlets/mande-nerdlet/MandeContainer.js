@@ -19,19 +19,16 @@ import CategoryMenu from './components/category-menu/CategoryMenu'
 import ActionSidebar from './components/action-sidebar/ActionSidebar'
 import MetricDashboard from './components/dashboard/MetricDashboard'
 import CategoryDetail from './components/category-detail/CategoryDetail'
-import metricConfigs from '../shared/config/MetricConfig'
 import { FIND_USER_ATTRIBUTE, VIDEO_EVENTS } from '../shared/config/constants'
 import { formatSinceAndCompare } from '../shared/utils/query-formatter'
 import { loadMetricsForConfigs } from '../shared/utils/metric-data-loader'
+import { loadMetricsConfigs } from '../shared/utils/metric-config-loader'
 import Modal from '../shared/components/modal/modal'
 import { withFacetFilterContext } from '../shared/context/FacetFilterContext'
 
 class MandeContainer extends React.Component {
   constructor(props) {
     super(props)
-
-    let metricCategories = metricConfigs.map(config => config.title)
-    metricCategories = uniq(metricCategories)
 
     this.state = {
       loading: true,
@@ -41,7 +38,6 @@ class MandeContainer extends React.Component {
       selectedUser: '',
       showFindUserButton: false,
       metricData: [],
-      metricCategories,
       metricRefreshInterval: 180000,
       modal: false,
       modalContent: null,
@@ -50,8 +46,7 @@ class MandeContainer extends React.Component {
   }
 
   async componentDidMount() {
-    const { timeRange, accountId } = this.props.launcherUrlState
-    const duration = formatSinceAndCompare(timeRange)
+    const { launcherUrlState: { accountId } = {} } = this.props
     const {
       threshold,
       selectedMetric,
@@ -61,13 +56,11 @@ class MandeContainer extends React.Component {
     // check if we should load from a saved state
     const savedState = threshold || selectedMetric || selectedStack
 
-    let metricData = await loadMetricsForConfigs(
-      metricConfigs,
-      duration,
-      accountId,
-      null
-    )
+    let metricConfigs = await loadMetricsConfigs(accountId)
+    let metricCategories = metricConfigs.map(config => config.title)
+    metricCategories = uniq(metricCategories)
 
+    const metricData = await this.metricDataLoader()
     const showFindUserButton = this.userLookupIsEnabled()
 
     // reset all state if a state was saved
@@ -84,12 +77,14 @@ class MandeContainer extends React.Component {
         metricData,
         showFindUserButton,
         loading: false,
+        metricCategories,
       })
     } else {
       this.setState({
         metricData,
         showFindUserButton,
         loading: false,
+        metricCategories,
       })
     }
     this.setupInterval(this.state.metricRefreshInterval)
@@ -128,13 +123,7 @@ class MandeContainer extends React.Component {
     if (prevAccountId !== accountId) {
       // if (!loading) {
       this.setState({ metricData: [], loading: true }, async () => {
-        const duration = formatSinceAndCompare(timeRange)
-        let metricData = await loadMetricsForConfigs(
-          metricConfigs,
-          duration,
-          accountId,
-          null
-        )
+        const metricData = await this.metricDataLoader()
         const showFindUserButton = await this.loadUserFlag(accountId, duration)
 
         this.setState({ metricData, showFindUserButton, loading: false })
@@ -164,13 +153,7 @@ class MandeContainer extends React.Component {
       prevTimeRange.end_time !== timeRange.end_time ||
       prevTimeRange.duration !== timeRange.duration
     ) {
-      const duration = formatSinceAndCompare(timeRange)
-      let metricData = await loadMetricsForConfigs(
-        metricConfigs,
-        duration,
-        accountId,
-        null
-      )
+      const metricData = await this.metricDataLoader()
       const showFindUserButton = await this.loadUserFlag(accountId, duration)
 
       this.setState({ metricData, showFindUserButton })
@@ -183,12 +166,10 @@ class MandeContainer extends React.Component {
 
   setupInterval = interval => {
     this.interval = setInterval(async () => {
-      const duration = formatSinceAndCompare(
-        this.props.launcherUrlState.timeRange
-      )
-      const accountId = this.props.launcherUrlState.accountId
+      const { launcherUrlState: { accountId } = {} } = this.props
 
       let metricData = []
+      let metricConfigs = await loadMetricsConfigs(accountId)
       for (let config of metricConfigs) {
         if (config.metrics) {
           metricData = metricData.concat(
@@ -201,15 +182,24 @@ class MandeContainer extends React.Component {
 
       this.setState({ metricData })
 
-      metricData = await loadMetricsForConfigs(
-        metricConfigs,
-        duration,
-        accountId,
-        null
-      )
+      metricData = await this.metricDataLoader()
 
       this.setState({ metricData })
     }, interval)
+  }
+
+  metricDataLoader = async () => {
+    const { launcherUrlState: {timeRange, accountId} = {} } = this.props
+    const duration = formatSinceAndCompare(timeRange)
+    const metricConfigs = await loadMetricsConfigs(accountId)
+    const metricData = await loadMetricsForConfigs(
+      metricConfigs,
+      duration,
+      accountId,
+      null
+    )
+
+    return metricData
   }
 
   loadAccounts = async () => {
@@ -255,13 +245,15 @@ class MandeContainer extends React.Component {
     this.setState({ metricRefreshInterval: value })
   }
 
-  onToggleMetric = (metric, init) => {
+  onToggleMetric = async (metric, init) => {
     const currentMetric = this.state.selectedMetric
     const selected = metric.id ? metric.id : metric.title
 
     if (currentMetric && currentMetric === selected)
       this.setState({ selectedMetric: null })
     else {
+      const accountId = this.props.launcherUrlState.accountId
+      const metricConfigs = await loadMetricsConfigs(accountId)
       const stack = metricConfigs.filter(config => {
         const metricFound =
           config.metrics &&
@@ -286,7 +278,7 @@ class MandeContainer extends React.Component {
     }
   }
 
-  onToggleDetailView = (stackTitle, init) => {
+  onToggleDetailView = async (stackTitle, init) => {
     const currentStack = this.state.selectedStack
 
     if (currentStack && currentStack.title === stackTitle) {
@@ -297,6 +289,8 @@ class MandeContainer extends React.Component {
         showFacetSidebar: true,
       })
     } else {
+      const accountId = this.props.launcherUrlState.accountId
+      const metricConfigs = await loadMetricsConfigs(accountId)
       const stack = metricConfigs.filter(config => config.title === stackTitle)
       if (!init) {
         this.props.facetContext.reset()

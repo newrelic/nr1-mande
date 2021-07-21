@@ -1,4 +1,4 @@
-import { roundToTwoDigits } from './number-formatter'
+import { roundToTwoDigits, defaultTo } from './number-formatter'
 
 export const metricQualityScore = (metric, threshold, strategy) => {
   switch (strategy) {
@@ -14,14 +14,21 @@ export const metricQualityScore = (metric, threshold, strategy) => {
 }
 
 export const viewQualityScore = (view, qualityScoreDef) => {
-  const included = []
-  qualityScoreDef.include.forEach(q => {
-    view.details.forEach(d => {
-      if (d.def.id === q) {
-        included[d.def.id] = d.qualityScore
-      }
-    })
-  })
+  const attribs = qualityScoreDef.include.reduce(
+    (acc, cur) => ({ ...acc, [cur]: null }),
+    {}
+  )
+  const values = ((view || {}).details || []).reduce(
+    (acc, cur) =>
+      cur.def.id in attribs
+        ? { ...acc, [cur.def.id]: defaultTo(cur.qualityScore, 1) }
+        : acc,
+    {}
+  )
 
-  return qualityScoreDef.formula(included)
+  if ('VSF' in values && values.VSF === 0) return 0
+  delete values.VSF
+  const keys = Object.keys(values)
+  if (!keys.length) return 100
+  return (keys.reduce((acc, cur) => acc + values[cur], 0))*(100/keys.length)
 }

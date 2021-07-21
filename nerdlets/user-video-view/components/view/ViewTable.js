@@ -10,7 +10,6 @@ import {
   TableRow,
   TableRowCell,
 } from 'nr1'
-import videoConfig from '../../../shared/config/VideoConfig'
 import { formatTimestampAsDate } from '../../../shared/utils/date-formatter'
 import { openVideoSession } from '../../../shared/utils/navigation'
 import { getThresholdClass } from '../../../shared/utils/threshold'
@@ -31,11 +30,19 @@ export default class ViewTable extends React.Component {
   }
 
   openView = (evt, { item, idx }) => {
-    openVideoSession(this.props.accountId, item.id, videoConfig.title)
+    const { videoConfig } = this.props
+    openVideoSession(this.props.accountId, item.id, (videoConfig || {}).title)
   }
 
   render() {
-    const { accountId, duration, session, views, scope } = this.props
+    const {
+      videoConfig,
+      accountId,
+      duration,
+      session,
+      views,
+      scope,
+    } = this.props
     const nrql = `FROM ${VIDEO_EVENTS} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
 
     return (
@@ -67,10 +74,11 @@ export default class ViewTable extends React.Component {
               qualityScore: v.qualityScore,
             }
 
-            videoConfig.qualityScore.include.forEach(qs => {
-              const kpis = v.kpis.find(k => k.defId === qs)
-              decoratedView[qs] = kpis ? kpis.value : 0
-            })
+            if (videoConfig)
+              videoConfig.qualityScore.include.forEach(qs => {
+                const kpis = v.kpis.find(k => k.defId === qs)
+                decoratedView[qs] = kpis ? kpis.value : 0
+              })
 
             return decoratedView
           })
@@ -130,17 +138,19 @@ export default class ViewTable extends React.Component {
                 >
                   Quality Score
                 </TableHeaderCell>
-                {videoConfig.qualityScore.include.map((qs, idx) => {
-                  const metric = videoConfig.metrics.find(m => m.id === qs)
-                  return (
-                    <TableHeaderCell
-                      key={idx}
-                      className="session-table__table-header"
-                    >
-                      {metric.title}
-                    </TableHeaderCell>
-                  )
-                })}
+                {videoConfig
+                  ? videoConfig.qualityScore.include.map((qs, idx) => {
+                      const metric = videoConfig.metrics.find(m => m.id === qs)
+                      return (
+                        <TableHeaderCell
+                          key={idx}
+                          className="session-table__table-header"
+                        >
+                          {metric.title}
+                        </TableHeaderCell>
+                      )
+                    })
+                  : null}
               </TableHeader>
 
               {({ item }) => (
@@ -159,20 +169,30 @@ export default class ViewTable extends React.Component {
                     {item.contentTitle}
                   </TableRowCell>
                   <TableRowCell
-                    className={`session-table__row bold ${getThresholdClass(
-                      videoConfig.qualityScore.threshold,
-                      item.qualityScore,
-                      'greenLight'
-                    )}`}>
+                    className={`session-table__row bold ${
+                      videoConfig
+                        ? getThresholdClass(
+                            videoConfig.qualityScore.threshold,
+                            item.qualityScore,
+                            'greenLight'
+                          )
+                        : ''
+                    }`}
+                  >
                     {item.qualityScore + ' %'}
                   </TableRowCell>
-                  {videoConfig.qualityScore.include.map((qs, idx) => {
-                    return (
-                      <TableRowCell key={idx} className="session-table__row">
-                        {item[qs]}
-                      </TableRowCell>
-                    )
-                  })}
+                  {videoConfig
+                    ? videoConfig.qualityScore.include.map((qs, idx) => {
+                        return (
+                          <TableRowCell
+                            key={idx}
+                            className="session-table__row"
+                          >
+                            {item[qs]}
+                          </TableRowCell>
+                        )
+                      })
+                    : null}
                 </TableRow>
               )}
             </Table>
@@ -184,6 +204,7 @@ export default class ViewTable extends React.Component {
 }
 
 ViewTable.propTypes = {
+  videoConfig: PropTypes.object,
   duration: PropTypes.object.isRequired,
   accountId: PropTypes.number.isRequired,
   session: PropTypes.object.isRequired,

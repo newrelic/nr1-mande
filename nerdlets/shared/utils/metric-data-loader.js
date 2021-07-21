@@ -40,7 +40,7 @@ export const loadMetricsForConfig = async (
   metricData = metricData.concat(
     await Promise.all(
       metricConfig.metrics
-        .filter(metric => metric.query)
+        .filter(metric => (metric || {}).query)
         .map(async metric => {
           let dataDef = await loadMetric(
             metric,

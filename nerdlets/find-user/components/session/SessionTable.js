@@ -17,8 +17,10 @@ import {
   milliseconds,
 } from '../../../shared/utils/date-formatter'
 import { getThresholdClass } from '../../../shared/utils/threshold'
-import videoConfig from '../../../shared/config/VideoConfig'
-import { FIND_USER_ATTRIBUTE, VIDEO_EVENTS } from '../../../shared/config/constants'
+import {
+  FIND_USER_ATTRIBUTE,
+  VIDEO_EVENTS,
+} from '../../../shared/config/constants'
 
 export default class SessionTable extends React.Component {
   state = {
@@ -27,7 +29,8 @@ export default class SessionTable extends React.Component {
   }
 
   getViewQualityCount = (views, threshold, above) => {
-    const count = views.reduce((acc, v) => {
+    const count = views.reduce(
+      (acc, v) => {
         if (
           (above && v.qualityScore >= threshold) ||
           (!above && v.qualityScore < threshold)
@@ -69,7 +72,7 @@ export default class SessionTable extends React.Component {
   }
 
   render() {
-    const { accountId, duration, user, sessionViews } = this.props
+    const { videoConfig, accountId, duration, user, sessionViews } = this.props
 
     let userClause = ''
     FIND_USER_ATTRIBUTE.forEach(u => {
@@ -104,7 +107,10 @@ export default class SessionTable extends React.Component {
             const timedSession = {
               session: s.session,
               qualityScore: s.qualityScore,
-              totalViews: s.views.reduce((acc, v) => { acc.push(v.id); return acc }, []),
+              totalViews: s.views.reduce((acc, v) => {
+                acc.push(v.id)
+                return acc
+              }, []),
               good: this.getViewQualityCount(s.views, 90, true),
               bad: this.getViewQualityCount(s.views, 90, false),
               minTime,
@@ -199,11 +205,15 @@ export default class SessionTable extends React.Component {
                     {formatTimeAsString(item.duration, milliseconds)}
                   </TableRowCell>
                   <TableRowCell
-                    className={`session-table__row bold ${getThresholdClass(
-                      videoConfig.qualityScore.threshold,
-                      item.qualityScore,
-                      'greenLight'
-                    )}`}
+                    className={`session-table__row bold ${
+                      videoConfig
+                        ? getThresholdClass(
+                            videoConfig.qualityScore.threshold,
+                            item.qualityScore,
+                            'greenLight'
+                          )
+                        : ''
+                    }`}
                   >
                     {item.qualityScore + ' %'}
                   </TableRowCell>
@@ -227,6 +237,7 @@ export default class SessionTable extends React.Component {
 }
 
 SessionTable.propTypes = {
+  videoConfig: PropTypes.object,
   duration: PropTypes.object.isRequired,
   accountId: PropTypes.number.isRequired,
   user: PropTypes.string.isRequired,

@@ -8,7 +8,6 @@ import {
   loadMetricsForConfig,
   facetParser,
 } from '../../../shared/utils/metric-data-loader'
-import videoConfig from '../../../shared/config/VideoConfig'
 import {
   metricQualityScore,
   viewQualityScore,
@@ -25,7 +24,7 @@ export default class SessionContainer extends React.Component {
   }
 
   loadData = async () => {
-    const { accountId, duration, user } = this.props
+    const { videoConfig, accountId, duration, user } = this.props
 
     let userClause = ''
     FIND_USER_ATTRIBUTE.forEach(u => {
@@ -95,6 +94,7 @@ export default class SessionContainer extends React.Component {
   }
 
   loadSessions = async () => {
+    const { videoConfig } = this.props
     const data = await this.loadData()
 
     let sessionViews = []
@@ -162,7 +162,7 @@ export default class SessionContainer extends React.Component {
   }
 
   render() {
-    const { user, duration, accountId, chooseSession } = this.props
+    const { videoConfig, user, duration, accountId, chooseSession } = this.props
     const { loading, userKpis, sessionViews } = this.state
     const formattedDuration = dateFormatter(duration.timeRange)
 
@@ -190,20 +190,25 @@ export default class SessionContainer extends React.Component {
                     </HeadingText>
                   </StackItem>
 
-                  <QosKpiGrid
-                    qualityScore={sessionViews.qualityScore}
-                    kpis={userKpis}
-                    threshold={videoConfig.qualityScore.threshold}
-                  />
+                  {videoConfig ? (
+                    <QosKpiGrid
+                      qualityScore={sessionViews.qualityScore}
+                      kpis={userKpis}
+                      threshold={videoConfig.qualityScore.threshold}
+                    />
+                  ) : null}
 
                   <div className="session-table">
-                    <SessionTable
-                      accountId={accountId}
-                      user={user}
-                      duration={duration}
-                      sessionViews={sessionViews}
-                      chooseSession={chooseSession}
-                    />
+                    {videoConfig ? (
+                      <SessionTable
+                        videoConfig={videoConfig}
+                        accountId={accountId}
+                        user={user}
+                        duration={duration}
+                        sessionViews={sessionViews}
+                        chooseSession={chooseSession}
+                      />
+                    ) : null}
                   </div>
                 </div>
               </React.Fragment>
@@ -216,6 +221,7 @@ export default class SessionContainer extends React.Component {
 }
 
 SessionContainer.propTypes = {
+  videoConfig: PropTypes.object,
   duration: PropTypes.object.isRequired,
   accountId: PropTypes.number.isRequired,
   user: PropTypes.string.isRequired,

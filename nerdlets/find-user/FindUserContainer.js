@@ -2,7 +2,7 @@ import React from 'react'
 import { Stack, StackItem, HeadingText } from 'nr1'
 import SearchBar from './components/search-bar/SearchBar'
 import SessionContainer from './components/session/SessionContainer'
-import videoConfig from '../shared/config/VideoConfig'
+import { loadMetricsConfigs } from '../shared/utils/metric-config-loader'
 import { formatSinceAndCompare } from '../shared/utils/query-formatter'
 import {
   openUserVideoViews,
@@ -12,6 +12,12 @@ import {
 export default class FindUserContainer extends React.Component {
   state = {
     user: '',
+  }
+
+  async componentDidMount() {
+    const { nerdletUrlState: {accountId} = {} } = this.props
+    const videoConfig = await loadMetricsConfigs(accountId, 'Video')
+    this.setState({videoConfig})
   }
 
   onSelectUser = async user => {
@@ -57,10 +63,11 @@ export default class FindUserContainer extends React.Component {
 
   onChooseSession = (item, scope) => {
     const { accountId, user } = this.props.nerdletUrlState
+    const { videoConfig } = this.state
     scope = scope ? scope : 'all'
 
     if (item.views.length === 1) {
-      openVideoSession(accountId, item.views[0].id, videoConfig.title)
+      openVideoSession(accountId, item.views[0].id, (videoConfig || {}).title)
     } else {
       openUserVideoViews(
         accountId,
@@ -77,6 +84,7 @@ export default class FindUserContainer extends React.Component {
     const { timeRange } = this.props.launcherUrlState
     const { accountId } = this.props.nerdletUrlState
     const duration = formatSinceAndCompare(timeRange)
+    const { videoConfig } = this.state
 
     return (
       <Stack
@@ -121,6 +129,7 @@ export default class FindUserContainer extends React.Component {
         {user && (
           <StackItem style={{ height: '100%' }}>
             <SessionContainer
+              videoConfig={videoConfig}
               accountId={accountId}
               duration={duration}
               user={user}

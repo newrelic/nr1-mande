@@ -3,11 +3,13 @@ import { Stack, StackItem, HeadingText } from 'nr1'
 import { formatSinceAndCompare } from '../shared/utils/query-formatter'
 import { dateFormatter } from '../shared/utils/date-formatter'
 import QosKpiGrid from '../shared/components/qos/QosKpiGrid'
-import videoConfig from '../shared/config/VideoConfig'
+import { loadMetricsConfigs } from '../shared/utils/metric-config-loader'
 import ViewTable from './components/view/ViewTable'
 
 export default class UserViewContainer extends React.Component {
-  collectViewKpis = views => {
+  state = {}
+
+  collectViewKpis = (views, videoConfig) => {
     let kpis = []
     views.forEach(view => {
 
@@ -34,6 +36,12 @@ export default class UserViewContainer extends React.Component {
     return kpis
   }
 
+  async componentDidMount() {
+    const { nerdletUrlState: {accountId} = {} } = this.props
+    const videoConfig = await loadMetricsConfigs(accountId, 'Video')
+    this.setState({videoConfig})
+  }
+
   render() {
     const { timeRange } = this.props.launcherUrlState
     const {
@@ -44,6 +52,7 @@ export default class UserViewContainer extends React.Component {
       scope,
     } = this.props.nerdletUrlState
     const duration = formatSinceAndCompare(timeRange)
+    const { videoConfig } = this.state
 
     return (
       <>
@@ -66,14 +75,15 @@ export default class UserViewContainer extends React.Component {
                 </HeadingText>
               </StackItem>
 
-              <QosKpiGrid
+              {videoConfig ? <QosKpiGrid
                 qualityScore={session.qualityScore}
-                kpis={this.collectViewKpis(views)}
+                kpis={this.collectViewKpis(views, videoConfig)}
                 threshold={videoConfig.qualityScore.threshold}
-              />
+              /> : null}
 
               <div className="session-table">
                 <ViewTable
+                  videoConfig={videoConfig}
                   accountId={accountId}
                   duration={duration}
                   session={session}

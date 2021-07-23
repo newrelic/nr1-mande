@@ -88,7 +88,8 @@ export const loadMetric = async (
   queryCategory
 ) => {
   // defaults for backwards compatibility
-  if (!parserConfig) parserConfig = { parser: compareParser, parserName: 'compareParser' }
+  if (!parserConfig)
+    parserConfig = { parser: compareParser, parserName: 'compareParser' }
   if (!queryCategory || !metric[queryCategory]) queryCategory = 'query'
 
   const { parser, parserName } = parserConfig
@@ -155,15 +156,17 @@ export const compareParser = (metric, data, lookup) => {
     let rounded = difference
 
     if (difference > 0) {
-      rounded = roundToTwoDigits((difference / previous) * 100)
+      rounded = roundToTwoDigits(
+        (difference / (previous === 0 ? 1 : previous)) * 100
+      )
     }
 
     const change =
       current > previous
         ? 'increase'
         : current < previous
-          ? 'decrease'
-          : 'noChange'
+        ? 'decrease'
+        : 'noChange'
 
     return {
       value: current,

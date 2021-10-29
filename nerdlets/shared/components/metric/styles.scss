@@ -3,25 +3,24 @@
   height: 8px;
   box-sizing: border-box;
 
-  .metric-chart {
-    color: #222222;
+  &:hover {
     cursor: pointer;
 
-    &:hover {
-      transform: translateY(-1px);
+    .metric-tooltip {
+      visibility: visible;
+      opacity: 1;
+      z-index: 10;
+      transition: 0.25s opacity ease;
+      transition-delay: 0.25s;
 
-      + .metric-tooltip {
-        visibility: visible;
-        opacity: 1;
-        transition: 0.25s opacity ease;
-        transition-delay: 0.5s;
-        z-index: 10;
-
-        .metric-chart {
-          max-width: 11rem;
-        }
+      .metric-chart {
+        max-width: 11rem;
+        transform: translateY(0);
       }
     }
+  }
+  .metric-chart {
+    color: #222222;
 
     > .value {
       width: 10px;
@@ -44,12 +43,12 @@
   visibility: hidden;
   opacity: 0;
   position: absolute;
-  top: 20px;
-  right: -15px;
+  top: 0px;
+  right: -55px;
   width: 100%;
 
-  >.metric {
-    >.metric-chart {
+  > .metric {
+    > .metric-chart {
       border: 1.5px solid #e3e4e4;
       height: 90px;
     }
@@ -78,8 +77,8 @@
       position: relative;
       background-color: white;
       border-radius: 2px;
-      box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03),
-        0px 5px 23px rgba(0, 45, 47, 0.03);
+      box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07),
+        0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03);
       transition: all 0.075s ease-out;
       transform: translateY(2px);
 
@@ -101,19 +100,22 @@
         &:hover {
           background-color: #fafbfb;
           transform: translateY(0);
-          box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.1), 0px 3px 4px rgba(0, 39, 41, 0.09),
+          box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.1),
+            0px 3px 4px rgba(0, 39, 41, 0.09),
             0px 5px 23px rgba(0, 45, 47, 0.09);
         }
         &:active {
           transform: translateY(3px);
-          box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03),
+          box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07),
+            0px 3px 3px rgba(0, 39, 41, 0.03),
             0px 5px 23px rgba(0, 45, 47, 0.03);
         }
       }
 
       &.selected {
-        box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07), 0px 3px 3px rgba(0, 39, 41, 0.03),
-          0px 5px 23px rgba(0, 45, 47, 0.03), inset 0 0 0 1px #007e8a, inset 0 0 0 4px rgba(#007e8a, 0.1);
+        box-shadow: 0px 1px 0px rgba(0, 63, 66, 0.07),
+          0px 3px 3px rgba(0, 39, 41, 0.03), 0px 5px 23px rgba(0, 45, 47, 0.03),
+          inset 0 0 0 1px #007e8a, inset 0 0 0 4px rgba(#007e8a, 0.1);
         border-radius: 4px;
       }
 
@@ -128,7 +130,7 @@
         overflow: hidden;
         width: 100%;
         min-height: 1.5rem;
-        padding: .5rem 0;
+        padding: 0.5rem 0;
       }
 
       .value-container {
@@ -136,7 +138,7 @@
         align-items: center;
         position: relative;
         z-index: 1;
-        margin-top: -.75rem;
+        margin-top: -0.75rem;
 
         .value {
           position: relative;
@@ -196,13 +198,13 @@
 
         &.increase {
           &:before {
-            content: "\2197";
+            content: '\2197';
           }
         }
 
         &.decrease {
           &:before {
-            content: "\2198";
+            content: '\2198';
           }
         }
 
@@ -211,7 +213,7 @@
           background-color: #f4f0f0;
 
           &:before {
-            content: "\2194";
+            content: '\2194';
           }
         }
 
@@ -229,16 +231,20 @@
   }
 }
 
-.metric [class*="wnd-Chart"].spark-line-chart {
+.metric [class*='wnd-Chart'].spark-line-chart {
   pointer-events: none;
   width: 100%;
   margin-top: -5px;
   height: 30px;
 
-  [class*="vz--component"] {
+  [class*='vz--component'] {
     background-color: transparent;
   }
-  
+
+  [class*='component--no-data'] {
+    visibility: hidden;
+  }
+
   svg {
     height: 30px;
     margin: 0;

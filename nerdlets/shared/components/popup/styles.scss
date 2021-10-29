@@ -1,0 +1,21 @@
+.popup-container {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  &.position-end {
+    right: 0;
+  }
+
+  &.position-start {
+    left: 0;
+  }
+}

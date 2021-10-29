@@ -23,5 +23,3 @@ export default [
   ingestConfigs,
   sourceConfigs,
 ]
-
-export const FIND_USER_ATTRIBUTE = ['userId'] // ['tvAccount', 'aisuid']

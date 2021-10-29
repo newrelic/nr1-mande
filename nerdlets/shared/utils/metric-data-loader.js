@@ -12,15 +12,17 @@ export const loadMetricsForConfigs = async (
   // console.debug('>>>> metric-data-loader.loadMetricsForConfigs')
   let metricData = []
 
-  metricData = await Promise.all(
+  await Promise.all(
     metricConfigs
       .filter(config => config.metrics)
       .map(async config =>
         loadMetricsForConfig(config, duration, accountId, filters, parser)
       )
   )
+    .then(results => (metricData = flatten(results)))
+    .catch(error => console.log(error))
 
-  return flatten(metricData)
+  return metricData
 }
 
 export const loadMetricsForConfig = async (
@@ -29,16 +31,18 @@ export const loadMetricsForConfig = async (
   accountId,
   filters,
   parser,
-  queryCategory
+  queryCategory,
+  retryCount = 1
 ) => {
   // console.debug('>>>> metric-data-loader.loadMetricsForConfig', metricConfig)
   let metricData = []
+  let metricNoData = []
   metricData = metricData.concat(
     await Promise.all(
       metricConfig.metrics
         .filter(metric => metric.query)
         .map(async metric => {
-          const dataDef = await loadMetric(
+          let dataDef = await loadMetric(
             metric,
             duration,
             accountId,
@@ -46,14 +50,32 @@ export const loadMetricsForConfig = async (
             parser,
             queryCategory
           )
-          dataDef.id = metricConfig.id
-          dataDef.category = metricConfig.title
+          if (retryCount < 4 && !dataDef) {
+            metricNoData.push(metric)
+            return null
+          }
+          dataDef = Object.keys(dataDef).length ? dataDef : {}
+          dataDef.id = (metricConfig || {}).id
+          dataDef.category = (metricConfig || {}).title
           dataDef.loading = false
           dataDef.def = metric
           return dataDef
         })
     )
   )
+  if (metricNoData.length && retryCount < 4) {
+    retryCount += 1
+    const retryData = await loadMetricsForConfig(
+      { ...metricConfig, ...{ metrics: metricNoData } },
+      duration,
+      accountId,
+      filters,
+      parser,
+      queryCategory,
+      retryCount
+    )
+    metricData = metricData.filter(Boolean).concat(retryData)
+  }
   return metricData
 }
 
@@ -66,7 +88,8 @@ export const loadMetric = async (
   queryCategory
 ) => {
   // defaults for backwards compatibility
-  if (!parserConfig) parserConfig = { parser: compareParser, parserName: 'compareParser' }
+  if (!parserConfig)
+    parserConfig = { parser: compareParser, parserName: 'compareParser' }
   if (!queryCategory || !metric[queryCategory]) queryCategory = 'query'
 
   const { parser, parserName } = parserConfig
@@ -91,17 +114,23 @@ export const loadMetric = async (
         }
       }
     }`
-  const { data, errors } = await NerdGraphQuery.query({
-    query,
-    fetchPolicyType: NerdGraphQuery.FETCH_POLICY_TYPE.NO_CACHE,
-  })
 
-  if (errors) {
-    console.error(`error occurred with query ${query}: `, errors)
+  try {
+    const { data, errors } = await NerdGraphQuery.query({
+      query,
+      fetchPolicyType: NerdGraphQuery.FETCH_POLICY_TYPE.NO_CACHE,
+    })
+
+    if (errors) {
+      console.error(`error returned by query. ${query}: `, errors)
+      return false
+    } else {
+      return parser(metric, data, metric[queryCategory].lookup)
+    }
+  } catch (e) {
+    console.error(`error occurred: `, e)
+    return false
   }
-
-  return parser(metric, data, metric[queryCategory].lookup)
-
 }
 
 export const compareParser = (metric, data, lookup) => {
@@ -127,15 +156,17 @@ export const compareParser = (metric, data, lookup) => {
     let rounded = difference
 
     if (difference > 0) {
-      rounded = roundToTwoDigits((difference / previous) * 100)
+      rounded = roundToTwoDigits(
+        (difference / (previous === 0 ? 1 : previous)) * 100
+      )
     }
 
     const change =
       current > previous
         ? 'increase'
         : current < previous
-          ? 'decrease'
-          : 'noChange'
+        ? 'decrease'
+        : 'noChange'
 
     return {
       value: current,
@@ -166,4 +197,3 @@ export const facetParser = (metric, data, lookup) => {
     return {}
   }
 }
-

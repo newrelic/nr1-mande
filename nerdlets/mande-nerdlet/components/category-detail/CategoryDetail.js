@@ -4,8 +4,9 @@ import isEqual from 'lodash.isequal'
 import ChartGrid from './ChartGrid'
 import Metric from '../../../shared/components/metric/Metric'
 import { loadMetricsForConfig } from '../../../shared/utils/metric-data-loader'
+import { withFacetFilterContext } from '../../../shared/context/FacetFilterContext'
 
-export default class CategoryDetail extends React.Component {
+class CategoryDetail extends React.Component {
   state = {
     metricDefs: [],
   }
@@ -29,7 +30,10 @@ export default class CategoryDetail extends React.Component {
 
   async componentDidUpdate(prevProps) {
     if (
-      !isEqual(prevProps.activeFilters, this.props.activeFilters) ||
+      !isEqual(
+        prevProps.facetContext.queryFormattedFilters,
+        this.props.facetContext.queryFormattedFilters
+      ) ||
       prevProps.duration !== this.props.duration ||
       prevProps.stack !== this.props.stack ||
       prevProps.accountId !== this.props.accountId
@@ -63,59 +67,30 @@ export default class CategoryDetail extends React.Component {
   }
 
   loadMetricData = async () => {
-    const { accountId, duration, stack, activeFilters } = this.props
+    const {
+      accountId,
+      duration,
+      stack,
+      facetContext: { queryFormattedFilters },
+    } = this.props
     let metricDefs = await loadMetricsForConfig(
       stack,
       duration,
       accountId,
-      activeFilters
+      queryFormattedFilters
     )
 
     this.setState({ metricDefs })
   }
 
-  detailView = (filters, facetClause) => {
-    const { accountId, duration, stack, activeMetric } = this.props
-    let view = <div />
-    if (activeMetric) {
-      const metric = stack.metrics.filter(m => m.title === activeMetric)
-      const detailConfig = metric[0].detailConfig
-
-      if (detailConfig)
-        view = (
-          <ChartGrid
-            accountId={accountId}
-            duration={duration}
-            stack={stack}
-            activeMetric={activeMetric}
-            filters={filters}
-            facets={facetClause}
-            chartDefs={detailConfig}
-          />
-        )
-    } else if (stack.overviewConfig)
-      view = (
-        <ChartGrid
-          accountId={accountId}
-          duration={duration}
-          filters={filters}
-          facets={facetClause}
-          chartDefs={stack.overviewConfig}
-        />
-      )
-
-    return view
-  }
-
-  render() {
+  renderMetrics = () => {
     const {
       accountId,
       duration,
       threshold,
       activeMetric,
       toggleMetric,
-      activeFilters,
-      facets,
+      facetContext: { filterQueryString },
     } = this.props
     const { metricDefs } = this.state
 
@@ -150,7 +125,7 @@ export default class CategoryDetail extends React.Component {
                   query={metricDef.def.query.nrql + duration.since}
                   selected={activeMetric === metricDef.def.title}
                   click={toggleMetric}
-                  filters={activeFilters}
+                  filters={filterQueryString}
                   visibleThreshold={threshold}
                   showTooltip={true}
                   valueAlign="left"
@@ -161,6 +136,51 @@ export default class CategoryDetail extends React.Component {
         )
       })
 
+    return metrics
+  }
+
+  renderDetailView = () => {
+    const {
+      accountId,
+      duration,
+      stack,
+      activeMetric,
+      actionMenuSelect,
+    } = this.props
+
+    let view = <div />
+
+    if (activeMetric) {
+      const metric = stack.metrics.find(m => m.title === activeMetric)
+      const detailDashboardId =
+        stack.detailDashboards &&
+        stack.detailDashboards.find(d => d.id === metric.detailDashboardId)
+
+      if (detailDashboardId)
+        view = (
+          <ChartGrid
+            accountId={accountId}
+            duration={duration}
+            stack={stack}
+            activeMetric={activeMetric}
+            chartDefs={detailDashboardId.config}
+            actionMenuSelect={actionMenuSelect}
+          />
+        )
+    } else if (stack.overviewDashboard)
+      view = (
+        <ChartGrid
+          accountId={accountId}
+          duration={duration}
+          chartDefs={stack.overviewDashboard}
+          actionMenuSelect={actionMenuSelect}
+      />
+      )
+
+    return view
+  }
+
+  render() {
     return (
       <Stack className="detail-container">
         <Stack
@@ -168,12 +188,14 @@ export default class CategoryDetail extends React.Component {
           grow
           className="detail-content"
         >
-          <StackItem className="detail-kpis">{metrics}</StackItem>
+          <StackItem className="detail-kpis">{this.renderMetrics()}</StackItem>
           <StackItem className="detail-main">
-            {this.detailView(activeFilters, facets)}
+            {this.renderDetailView()}
           </StackItem>
         </Stack>
       </Stack>
     )
   }
 }
+
+export default withFacetFilterContext(CategoryDetail)

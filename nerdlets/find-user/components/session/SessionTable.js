@@ -18,13 +18,12 @@ import {
 } from '../../../shared/utils/date-formatter'
 import { getThresholdClass } from '../../../shared/utils/threshold'
 import videoConfig from '../../../shared/config/VideoConfig'
-import { FIND_USER_ATTRIBUTE } from '../../../shared/config/MetricConfig'
-import { activeEvents } from '../../../shared/config/VideoConfig'
+import { FIND_USER_ATTRIBUTE, VIDEO_EVENTS } from '../../../shared/config/constants'
 
 export default class SessionTable extends React.Component {
   state = {
-    column_1: TableHeaderCell.SORTING_TYPE.ASCENDING,
-    column_4: TableHeaderCell.SORTING_TYPE.ASCENDING,
+    column: 1,
+    sortingType: TableHeaderCell.SORTING_TYPE.ASCENDING,
   }
 
   getViewQualityCount = (views, threshold, above) => {
@@ -52,8 +51,12 @@ export default class SessionTable extends React.Component {
     this.props.chooseSession(session, scope)
   }
 
-  onSortTable(key, event, sortingData) {
-    this.setState({ [key]: sortingData.nextSortingType })
+  onSortTable(column, evt, { nextSortingType }) {
+    if (column === this.state.column) {
+      this.setState({ sortingType: nextSortingType })
+    } else {
+      this.setState({ column: column, sortingType: nextSortingType })
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -66,7 +69,6 @@ export default class SessionTable extends React.Component {
   }
 
   render() {
-
     const { accountId, duration, user, sessionViews } = this.props
 
     let userClause = ''
@@ -74,7 +76,7 @@ export default class SessionTable extends React.Component {
       if (userClause) userClause += ' OR '
       userClause += `${u} = '${user}'`
     })
-    const nrql = `FROM ${activeEvents()} SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
+    const nrql = `FROM ${VIDEO_EVENTS} SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
@@ -123,24 +125,51 @@ export default class SessionTable extends React.Component {
                   className="session-table__table-header"
                   value={({ item }) => item.minTime}
                   sortable
-                  sortingType={this.state.column_1}
-                  onClick={this.onSortTable.bind(this, 'column_1')}
+                  sortingType={
+                    this.state.column === 1
+                      ? this.state.sortingType
+                      : TableHeaderCell.SORTING_TYPE.NONE
+                  }
+                  onClick={this.onSortTable.bind(this, 1)}
                 >
                   Start Time
                 </TableHeaderCell>
-                <TableHeaderCell className="session-table__table-header">
+                <TableHeaderCell
+                  className="session-table__table-header"
+                  value={({ item }) => item.maxTime}
+                  sortable
+                  sortingType={
+                    this.state.column === 2
+                      ? this.state.sortingType
+                      : TableHeaderCell.SORTING_TYPE.NONE
+                  }
+                  onClick={this.onSortTable.bind(this, 2)}
+                >
                   End Time
                 </TableHeaderCell>
-                <TableHeaderCell className="session-table__table-header">
+                <TableHeaderCell
+                  className="session-table__table-header"
+                  value={({ item }) => item.duration}
+                  sortable
+                  sortingType={
+                    this.state.column === 3
+                      ? this.state.sortingType
+                      : TableHeaderCell.SORTING_TYPE.NONE
+                  }
+                  onClick={this.onSortTable.bind(this, 3)}
+                >
                   Duration
                 </TableHeaderCell>
                 <TableHeaderCell
                   className="session-table__table-header"
                   value={({ item }) => item.qualityScore}
                   sortable
-                  sortingType={this.state.column_4}
-                  sortingOrder={0}
-                  onClick={this.onSortTable.bind(this, 'column_4')}
+                  sortingType={
+                    this.state.column === 4
+                      ? this.state.sortingType
+                      : TableHeaderCell.SORTING_TYPE.NONE
+                  }
+                  onClick={this.onSortTable.bind(this, 4)}
                 >
                   Quality Score
                 </TableHeaderCell>

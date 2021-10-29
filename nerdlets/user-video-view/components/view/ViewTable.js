@@ -14,18 +14,20 @@ import videoConfig from '../../../shared/config/VideoConfig'
 import { formatTimestampAsDate } from '../../../shared/utils/date-formatter'
 import { openVideoSession } from '../../../shared/utils/navigation'
 import { getThresholdClass } from '../../../shared/utils/threshold'
-import { activeEvents } from '../../../shared/config/VideoConfig'
+import { VIDEO_EVENTS } from '../../../shared/config/constants'
 
 export default class ViewTable extends React.Component {
   state = {
-    column_0: TableHeaderCell.SORTING_TYPE.ASCENDING,
-    column_1: TableHeaderCell.SORTING_TYPE.ASCENDING,
-    column_2: TableHeaderCell.SORTING_TYPE.ASCENDING,
-    column_3: TableHeaderCell.SORTING_TYPE.ASCENDING,
+    column: 1,
+    sortingType: TableHeaderCell.SORTING_TYPE.ASCENDING,
   }
 
-  onSortTable(key, event, sortingData) {
-    this.setState({ [key]: sortingData.nextSortingType })
+  onSortTable(column, evt, { nextSortingType }) {
+    if (column === this.state.column) {
+      this.setState({ sortingType: nextSortingType })
+    } else {
+      this.setState({ column: column, sortingType: nextSortingType })
+    }
   }
 
   openView = (evt, { item, idx }) => {
@@ -34,7 +36,7 @@ export default class ViewTable extends React.Component {
 
   render() {
     const { accountId, duration, session, views, scope } = this.props
-    const nrql = `FROM ${activeEvents()} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
+    const nrql = `FROM ${VIDEO_EVENTS} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
 
     return (
       <NrqlQuery accountId={accountId} query={nrql}>
@@ -80,9 +82,12 @@ export default class ViewTable extends React.Component {
                   className="session-table__table-header"
                   value={({ item }) => item.id}
                   sortable
-                  sortingType={this.state.column_0}
-                  sortingOrder={0}
-                  onClick={this.onSortTable.bind(this, 'column_0')}
+                  sortingType={
+                    this.state.column === 0
+                      ? this.state.sortingType
+                      : TableHeaderCell.SORTING_TYPE.NONE
+                  }
+                  onClick={this.onSortTable.bind(this, 0)}
                 >
                   View Id
                 </TableHeaderCell>
@@ -90,9 +95,12 @@ export default class ViewTable extends React.Component {
                   className="session-table__table-header"
                   value={({ item }) => item.startTime}
                   sortable
-                  sortingType={this.state.column_1}
-                  sortingOrder={2}
-                  onClick={this.onSortTable.bind(this, 'column_1')}
+                  sortingType={
+                    this.state.column === 1
+                      ? this.state.sortingType
+                      : TableHeaderCell.SORTING_TYPE.NONE
+                  }
+                  onClick={this.onSortTable.bind(this, 1)}
                 >
                   Start Time
                 </TableHeaderCell>
@@ -100,9 +108,12 @@ export default class ViewTable extends React.Component {
                   className="session-table__table-header"
                   value={({ item }) => item.contentTitle}
                   sortable
-                  sortingType={this.state.column_2}
-                  sortingOrder={3}
-                  onClick={this.onSortTable.bind(this, 'column_2')}
+                  sortingType={
+                    this.state.column === 2
+                      ? this.state.sortingType
+                      : TableHeaderCell.SORTING_TYPE.NONE
+                  }
+                  onClick={this.onSortTable.bind(this, 2)}
                 >
                   Title
                 </TableHeaderCell>
@@ -110,9 +121,12 @@ export default class ViewTable extends React.Component {
                   className="session-table__table-header"
                   value={({ item }) => item.qualityScore}
                   sortable
-                  sortingType={this.state.column_3}
-                  sortingOrder={1}
-                  onClick={this.onSortTable.bind(this, 'column_3')}
+                  sortingType={
+                    this.state.column === 3
+                      ? this.state.sortingType
+                      : TableHeaderCell.SORTING_TYPE.NONE
+                  }
+                  onClick={this.onSortTable.bind(this, 3)}
                 >
                   Quality Score
                 </TableHeaderCell>

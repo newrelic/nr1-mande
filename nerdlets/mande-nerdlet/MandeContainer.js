@@ -171,7 +171,7 @@ class MandeContainer extends React.Component {
         accountId,
         null
       )
-      const showFindUserButton = await this.loadUserFlag(accountId, duration)
+      const showFindUserButton = this.userLookupIsEnabled()
 
       this.setState({ metricData, showFindUserButton })
     }

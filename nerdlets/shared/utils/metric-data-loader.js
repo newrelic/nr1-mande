@@ -116,19 +116,18 @@ export const loadMetric = async (
     }`
 
   try {
-    const { data, errors } = await NerdGraphQuery.query({
+    const { data, error } = await NerdGraphQuery.query({
       query,
       fetchPolicyType: NerdGraphQuery.FETCH_POLICY_TYPE.NO_CACHE,
     })
-
-    if (errors) {
-      console.error(`error returned by query. ${query}: `, errors)
+    if (error) {
+      console.error(`error returned by query. ${query}: `, error?.graphQLErrors)
       return false
     } else {
       return parser(metric, data, metric[queryCategory].lookup)
     }
   } catch (e) {
-    console.error(`error occurred: `, e)
+    console.error(`error querying metrics occurred: `, e)
     return false
   }
 }

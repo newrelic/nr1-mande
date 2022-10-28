@@ -18,7 +18,7 @@ export default class TimelineDetail extends React.PureComponent {
 
     const query = `SELECT * from ${VIDEO_EVENTS} WHERE viewId = '${session}' ORDER BY timestamp ASC LIMIT 1000 ${duration.since}`
 
-    const { data } = await NrqlQuery.query({ accountId, query })
+    const { data } = await NrqlQuery.query({ accountIds: [accountId], query })
 
     let result = []
     if (data && data.length > 0) result = data[0].data

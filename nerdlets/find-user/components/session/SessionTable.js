@@ -18,7 +18,10 @@ import {
 } from '../../../shared/utils/date-formatter'
 import { getThresholdClass } from '../../../shared/utils/threshold'
 import videoConfig from '../../../shared/config/VideoConfig'
-import { FIND_USER_ATTRIBUTE, VIDEO_EVENTS } from '../../../shared/config/constants'
+import {
+  FIND_USER_ATTRIBUTE,
+  VIDEO_EVENTS,
+} from '../../../shared/config/constants'
 
 export default class SessionTable extends React.Component {
   state = {
@@ -27,7 +30,8 @@ export default class SessionTable extends React.Component {
   }
 
   getViewQualityCount = (views, threshold, above) => {
-    const count = views.reduce((acc, v) => {
+    const count = views.reduce(
+      (acc, v) => {
         if (
           (above && v.qualityScore >= threshold) ||
           (!above && v.qualityScore < threshold)
@@ -79,7 +83,7 @@ export default class SessionTable extends React.Component {
     const nrql = `FROM ${VIDEO_EVENTS} SELECT min(timestamp), max(timestamp) WHERE ${userClause} LIMIT MAX ${duration.since} facet viewSession`
 
     return (
-      <NrqlQuery accountId={accountId} query={nrql}>
+      <NrqlQuery accountIds={[accountId]} query={nrql}>
         {({ data, error, loading }) => {
           if (loading) return <Spinner fillContainer />
           if (error) return <BlockText>{error.message}</BlockText>
@@ -104,7 +108,10 @@ export default class SessionTable extends React.Component {
             const timedSession = {
               session: s.session,
               qualityScore: s.qualityScore,
-              totalViews: s.views.reduce((acc, v) => { acc.push(v.id); return acc }, []),
+              totalViews: s.views.reduce((acc, v) => {
+                acc.push(v.id)
+                return acc
+              }, []),
               good: this.getViewQualityCount(s.views, 90, true),
               bad: this.getViewQualityCount(s.views, 90, false),
               minTime,

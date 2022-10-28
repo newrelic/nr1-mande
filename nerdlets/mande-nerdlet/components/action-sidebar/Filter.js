@@ -53,7 +53,10 @@ class Filter extends React.Component {
 
     const query = `SELECT uniques(${attribute}) FROM ${eventTypes} ${since}`
 
-    const { data, error } = await NrqlQuery.query({ accountId, query })
+    const { data, error } = await NrqlQuery.query({
+      accountIds: [accountId],
+      query,
+    })
     if (error) console.error(error)
 
     let values = [] // if we don't get any values back, state will reset to blank

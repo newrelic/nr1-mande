@@ -39,7 +39,7 @@ export default class ViewTable extends React.Component {
     const nrql = `FROM ${VIDEO_EVENTS} SELECT min(timestamp) as 'startTime', latest(contentTitle) as 'contentTitle' WHERE viewSession = '${session.id}' and actionName != 'PLAYER_READY' LIMIT MAX ${duration.since} facet viewId`
 
     return (
-      <NrqlQuery accountId={accountId} query={nrql}>
+      <NrqlQuery accountIds={[accountId]} query={nrql}>
         {({ data, error, loading }) => {
           if (loading) return <Spinner fillContainer />
           if (error) return <BlockText>{error.message}</BlockText>
@@ -163,7 +163,8 @@ export default class ViewTable extends React.Component {
                       videoConfig.qualityScore.threshold,
                       item.qualityScore,
                       'greenLight'
-                    )}`}>
+                    )}`}
+                  >
                     {item.qualityScore + ' %'}
                   </TableRowCell>
                   {videoConfig.qualityScore.include.map((qs, idx) => {

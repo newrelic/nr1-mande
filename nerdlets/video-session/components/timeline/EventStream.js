@@ -1,5 +1,5 @@
 import React from 'react'
-import { NrqlQuery, Spinner, Button, Icon, Stack, StackItem } from 'nr1'
+import { Spinner, Button, Icon, Stack, StackItem } from 'nr1'
 import Moment from 'react-moment'
 
 export default class EventStream extends React.PureComponent {
@@ -54,7 +54,8 @@ export default class EventStream extends React.PureComponent {
         this.state.expandedTimelineItem == i ? 'timeline-item-expanded' : ''
       const streamTimeline = this.buildStreamTimeline(event)
 
-      legendItem && legendItem.visible &&
+      legendItem &&
+        legendItem.visible &&
         sessionEvents.push(
           <div
             key={i}
@@ -83,7 +84,7 @@ export default class EventStream extends React.PureComponent {
                 <div className="timeline-item-title">{event.actionName}</div>
                 <Button
                   className="timeline-item-dropdown-arrow"
-                  type={Button.TYPE.PLAIN_NEUTRAL}
+                  type={Button.TYPE.PLAIN}
                   iconType={
                     Button.ICON_TYPE
                       .INTERFACE__CHEVRON__CHEVRON_BOTTOM__V_ALTERNATE

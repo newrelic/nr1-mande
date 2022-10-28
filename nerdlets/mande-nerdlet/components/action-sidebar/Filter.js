@@ -53,7 +53,10 @@ class Filter extends React.Component {
 
     const query = `SELECT uniques(${attribute}) FROM ${eventTypes} ${since}`
 
-    const { data, error } = await NrqlQuery.query({ accountId, query })
+    const { data, error } = await NrqlQuery.query({
+      accountIds: [accountId],
+      query,
+    })
     if (error) console.error(error)
 
     let values = [] // if we don't get any values back, state will reset to blank
@@ -217,7 +220,7 @@ class Filter extends React.Component {
               </span>
               <span className="filter-category-section-label-control">
                 <Button
-                  type={Button.TYPE.PLAIN_NEUTRAL}
+                  type={Button.TYPE.PLAIN}
                   sizeType={Button.SIZE_TYPE.SMALL}
                   iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__REFRESH}
                   onClick={this.refreshHandler}

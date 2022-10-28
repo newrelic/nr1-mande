@@ -103,7 +103,7 @@ export default class Metric extends React.PureComponent {
       sparkline = (
         <SparklineChart
           className="spark-line-chart"
-          accountId={accountId}
+          accountIds={[accountId]}
           query={nrql}
           onHoverSparkline={() => null}
         />
@@ -125,13 +125,16 @@ export default class Metric extends React.PureComponent {
     return (
       <React.Fragment>
         {/* {metric.def.query.title ? metric.def.query.title : metric.def.title} */}
-        <p className="name">{showTooltip ? (
-          <Tooltip text={tooltipText ? tooltipText : metric.title}>
-            {metric.title}
-          </Tooltip>
-          // eslint-disable-next-line prettier/prettier
-          ) : metric.title
-        }</p>
+        <p className="name">
+          {showTooltip ? (
+            <Tooltip text={tooltipText ? tooltipText : metric.title}>
+              {metric.title}
+            </Tooltip>
+          ) : (
+            // eslint-disable-next-line prettier/prettier
+            metric.title
+          )}
+        </p>
         <span className="value-container">
           {this.renderMetricValue(thresholdClass, false)}
           {showCompare && this.renderCompare()}
@@ -202,15 +205,18 @@ export default class Metric extends React.PureComponent {
           <div
             onClick={() => (click ? click(metric) : () => null)}
             style={styles && { ...styles }}
-            className={`${!selected ? 'metric-chart' : 'metric-chart selected'
-              } ${thresholdClass} ${!click ? 'no-click' : ''}`}
+            className={`${
+              !selected ? 'metric-chart' : 'metric-chart selected'
+            } ${thresholdClass} ${!click ? 'no-click' : ''}`}
           >
             {metricContent}
           </div>
           {minify && (
             <div className="metric-tooltip">
               <div className="metric maximized">
-                <div className={`metric-chart ${thresholdClass}`}>{maximized}</div>
+                <div className={`metric-chart ${thresholdClass}`}>
+                  {maximized}
+                </div>
               </div>
             </div>
           )}

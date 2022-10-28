@@ -11,7 +11,7 @@ export default class SessionDetail extends React.PureComponent {
     // console.debug('sessionDetail sessionDetails query', nrql)
 
     return (
-      <NrqlQuery accountId={accountId} query={nrql}>
+      <NrqlQuery accountIds={[accountId]} query={nrql}>
         {({ data, error, loading }) => {
           if (loading) return <Spinner fillContainer />
           if (error) return <BlockText>{error.message}</BlockText>

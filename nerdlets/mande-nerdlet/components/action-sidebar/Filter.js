@@ -220,7 +220,7 @@ class Filter extends React.Component {
               </span>
               <span className="filter-category-section-label-control">
                 <Button
-                  type={Button.TYPE.PLAIN_NEUTRAL}
+                  type={Button.TYPE.PLAIN}
                   sizeType={Button.SIZE_TYPE.SMALL}
                   iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__REFRESH}
                   onClick={this.refreshHandler}

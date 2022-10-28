@@ -208,7 +208,7 @@ class Chart extends React.Component {
           {!expand && (
             <div className="chart-actions" ref={this.myRef}>
               <Button
-                type={Button.TYPE.PLAIN_NEUTRAL}
+                type={Button.TYPE.PLAIN}
                 iconType={Button.ICON_TYPE.INTERFACE__OPERATIONS__MORE}
                 onClick={this.onActionsMenuClick}
               />

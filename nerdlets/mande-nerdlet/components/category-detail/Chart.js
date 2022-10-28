@@ -123,7 +123,7 @@ class Chart extends React.Component {
       case 'area':
         return (
           <AreaChart
-            accountId={accountId}
+            accountIds={[accountId]}
             query={query}
             onClickArea={getHook(config.click ? config.click : 'filter').bind(
               this.props
@@ -136,7 +136,7 @@ class Chart extends React.Component {
       case 'bar':
         return (
           <BarChart
-            accountId={accountId}
+            accountIds={[accountId]}
             query={query}
             onClickBar={
               getHook(config.click ? config.click : 'filter').bind(this.props)
@@ -147,19 +147,19 @@ class Chart extends React.Component {
       case 'billboard':
         if (facets)
           return this.renderChart({ ...config, chartType: 'bar' }, query)
-        else return <BillboardChart accountId={accountId} query={query} />
+        else return <BillboardChart accountIds={[accountId]} query={query} />
       case 'heatmap':
-        return <HeatmapChart accountId={accountId} query={query} />
+        return <HeatmapChart accountIds={[accountId]} query={query} />
       case 'histogram':
-        return <HistogramChart accountId={accountId} query={query} />
+        return <HistogramChart accountIds={[accountId]} query={query} />
       case 'billboard':
-        return <BillboardChart accountId={accountId} query={query} />
+        return <BillboardChart accountIds={[accountId]} query={query} />
       case 'pie':
-        return <PieChart accountId={accountId} query={query} />
+        return <PieChart accountIds={[accountId]} query={query} />
       case 'line':
         return (
           <LineChart
-            accountId={accountId}
+            accountIds={[accountId]}
             query={query}
             onClickLine={getHook(config.click ? config.click : 'filter').bind(
               this.props
@@ -167,16 +167,16 @@ class Chart extends React.Component {
           />
         )
       case 'funnel':
-        return <FunnelChart accountId={accountId} query={query} />
+        return <FunnelChart accountIds={[accountId]} query={query} />
       case 'scatter':
-        return <ScatterChart accountId={accountId} query={query} />
+        return <ScatterChart accountIds={[accountId]} query={query} />
       case 'table': // need to pass the facets for data matching
         const tableQuery = expand
           ? query
           : query.replace(/limit (max|[0-9]+)/gi, 'LIMIT 20')
         return (
           <TableChart
-            accountId={accountId}
+            accountIds={[accountId]}
             query={tableQuery}
             onClickTable={
               config.click ? getHook(config.click).bind(this.props) : () => null
@@ -184,7 +184,7 @@ class Chart extends React.Component {
           />
         )
       default:
-        return <LineChart accountId={accountId} query={this.query} />
+        return <LineChart accountIds={[accountId]} query={this.query} />
     }
   }
 
